@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "246040457998",
+    "firebase_url": "https://conectask-a7fab-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "conectask-a7fab",
+    "storage_bucket": "conectask-a7fab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:246040457998:android:c9c2d0fbc69a12c8e29d5f",
+        "android_client_info": {
+          "package_name": "com.example.conectask_v2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeeev9Nnz5K2-IfcFDyBZ09lq_ZlHhAaY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:246040457998:android:3d06ca0e221e7bcce29d5f",
+        "android_client_info": {
+          "package_name": "es.sara.conectask"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeeev9Nnz5K2-IfcFDyBZ09lq_ZlHhAaY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
