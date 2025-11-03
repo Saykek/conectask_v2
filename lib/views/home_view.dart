@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
+import 'task_view.dart';
 
 class HomeView extends StatefulWidget {
   final UserModel user; // Usuario recibido desde login o registro
@@ -64,6 +65,14 @@ class _HomeViewState extends State<HomeView> {
                     child: InkWell(
                       onTap: () {
                         // Aquí puedes poner la navegación a cada módulo
+                        if (modulo['titulo'] == 'Tareas') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TasksView(),
+                            ),
+                          );
+                        }
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
