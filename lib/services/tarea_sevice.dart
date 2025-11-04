@@ -1,48 +1,77 @@
 import 'package:firebase_database/firebase_database.dart';
 import '../models/tarea_model.dart';
+import 'package:uuid/uuid.dart';
+import 'package:intl/intl.dart';
 
 class TareaService {
-  final DatabaseReference tareasRef = FirebaseDatabase.instance.ref().child(
-    'tareas',
-  );
+  final DatabaseReference _db = FirebaseDatabase.instance.ref('tareas');
 
-  // Guardar o actualizar una tarea
+  /// Guardar tarea por fecha y responsable
   Future<void> guardarTarea(Tarea tarea) async {
     try {
-      await tareasRef.child(tarea.id).set(tarea.toMap());
+      print('➡️ Intentando guardar tarea...');
+
+      final id = const Uuid().v4();
+      final fechaKey = DateFormat('yyyy-MM-dd').format(tarea.fecha);
+      final ref = _db.child(fechaKey).child(tarea.responsable).child(id);
+
+      final data = tarea.toMap();
+      data['id'] = id;
+
+      await ref.set(data);
+
+      print('✅ Tarea guardada correctamente con ID: $id');
     } catch (e) {
-      print('Error al guardar tarea: $e');
+      print('❌ Error al guardar tarea: $e');
       rethrow;
     }
   }
 
-  // Obtener todas las tareas
-  Future<List<Tarea>> obtenerTareas() async {
-    try {
-      final snapshot = await tareasRef.get();
-      if (snapshot.exists) {
-        final Map<String, dynamic> map = Map<String, dynamic>.from(
-          snapshot.value as Map,
-        );
-        return map.values
-            .map((t) => Tarea.fromMap(Map<String, dynamic>.from(t)))
-            .toList();
-      } else {
-        return [];
+  /// Escuchar todas las tareas en tiempo real (de todas las fechas y usuarios)
+  Stream<List<Tarea>> escucharTareas() {
+    return _db.onValue.map((event) {
+      final snapshot = event.snapshot;
+      if (!snapshot.exists) {
+        print('⚠️ No hay datos en Firebase.');
+        return <Tarea>[];
       }
-    } catch (e) {
-      print('Error al obtener tareas: $e');
-      rethrow;
-    }
-  }
 
-  // Eliminar una tarea
-  Future<void> eliminarTarea(String id) async {
-    try {
-      await tareasRef.child(id).remove();
-    } catch (e) {
-      print('Error al eliminar tarea: $e');
-      rethrow;
-    }
+      final Map<String, dynamic> data = Map<String, dynamic>.from(
+        snapshot.value as Map,
+      );
+      final List<Tarea> tareas = [];
+
+      print('📡 Datos recibidos desde Firebase: $data');
+
+      // Recorrer estructura: fecha → usuario → idTarea → datos
+      data.forEach((fechaKey, usuariosMap) {
+        if (usuariosMap is Map) {
+          final Map<String, dynamic> usuarios = Map<String, dynamic>.from(
+            usuariosMap,
+          );
+
+          usuarios.forEach((usuarioKey, tareasMap) {
+            if (tareasMap is Map) {
+              final Map<String, dynamic> tareasUsuario =
+                  Map<String, dynamic>.from(tareasMap);
+
+              tareasUsuario.forEach((id, tareaData) {
+                try {
+                  final tarea = Tarea.fromMap(
+                    Map<String, dynamic>.from(tareaData),
+                  );
+                  tareas.add(tarea);
+                } catch (e) {
+                  print('❌ Error parseando tarea $id: $e');
+                }
+              });
+            }
+          });
+        }
+      });
+
+      print('✅ ${tareas.length} tareas cargadas desde Firebase');
+      return tareas;
+    });
   }
 }
