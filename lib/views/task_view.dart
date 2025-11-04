@@ -97,19 +97,46 @@ class TasksView extends StatelessWidget {
                             margin: const EdgeInsets.symmetric(vertical: 4),
                             elevation: 2,
                             child: ListTile(
-                              title: Text(tarea.titulo),
+                              title: Text(
+                                tarea.titulo,
+                                style: TextStyle(
+                                  decoration: tarea.estado == 'hecha'
+                                      ? TextDecoration.lineThrough
+                                      : TextDecoration.none,
+                                ),
+                              ),
                               subtitle: Text(
                                 tarea.descripcion.isNotEmpty
                                     ? tarea.descripcion
                                     : 'Sin descripción',
+                                style: TextStyle(
+                                  decoration: tarea.estado == 'hecha'
+                                      ? TextDecoration.lineThrough
+                                      : TextDecoration.none,
+                                  fontStyle: tarea.estado == 'hecha'
+                                      ? FontStyle.italic
+                                      : FontStyle.normal,
+                                ),
                               ),
-                              trailing: Icon(
-                                tarea.estado == 'hecha'
-                                    ? Icons.check_circle
-                                    : Icons.radio_button_unchecked,
-                                color: tarea.estado == 'hecha'
-                                    ? Colors.green
-                                    : Colors.grey,
+
+                              trailing: IconButton(
+                                icon: Icon(
+                                  tarea.estado == 'hecha'
+                                      ? Icons.check_circle
+                                      : Icons.radio_button_unchecked,
+                                  color: tarea.estado == 'hecha'
+                                      ? Colors.green
+                                      : Colors.grey,
+                                ),
+                                onPressed: () async {
+                                  final nuevoEstado = tarea.estado == 'hecha'
+                                      ? 'pendiente'
+                                      : 'hecha';
+                                  await _tareaService.actualizarEstadoTarea(
+                                    tarea,
+                                    nuevoEstado,
+                                  );
+                                },
                               ),
                             ),
                           ),

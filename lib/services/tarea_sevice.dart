@@ -74,4 +74,17 @@ class TareaService {
       return tareas;
     });
   }
+
+  Future<void> actualizarEstadoTarea(Tarea tarea, String nuevoEstado) async {
+    try {
+      final fecha = DateFormat('yyyy-MM-dd').format(tarea.fecha);
+      final ref = FirebaseDatabase.instance.ref(
+        'tareas/$fecha/${tarea.responsable}/${tarea.id}',
+      );
+      await ref.update({'estado': nuevoEstado});
+      print('✅ Estado actualizado a $nuevoEstado para tarea ${tarea.titulo}');
+    } catch (e) {
+      print('❌ Error al actualizar estado: $e');
+    }
+  }
 }
