@@ -27,6 +27,31 @@ class TareaService {
     }
   }
 
+  /// Actualizar cualquier campo de una tarea existente
+  Future<void> actualizarTarea(Tarea tarea) async {
+    try {
+      final fechaKey = DateFormat('yyyy-MM-dd').format(tarea.fecha);
+      final ref = _db.child(fechaKey).child(tarea.responsable).child(tarea.id);
+      await ref.update(tarea.toMap());
+      print('✅ Tarea actualizada: ${tarea.titulo}');
+    } catch (e) {
+      print('❌ Error al actualizar tarea: $e');
+      rethrow;
+    }
+  }
+
+  /// Actualizar solo el estado de la tarea ("pendiente", "hecha", etc.)
+  Future<void> actualizarEstadoTarea(Tarea tarea, String nuevoEstado) async {
+    try {
+      final fechaKey = DateFormat('yyyy-MM-dd').format(tarea.fecha);
+      final ref = _db.child(fechaKey).child(tarea.responsable).child(tarea.id);
+      await ref.update({'estado': nuevoEstado});
+      print('✅ Estado actualizado a $nuevoEstado para tarea ${tarea.titulo}');
+    } catch (e) {
+      print('❌ Error al actualizar estado: $e');
+    }
+  }
+
   /// Escuchar todas las tareas en tiempo real (de todas las fechas y usuarios)
   Stream<List<Tarea>> escucharTareas() {
     return _db.onValue.map((event) {
@@ -73,18 +98,5 @@ class TareaService {
       print('✅ ${tareas.length} tareas cargadas desde Firebase');
       return tareas;
     });
-  }
-
-  Future<void> actualizarEstadoTarea(Tarea tarea, String nuevoEstado) async {
-    try {
-      final fecha = DateFormat('yyyy-MM-dd').format(tarea.fecha);
-      final ref = FirebaseDatabase.instance.ref(
-        'tareas/$fecha/${tarea.responsable}/${tarea.id}',
-      );
-      await ref.update({'estado': nuevoEstado});
-      print('✅ Estado actualizado a $nuevoEstado para tarea ${tarea.titulo}');
-    } catch (e) {
-      print('❌ Error al actualizar estado: $e');
-    }
   }
 }

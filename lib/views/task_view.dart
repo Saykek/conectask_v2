@@ -1,7 +1,8 @@
 import 'package:conectask_v2/services/tarea_sevice.dart';
+import 'package:conectask_v2/views/task_detail_view.dart';
 import 'package:flutter/material.dart';
 import '../models/tarea_model.dart';
-import 'add_task_view.dart';
+import 'task_add_view.dart';
 import 'package:intl/intl.dart';
 
 class TasksView extends StatelessWidget {
@@ -96,7 +97,12 @@ class TasksView extends StatelessWidget {
                           (tarea) => Card(
                             margin: const EdgeInsets.symmetric(vertical: 4),
                             elevation: 2,
+                            // ListTile para cada tarea.......................
                             child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 16,
+                              ),
                               title: Text(
                                 tarea.titulo,
                                 style: TextStyle(
@@ -108,7 +114,7 @@ class TasksView extends StatelessWidget {
                               subtitle: Text(
                                 tarea.descripcion.isNotEmpty
                                     ? tarea.descripcion
-                                    : 'Sin descripción',
+                                    : '',
                                 style: TextStyle(
                                   decoration: tarea.estado == 'hecha'
                                       ? TextDecoration.lineThrough
@@ -119,25 +125,77 @@ class TasksView extends StatelessWidget {
                                 ),
                               ),
 
-                              trailing: IconButton(
-                                icon: Icon(
-                                  tarea.estado == 'hecha'
-                                      ? Icons.check_circle
-                                      : Icons.radio_button_unchecked,
-                                  color: tarea.estado == 'hecha'
-                                      ? Colors.green
-                                      : Colors.grey,
+                              trailing: SizedBox(
+                                width: 48,
+                                height: 56,
+                                child: Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    // 🔥 Icono de prioridad arriba a la derecha
+                                    Positioned(
+                                      top: -18,
+                                      right: 2,
+                                      child: Icon(
+                                        tarea.prioridad == 'Alta'
+                                            ? Icons.flash_on
+                                            : tarea.prioridad == 'Media'
+                                            ? Icons.access_time
+                                            : Icons.hourglass_bottom,
+                                        color: tarea.prioridad == 'Alta'
+                                            ? Colors.red
+                                            : tarea.prioridad == 'Media'
+                                            ? Colors.amber
+                                            : Colors.green,
+                                        size: 22,
+                                      ),
+                                    ),
+
+                                    // ✅ Botón de estado abajo a la derecha
+                                    Positioned(
+                                      bottom: -15,
+                                      right: -2,
+                                      child: IgnorePointer(
+                                        ignoring:
+                                            false, // Asegura que reciba los toques
+                                        child: IconButton(
+                                          iconSize: 26,
+                                          padding: EdgeInsets.zero,
+                                          splashRadius: 20,
+                                          icon: Icon(
+                                            tarea.estado == 'hecha'
+                                                ? Icons.check_circle
+                                                : Icons.radio_button_unchecked,
+                                            color: tarea.estado == 'hecha'
+                                                ? Colors.green
+                                                : Colors.grey,
+                                          ),
+                                          onPressed: () async {
+                                            final nuevoEstado =
+                                                tarea.estado == 'hecha'
+                                                ? 'pendiente'
+                                                : 'hecha';
+                                            await _tareaService
+                                                .actualizarEstadoTarea(
+                                                  tarea,
+                                                  nuevoEstado,
+                                                );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                onPressed: () async {
-                                  final nuevoEstado = tarea.estado == 'hecha'
-                                      ? 'pendiente'
-                                      : 'hecha';
-                                  await _tareaService.actualizarEstadoTarea(
-                                    tarea,
-                                    nuevoEstado,
-                                  );
-                                },
                               ),
+
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        TaskDetailView(tarea: tarea),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
