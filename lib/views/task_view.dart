@@ -97,6 +97,7 @@ class TasksView extends StatelessWidget {
                           (tarea) => Card(
                             margin: const EdgeInsets.symmetric(vertical: 4),
                             elevation: 2,
+
                             // ListTile para cada tarea.......................
                             child: ListTile(
                               contentPadding: const EdgeInsets.symmetric(
@@ -125,6 +126,7 @@ class TasksView extends StatelessWidget {
                                 ),
                               ),
 
+                              // ZONA DE ICONOSSSSSSSSSSSSSSSSS
                               trailing: SizedBox(
                                 width: 48,
                                 height: 56,

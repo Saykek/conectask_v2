@@ -99,4 +99,27 @@ class TareaService {
       return tareas;
     });
   }
+
+  // Eliminar tarea
+  Future<void> eliminarTarea(
+    String fecha,
+    String responsable,
+    String idTarea,
+  ) async {
+    await _db.child('tareas/$fecha/$responsable/$idTarea').remove();
+  }
+
+  // Formatear fecha
+  Future<void> eliminarTareaDesdeObjeto(Tarea tarea) async {
+    final fechaClave = DateFormat('yyyy-MM-dd').format(tarea.fecha);
+    final ruta = '$fechaClave/${tarea.responsable}/${tarea.id}';
+    print('Eliminando en: $ruta');
+
+    try {
+      await _db.child(ruta).remove();
+      print('Tarea eliminada');
+    } catch (e) {
+      print('Error al eliminar: $e');
+    }
+  }
 }

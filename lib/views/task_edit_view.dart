@@ -103,6 +103,7 @@ class _EditTaskViewState extends State<EditTaskView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Editar tarea')),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(

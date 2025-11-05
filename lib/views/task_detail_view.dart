@@ -63,6 +63,49 @@ class _TaskDetailViewState extends State<TaskDetailView> {
         title: Text(tarea.titulo),
         actions: [
           IconButton(icon: const Icon(Icons.edit), onPressed: _editarTarea),
+          if (tarea.estado != 'hecha')
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: () async {
+                final confirmar = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Eliminar tarea'),
+                    content: const Text(
+                      '¿Seguro que quieres eliminar esta tarea? Esta acción no se puede deshacer.',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text('Cancelar'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: const Text(
+                          'Eliminar',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (confirmar == true) {
+                  if (confirmar == true) {
+                    await _tareaService.eliminarTareaDesdeObjeto(tarea);
+
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Tarea eliminada correctamente'),
+                        ),
+                      );
+                      Navigator.pop(context); // Volver al listado
+                    }
+                  }
+                }
+              },
+            ),
         ],
       ),
       body: Padding(
