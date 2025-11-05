@@ -61,7 +61,7 @@ class _AddTaskViewState extends State<AddTaskView> {
       initialDate: _fechaSeleccionada,
       firstDate: DateTime(2020),
       lastDate: DateTime(2100),
-      locale: const Locale('es', 'ES'),
+      //locale: const Locale('es', 'ES'),
     );
     if (seleccionada != null && seleccionada != _fechaSeleccionada) {
       setState(() {
