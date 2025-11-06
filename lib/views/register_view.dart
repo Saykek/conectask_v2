@@ -59,6 +59,7 @@ class _RegisterViewState extends State<RegisterView> {
           id: _controller.auth.currentUser!.uid,
           nombre: nombre,
           email: email,
+          rol: 'admin',
         );
 
         Navigator.pushReplacement(

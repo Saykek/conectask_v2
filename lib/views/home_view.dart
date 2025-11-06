@@ -1,3 +1,4 @@
+import 'package:conectask_v2/views/debug_view.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import 'task_view.dart';
@@ -26,6 +27,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    print('Rol del usuario: ${widget.user.rol}');
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -44,6 +46,22 @@ class _HomeViewState extends State<HomeView> {
             },
             secondary: const Icon(Icons.photo),
           ),
+          if (widget.user.rol == 'admin') ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const DebugView()),
+                  );
+                },
+                icon: const Icon(Icons.bug_report),
+                label: const Text('Debug: Crear niño de prueba'),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16),

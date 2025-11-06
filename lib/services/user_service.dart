@@ -28,4 +28,36 @@ class UserService {
       return null;
     }
   }
+
+  // 🔍 Nuevo método: buscar niño por nombre
+  Future<UserModel?> obtenerUsuarioPorNombre(String nombre) async {
+    try {
+      final snapshot = await usersRef.get();
+      print('Snapshot obtenido: ${snapshot.value}');
+
+      if (snapshot.exists) {
+        print('entrando en if snapshot.exists');
+        for (final child in snapshot.children) {
+          final data = child.value as Map<dynamic, dynamic>;
+          final id = child.key ?? '';
+          final map = Map<String, dynamic>.from(data);
+          print('Leyendo: nombre=${map['nombre']}, rol=${map['rol']}');
+
+          if (map['nombre'].toString().toLowerCase().trim() ==
+                  nombre.toLowerCase().trim() &&
+              map['rol'].toString().toLowerCase().trim() == 'niño') {
+            print(
+              'Usuario encontrado: ${map['nombre']}, pin: ${map['pin']}, Rol: ${map['rol']}',
+            );
+            return UserModel.fromMap(id, map);
+          }
+        }
+      }
+
+      return null;
+    } catch (e) {
+      print('Error al buscar usuario por nombre: $e');
+      return null;
+    }
+  }
 }

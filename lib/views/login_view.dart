@@ -1,6 +1,6 @@
+import 'package:conectask_v2/views/register_view.dart';
 import 'package:flutter/material.dart';
 import '../controllers/login_controller.dart';
-import 'register_view.dart';
 import 'home_view.dart';
 import '../models/user_model.dart';
 
@@ -17,10 +17,16 @@ class _LoginViewState extends State<LoginView> {
   final _passwordController = TextEditingController();
   bool _loading = false;
 
+  bool _modoNino = false; // Para alternar entre modo admin y niño
+  final _usuarioController = TextEditingController();
+  final _pinController = TextEditingController();
+
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _usuarioController.dispose();
+    _pinController.dispose();
     super.dispose();
   }
 
@@ -59,41 +65,125 @@ class _LoginViewState extends State<LoginView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'Iniciar sesión',
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                Text(
+                  _modoNino ? 'Acceso para niños' : 'Iniciar sesión',
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 32),
-                TextField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Contraseña'),
-                ),
-                const SizedBox(height: 24),
-                _loading
-                    ? const CircularProgressIndicator()
-                    : ElevatedButton(
-                        onPressed: _login,
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 48),
-                        ),
-                        child: const Text('Entrar'),
-                      ),
-                const SizedBox(height: 16),
-                TextButton(
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegisterView(),
-                    ),
+
+                if (_modoNino) ...[
+                  TextField(
+                    controller: _usuarioController,
+                    decoration: const InputDecoration(labelText: 'Usuario'),
                   ),
-                  child: const Text('¿No tienes cuenta? Regístrate'),
-                ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _pinController,
+                    obscureText: true,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(labelText: 'PIN'),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final usuario = _usuarioController.text.trim();
+                      final pin = _pinController.text.trim();
+
+                      print(
+                        'Buscando usuario con nombre: $usuario',
+                      ); // 👈 Paso 2
+
+                      if (usuario.isEmpty || pin.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Por favor, completa usuario y PIN'),
+                          ),
+                        );
+                        return;
+                      }
+
+                      final user = await _controller.loginNino(
+                        usuario: usuario,
+                        pin: pin,
+                      );
+
+                      print(
+                        'Resultado: ${user?.nombre}, PIN: ${user?.pin}, Rol: ${user?.rol}',
+                      ); // 👈 Verificación
+
+                      if (!mounted) return;
+
+                      if (user != null && user.rol == 'niño') {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => HomeView(user: user),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Usuario o PIN incorrecto'),
+                          ),
+                        );
+                      }
+                    },
+
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 48),
+                    ),
+                    child: const Text('Entrar'),
+                  ),
+                  const SizedBox(height: 16),
+                  TextButton(
+                    onPressed: () => setState(() => _modoNino = false),
+                    child: const Text('🔙 Volver al login de admin'),
+                  ),
+                ] else ...[
+                  TextField(
+                    controller: _emailController,
+                    decoration: const InputDecoration(labelText: 'Email'),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    decoration: const InputDecoration(labelText: 'Contraseña'),
+                  ),
+                  const SizedBox(height: 24),
+                  _loading
+                      ? const CircularProgressIndicator()
+                      : ElevatedButton(
+                          onPressed: _login,
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(double.infinity, 48),
+                          ),
+                          child: const Text('Entrar'),
+                        ),
+                  const SizedBox(height: 16),
+                  TextButton(
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RegisterView(),
+                      ),
+                    ),
+                    child: const Text('¿No tienes cuenta? Regístrate'),
+                  ),
+                  const SizedBox(height: 16),
+                  TextButton.icon(
+                    onPressed: () => setState(() => _modoNino = true),
+                    icon: const Icon(
+                      Icons.child_care,
+                      size: 36,
+                      color: Colors.blue,
+                    ),
+                    label: const Text('Acceso para niños'),
+                  ),
+                ],
               ],
             ),
           ),
