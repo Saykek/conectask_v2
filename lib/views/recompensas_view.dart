@@ -34,6 +34,10 @@ class _RecompensasViewState extends State<RecompensasView> {
   void initState() {
     super.initState();
     _cargarRecompensas();
+
+    if (widget.user.rol != 'admin') {
+      _cargarListaGeneral();
+    }
   }
 
   Future<void> _cargarRecompensas() async {
@@ -82,70 +86,104 @@ class _RecompensasViewState extends State<RecompensasView> {
       body: cargando
           ? const Center(child: CircularProgressIndicator())
           : widget.user.rol == 'admin'
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Text('👥 Selecciona un niño:', style: TextStyle(fontSize: 16)),
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    '👥 Selecciona un niño:',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                SizedBox(
+                  height: 50,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      _botonSelector('Todos'),
+                      ...listaNinos
+                          .map((nino) => _botonSelector(nino.nombre))
+                          .toList(),
+                      const SizedBox(width: 8),
+                      _botonRecompensas(),
+                    ],
+                  ),
+                ),
+                if (mostrarListaGeneral)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
                     ),
-                    SizedBox(
-                      height: 50,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          _botonSelector('Todos'),
-                          ...listaNinos.map((nino) => _botonSelector(nino.nombre)).toList(),
-                          const SizedBox(width: 8),
-                          _botonRecompensas(),
-                        ],
-                      ),
+                    child: ListaRecompensas(
+                      recompensas: listaGeneral,
+                      modoAdmin: true,
+                      onTap: (r) {
+                        // Acción al tocar recompensa (editar, ver detalle, etc.)
+                      },
                     ),
-                    if (mostrarListaGeneral)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        child: ListaRecompensas(
-                          recompensas: listaGeneral,
-                          modoAdmin: true,
-                          onTap: (r) {
-                            // Acción al tocar recompensa (editar, ver detalle, etc.)
-                          },
-                        ),
-                      ),
-                    const SizedBox(height: 16),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: seleccion == 'Todos'
-                            ? Column(
-                                children: listaNinos
-                                    .map((nino) => Padding(
-                                          padding: const EdgeInsets.only(bottom: 16),
-                                          child: ResumenRecompensas(
-                                            user: nino,
-                                            recompensas: recompensasPorNino[nino.id] ?? [],
-                                          ),
-                                        ))
-                                    .toList(),
-                              )
-                            : ResumenRecompensas(
-                                user: listaNinos.firstWhere(
-                                  (nino) => nino.nombre == seleccion,
-                                  orElse: () => listaNinos.first,
-                                ),
-                                recompensas: recompensasPorNino[
-                                        listaNinos.firstWhere((nino) => nino.nombre == seleccion).id] ??
-                                    [],
-                              ),
-                      ),
-                    ),
-                  ],
-                )
-              : SingleChildScrollView(
-                  child: ResumenRecompensas(
+                  ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: seleccion == 'Todos'
+                        ? Column(
+                            children: listaNinos
+                                .map(
+                                  (nino) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 16),
+                                    child: ResumenRecompensas(
+                                      user: nino,
+                                      recompensas:
+                                          recompensasPorNino[nino.id] ?? [],
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          )
+                        : ResumenRecompensas(
+                            user: listaNinos.firstWhere(
+                              (nino) => nino.nombre == seleccion,
+                              orElse: () => listaNinos.first,
+                            ),
+                            recompensas:
+                                recompensasPorNino[listaNinos
+                                    .firstWhere(
+                                      (nino) => nino.nombre == seleccion,
+                                    )
+                                    .id] ??
+                                [],
+                          ),
+                  ),
+                ),
+              ],
+            )
+          : SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ResumenRecompensas(
                     user: widget.user,
                     recompensas: recompensasPorNino[widget.user.id] ?? [],
                   ),
-                ),
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      '🎁 Recompensas disponibles:',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  ListaRecompensas(
+                    recompensas: listaGeneral,
+                    modoAdmin: false,
+                    onTap: (r) {
+                      // Aquí puedes mostrar detalle o permitir canje si tiene puntos suficientes
+                    },
+                  ),
+                ],
+              ),
+            ),
     );
   }
 
@@ -173,7 +211,9 @@ class _RecompensasViewState extends State<RecompensasView> {
     final bool activo = mostrarListaGeneral;
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
-        backgroundColor: activo ? Colors.greenAccent : const Color.fromARGB(255, 175, 248, 208),
+        backgroundColor: activo
+            ? Colors.greenAccent
+            : const Color.fromARGB(255, 175, 248, 208),
         foregroundColor: Colors.black,
       ),
       onPressed: () async {
