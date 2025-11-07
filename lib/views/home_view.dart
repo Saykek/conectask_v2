@@ -1,4 +1,5 @@
 import 'package:conectask_v2/views/debug_view.dart';
+import 'package:conectask_v2/views/recompensas_view.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import 'task_view.dart';
@@ -18,7 +19,7 @@ class _HomeViewState extends State<HomeView> {
   final List<Map<String, dynamic>> modulos = [
     {'titulo': 'Tareas', 'icono': Icons.cleaning_services},
     {'titulo': 'Menú semanal', 'icono': Icons.restaurant_menu},
-    {'titulo': 'Modo estudio', 'icono': Icons.school},
+    {'titulo': 'Colegio', 'icono': Icons.school},
     {'titulo': 'Casa', 'icono': Icons.home},
     {'titulo': 'Recompensas', 'icono': Icons.emoji_events},
     {'titulo': 'Calendario', 'icono': Icons.calendar_today},
@@ -81,8 +82,10 @@ class _HomeViewState extends State<HomeView> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: InkWell(
+
+                      // Navegación a cada módulo
+
                       onTap: () {
-                        // Aquí puedes poner la navegación a cada módulo
                         if (modulo['titulo'] == 'Tareas') {
                           Navigator.push(
                             context,
@@ -90,6 +93,13 @@ class _HomeViewState extends State<HomeView> {
                               builder: (context) => TasksView(),
                             ),
                           );
+                        } else if (modulo['titulo'] == 'Recompensas') {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RecompensasView(user: widget.user),
+      ),
+    );
                         }
                       },
                       child: Column(
