@@ -29,26 +29,29 @@ class ListaRecompensas extends StatelessWidget {
       );
     }
 
-    return Column(
-      children: visibles.map((r) {
-        return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          elevation: 3,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            title: Text(
-              r.nombre,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text('${r.coste} puntos'),
-            trailing: modoAdmin
-                ? const Icon(Icons.edit, color: Colors.blueAccent)
-                : const Icon(Icons.redeem, color: Colors.green),
-            onTap: () => onTap?.call(r),
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: visibles.length,
+      separatorBuilder: (_, __) => const Divider(height: 1),
+      itemBuilder: (context, index) {
+        final r = visibles[index];
+        return ListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 6,
           ),
+          title: Text(
+            r.nombre,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
+          subtitle: Text('${r.coste} puntos'),
+          trailing: modoAdmin
+              ? const Icon(Icons.edit, size: 20, color: Colors.blueAccent)
+              : const Icon(Icons.redeem, size: 20, color: Colors.green),
+          onTap: () => onTap?.call(r),
         );
-      }).toList(),
+      },
     );
   }
 }

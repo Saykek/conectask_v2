@@ -1,8 +1,11 @@
+import 'package:conectask_v2/views/configuracion_view.dart';
 import 'package:conectask_v2/views/debug_view.dart';
+import 'package:conectask_v2/views/menu_semanal_view.dart';
+import 'package:conectask_v2/controllers/menu_semanal_controller.dart';
 import 'package:conectask_v2/views/recompensas_view.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
-import 'task_view.dart';
 
 class HomeView extends StatefulWidget {
   final UserModel user; // Usuario recibido desde login o registro
@@ -25,6 +28,28 @@ class _HomeViewState extends State<HomeView> {
     {'titulo': 'Calendario', 'icono': Icons.calendar_today},
     {'titulo': 'Configuración', 'icono': Icons.settings},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    final uid = firebaseUser?.uid;
+
+    print('UID autenticado por Firebase: $uid');
+    print('ID del modelo recibido: ${widget.user.id}');
+
+    if (uid != null && uid == widget.user.id) {
+      print('✅ UID coincide. Puedes acceder a Firebase.');
+      // Aquí podrías cargar configuración si lo deseas
+      // Por ejemplo:
+      // final configuracionController = ConfiguracionController();
+      // configuracionController.cargarConfiguracion(uid);
+    } else {
+      print('❌ UID no coincide o usuario no autenticado.');
+      // Puedes redirigir al login o mostrar un error
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,24 +107,41 @@ class _HomeViewState extends State<HomeView> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: InkWell(
-
                       // Navegación a cada módulo
-
-                      onTap: () {
-                        if (modulo['titulo'] == 'Tareas') {
+                      onTap: () async {
+                        if (modulo['titulo'] == 'Recompensas') {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => TasksView(),
+                              builder: (context) =>
+                                  RecompensasView(user: widget.user),
                             ),
                           );
-                        } else if (modulo['titulo'] == 'Recompensas') {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RecompensasView(user: widget.user),
-      ),
-    );
+                        } else if (modulo['titulo'] == 'Configuración') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ConfiguracionView(user: widget.user),
+                            ),
+                          );
+                        } else if (modulo['titulo'] == 'Menú semanal') {
+                          final controller = MenuSemanalController();
+                          final menuList = await controller.cargarMenu();
+
+                          final Map<String, Map<String, dynamic>> menuMap = {
+                            for (var dia in menuList) dia.dia: dia.toMap(),
+                          };
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MenuSemanalView(
+                                menu: menuMap,
+                                user: widget.user,
+                              ),
+                            ),
+                          );
                         }
                       },
                       child: Column(
