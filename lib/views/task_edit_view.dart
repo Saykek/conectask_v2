@@ -1,7 +1,9 @@
+import 'package:conectask_v2/controllers/tarea_controller.dart';
+import 'package:conectask_v2/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../models/tarea_model.dart';
-import '../services/tarea_sevice.dart';
 
 class EditTaskView extends StatefulWidget {
   final Tarea tarea;
@@ -18,17 +20,15 @@ class _EditTaskViewState extends State<EditTaskView> {
   late TextEditingController _descripcionController;
   late TextEditingController _fechaController;
 
-  final TareaService _tareaService = TareaService();
-
   String? _responsableSeleccionado;
   String? _prioridadSeleccionada;
   late DateTime _fechaSeleccionada;
 
-  final List<Map<String, dynamic>> _usuarios = [
-    {'nombre': 'Mamá', 'uid': 'mama'},
-    {'nombre': 'Papá', 'uid': 'papa'},
-    {'nombre': 'Álex', 'uid': 'alex'},
-    {'nombre': 'Erik', 'uid': 'erik'},
+  final List<UserModel> _usuarios = [
+    UserModel(id: 'mama', nombre: 'Mamá', rol: 'adulto'),
+    UserModel(id: 'papa', nombre: 'Papá', rol: 'adulto'),
+    UserModel(id: 'alex', nombre: 'Álex', rol: 'niño'),
+    UserModel(id: 'erik', nombre: 'Erik', rol: 'niño'),
   ];
 
   final List<String> _prioridades = ['Alta', 'Media', 'Baja'];
@@ -86,7 +86,8 @@ class _EditTaskViewState extends State<EditTaskView> {
       );
 
       try {
-        await _tareaService.actualizarTarea(tareaActualizada);
+        final controller = Provider.of<TareaController>(context, listen: false);
+        await controller.actualizarTarea(tareaActualizada);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Tarea actualizada correctamente')),
         );
@@ -103,7 +104,6 @@ class _EditTaskViewState extends State<EditTaskView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Editar tarea')),
-
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -139,8 +139,8 @@ class _EditTaskViewState extends State<EditTaskView> {
                 decoration: const InputDecoration(labelText: 'Asignar a'),
                 items: _usuarios.map((usuario) {
                   return DropdownMenuItem<String>(
-                    value: usuario['uid'],
-                    child: Text(usuario['nombre']),
+                    value: usuario.id,
+                    child: Text(usuario.nombre),
                   );
                 }).toList(),
                 onChanged: (valor) =>

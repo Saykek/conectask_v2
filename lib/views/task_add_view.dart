@@ -1,34 +1,34 @@
+import 'package:conectask_v2/controllers/tarea_controller.dart';
+import 'package:conectask_v2/models/tarea_model.dart';
+import 'package:conectask_v2/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import '../models/tarea_model.dart';
-import '../services/tarea_sevice.dart';
 
-class AddTaskView extends StatefulWidget {
+class TaskAddView extends StatefulWidget {
   final Tarea? tarea; // Si llega una tarea, estamos editando
 
-  const AddTaskView({super.key, this.tarea});
+  const TaskAddView({super.key, this.tarea});
 
   @override
-  State<AddTaskView> createState() => _AddTaskViewState();
+  State<TaskAddView> createState() => _TaskAddViewState();
 }
 
-class _AddTaskViewState extends State<AddTaskView> {
+class _TaskAddViewState extends State<TaskAddView> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _tituloController = TextEditingController();
   final TextEditingController _descripcionController = TextEditingController();
   final TextEditingController _fechaController = TextEditingController();
 
-  final TareaService _tareaService = TareaService();
-
   String? _responsableSeleccionado;
   String? _prioridadSeleccionada;
   DateTime _fechaSeleccionada = DateTime.now();
 
-  final List<Map<String, dynamic>> _usuarios = [
-    {'nombre': 'Mamá', 'uid': 'mama'},
-    {'nombre': 'Papá', 'uid': 'papa'},
-    {'nombre': 'Álex', 'uid': 'alex'},
-    {'nombre': 'Erik', 'uid': 'erik'},
+  final List<UserModel> _usuarios = [
+    UserModel(id: 'mama', nombre: 'Mamá', rol: 'adulto'),
+    UserModel(id: 'papa', nombre: 'Papá', rol: 'adulto'),
+    UserModel(id: 'alex', nombre: 'Álex', rol: 'niño'),
+    UserModel(id: 'erik', nombre: 'Erik', rol: 'niño'),
   ];
 
   final List<String> _prioridades = ['Alta', 'Media', 'Baja'];
@@ -37,7 +37,6 @@ class _AddTaskViewState extends State<AddTaskView> {
   void initState() {
     super.initState();
 
-    // Si viene tarea, rellenamos campos
     if (widget.tarea != null) {
       final t = widget.tarea!;
       _tituloController.text = t.titulo;
@@ -63,7 +62,7 @@ class _AddTaskViewState extends State<AddTaskView> {
       lastDate: DateTime(2100),
       locale: const Locale('es', 'ES'),
     );
-    if (seleccionada != null && seleccionada != _fechaSeleccionada) {
+    if (seleccionada != null) {
       setState(() {
         _fechaSeleccionada = seleccionada;
         _fechaController.text = DateFormat(
@@ -83,7 +82,7 @@ class _AddTaskViewState extends State<AddTaskView> {
       }
 
       final tareaNueva = Tarea(
-        id: widget.tarea?.id ?? '', // Reutiliza ID si estamos editando
+        id: widget.tarea?.id ?? '',
         titulo: _tituloController.text.trim(),
         descripcion: _descripcionController.text.trim(),
         fecha: _fechaSeleccionada,
@@ -93,18 +92,18 @@ class _AddTaskViewState extends State<AddTaskView> {
       );
 
       try {
+        final controller = Provider.of<TareaController>(context, listen: false);
         if (widget.tarea == null) {
-          await _tareaService.guardarTarea(tareaNueva);
+          await controller.agregarTarea(tareaNueva);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Tarea añadida correctamente')),
           );
         } else {
-          await _tareaService.actualizarTarea(tareaNueva);
+          await controller.actualizarTarea(tareaNueva);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Tarea actualizada correctamente')),
           );
         }
-
         Navigator.pop(context);
       } catch (e) {
         ScaffoldMessenger.of(
@@ -155,15 +154,12 @@ class _AddTaskViewState extends State<AddTaskView> {
                 decoration: const InputDecoration(labelText: 'Asignar a'),
                 items: _usuarios.map((usuario) {
                   return DropdownMenuItem<String>(
-                    value: usuario['uid'],
-                    child: Text(usuario['nombre']),
+                    value: usuario.id,
+                    child: Text(usuario.nombre),
                   );
                 }).toList(),
-                onChanged: (valor) {
-                  setState(() {
-                    _responsableSeleccionado = valor;
-                  });
-                },
+                onChanged: (valor) =>
+                    setState(() => _responsableSeleccionado = valor),
                 validator: (value) =>
                     value == null ? 'Selecciona un responsable' : null,
               ),
@@ -174,11 +170,8 @@ class _AddTaskViewState extends State<AddTaskView> {
                 items: _prioridades.map((p) {
                   return DropdownMenuItem<String>(value: p, child: Text(p));
                 }).toList(),
-                onChanged: (valor) {
-                  setState(() {
-                    _prioridadSeleccionada = valor;
-                  });
-                },
+                onChanged: (valor) =>
+                    setState(() => _prioridadSeleccionada = valor),
                 validator: (value) =>
                     value == null ? 'Selecciona una prioridad' : null,
               ),

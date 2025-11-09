@@ -1,4 +1,5 @@
 import 'package:conectask_v2/controllers/tarea_controller.dart';
+import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/views/task_add_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -7,14 +8,21 @@ import 'package:provider/provider.dart';
 import 'task_detail_view.dart';
 
 class TasksView extends StatelessWidget {
-  const TasksView({super.key});
+  TasksView({super.key});
 
-  final List<Map<String, dynamic>> usuarios = const [
-    {'nombre': 'Mamá', 'uid': 'mama', 'color': Colors.pinkAccent},
-    {'nombre': 'Papá', 'uid': 'papa', 'color': Colors.blueAccent},
-    {'nombre': 'Álex', 'uid': 'alex', 'color': Color(0xFF482D87)},
-    {'nombre': 'Erik', 'uid': 'erik', 'color': Color(0xFF42B14D)},
+  final List<UserModel> usuarios = [
+    UserModel(id: 'mama', nombre: 'Mamá', rol: 'adulto'),
+    UserModel(id: 'papa', nombre: 'Papá', rol: 'adulto'),
+    UserModel(id: 'alex', nombre: 'Álex', rol: 'niño'),
+    UserModel(id: 'erik', nombre: 'Erik', rol: 'niño'),
   ];
+
+  final Map<String, Color> coloresUsuarios = {
+    'mama': Colors.pink[200]!,
+    'papa': Colors.blue[200]!,
+    'alex': const Color(0xFF482D87),
+    'erik': const Color(0xFF42B14D),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +43,7 @@ class TasksView extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const AddTaskView()),
+                MaterialPageRoute(builder: (_) => const TaskAddView()),
               );
             },
           ),
@@ -45,9 +53,9 @@ class TasksView extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: usuarios.map((usuario) {
-            final color = usuario['color'] as Color;
+            final color = coloresUsuarios[usuario.id] ?? Colors.grey;
             final tareasUsuario = tareasHoy
-                .where((t) => t.responsable == usuario['uid'])
+                .where((t) => t.responsable == usuario.id)
                 .toList();
 
             return Container(
@@ -63,7 +71,7 @@ class TasksView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    usuario['nombre'] as String,
+                    usuario.nombre,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
