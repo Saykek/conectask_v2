@@ -1,34 +1,36 @@
+import 'package:conectask_v2/models/comida_model.dart';
+
 class MenuDiaModel {
   final String dia;
-  String almuerzo;
-  String cena;
-  String? recetaAlmuerzo;
-  String? recetaCena;
+  ComidaModel? almuerzo;
+  ComidaModel? cena;
 
-  MenuDiaModel({
-    required this.dia,
-    this.almuerzo = '',
-    this.cena = '',
-    this.recetaAlmuerzo,
-    this.recetaCena,
-  });
+  MenuDiaModel({required this.dia, this.almuerzo, this.cena});
 
   Map<String, dynamic> toMap() {
     return {
-      'almuerzo': almuerzo,
-      'cena': cena,
-      if (recetaAlmuerzo != null) 'recetaAlmuerzo': recetaAlmuerzo,
-      if (recetaCena != null) 'recetaCena': recetaCena,
+      if (almuerzo != null) 'almuerzo': almuerzo!.toMap(),
+      if (cena != null) 'cena': cena!.toMap(),
     };
   }
 
-  static MenuDiaModel fromMap(String dia, Map<String, dynamic> data) {
+  static MenuDiaModel fromMap(String dia, Map<String, dynamic>? data) {
+    if (data == null) {
+      return MenuDiaModel(dia: dia);
+    }
+
     return MenuDiaModel(
       dia: dia,
-      almuerzo: data['almuerzo'] ?? '',
-      cena: data['cena'] ?? '',
-      recetaAlmuerzo: data['recetaAlmuerzo'],
-      recetaCena: data['recetaCena'],
+      almuerzo: data['almuerzo'] == null
+          ? null
+          : data['almuerzo'] is String
+          ? ComidaModel(nombre: data['almuerzo'])
+          : ComidaModel.fromMap(Map<String, dynamic>.from(data['almuerzo'])),
+      cena: data['cena'] == null
+          ? null
+          : data['cena'] is String
+          ? ComidaModel(nombre: data['cena'])
+          : ComidaModel.fromMap(Map<String, dynamic>.from(data['cena'])),
     );
   }
 }

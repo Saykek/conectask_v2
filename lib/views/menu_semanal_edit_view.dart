@@ -1,6 +1,8 @@
-import 'package:conectask_v2/controllers/menu_semanal_controller.dart';
-import 'package:conectask_v2/models/menu_dia_model.dart';
+import 'package:conectask_v2/models/comida_model.dart';
 import 'package:flutter/material.dart';
+import '../controllers/menu_semanal_controller.dart';
+import '../models/menu_dia_model.dart';
+import 'package:conectask_v2/Utils/text_utils.dart';
 
 class MenuSemanalEditView extends StatefulWidget {
   const MenuSemanalEditView({super.key});
@@ -11,6 +13,7 @@ class MenuSemanalEditView extends StatefulWidget {
 
 class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
   final MenuSemanalController controller = MenuSemanalController();
+
   final List<String> comidasDisponibles = [
     'Macarrones',
     'Sopa',
@@ -35,18 +38,10 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
 
   Future<void> cargarDatos() async {
     final datos = await controller.cargarMenu();
+
+    // Crear menú vacío con los mismos días
     setState(() {
-      menu = datos.isNotEmpty
-          ? datos
-          : [
-              'lunes',
-              'martes',
-              'miércoles',
-              'jueves',
-              'viernes',
-              'sábado',
-              'domingo',
-            ].map((d) => MenuDiaModel(dia: d)).toList();
+      menu = datos.map((d) => MenuDiaModel(dia: d.dia)).toList();
       cargando = false;
     });
   }
@@ -61,8 +56,6 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
             icon: const Icon(Icons.save),
             tooltip: 'Guardar menú',
             onPressed: () async {
-              print(menu.map((d) => d.toMap()).toList());
-
               await controller.guardarMenu(menu);
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -74,7 +67,6 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
           ),
         ],
       ),
-
       body: cargando
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -88,39 +80,80 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
                 rows: menu.map((dia) {
                   return DataRow(
                     cells: [
+                      DataCell(Text(TextUtils.ponerMayuscula(dia.dia))),
                       DataCell(
-                        Text(dia.dia[0].toUpperCase() + dia.dia.substring(1)),
-                      ),
-                      DataCell(
-                        DropdownButton<String>(
-                          value: dia.almuerzo.isNotEmpty ? dia.almuerzo : null,
-                          hint: const Text('Seleccionar'),
-                          items: comidasDisponibles
-                              .map(
-                                (comida) => DropdownMenuItem(
-                                  value: comida,
-                                  child: Text(comida),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (value) =>
-                              setState(() => dia.almuerzo = value ?? ''),
+                        Autocomplete<String>(
+                          optionsBuilder: (TextEditingValue textEditingValue) {
+                            if (textEditingValue.text == '') {
+                              return const Iterable<String>.empty();
+                            }
+                            return comidasDisponibles.where(
+                              (comida) => comida.toLowerCase().contains(
+                                textEditingValue.text.toLowerCase(),
+                              ),
+                            );
+                          },
+                          onSelected: (String seleccion) {
+                            setState(
+                              () =>
+                                  dia.almuerzo = ComidaModel(nombre: seleccion),
+                            );
+                          },
+                          fieldViewBuilder:
+                              (
+                                context,
+                                textController,
+                                focusNode,
+                                onFieldSubmitted,
+                              ) {
+                                return TextField(
+                                  controller: textController,
+                                  focusNode: focusNode,
+                                  decoration: const InputDecoration(
+                                    hintText: 'Escribe o selecciona',
+                                  ),
+                                  onChanged: (value) {
+                                    dia.almuerzo = ComidaModel(nombre: value);
+                                  },
+                                );
+                              },
                         ),
                       ),
                       DataCell(
-                        DropdownButton<String>(
-                          value: dia.cena.isNotEmpty ? dia.cena : null,
-                          hint: const Text('Seleccionar'),
-                          items: comidasDisponibles
-                              .map(
-                                (comida) => DropdownMenuItem(
-                                  value: comida,
-                                  child: Text(comida),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (value) =>
-                              setState(() => dia.cena = value ?? ''),
+                        Autocomplete<String>(
+                          optionsBuilder: (TextEditingValue textEditingValue) {
+                            if (textEditingValue.text == '') {
+                              return const Iterable<String>.empty();
+                            }
+                            return comidasDisponibles.where(
+                              (comida) => comida.toLowerCase().contains(
+                                textEditingValue.text.toLowerCase(),
+                              ),
+                            );
+                          },
+                          onSelected: (String seleccion) {
+                            setState(
+                              () => dia.cena = ComidaModel(nombre: seleccion),
+                            );
+                          },
+                          fieldViewBuilder:
+                              (
+                                context,
+                                textController,
+                                focusNode,
+                                onFieldSubmitted,
+                              ) {
+                                return TextField(
+                                  controller: textController,
+                                  focusNode: focusNode,
+                                  decoration: const InputDecoration(
+                                    hintText: 'Escribe o selecciona',
+                                  ),
+                                  onChanged: (value) {
+                                    dia.cena = ComidaModel(nombre: value);
+                                  },
+                                );
+                              },
                         ),
                       ),
                     ],

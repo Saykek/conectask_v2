@@ -1,5 +1,7 @@
+import 'package:conectask_v2/models/menu_dia_model.dart';
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/views/menu_semanal_edit_view.dart';
+import 'package:conectask_v2/Utils/date_utils.dart' as miFecha;
 import 'package:flutter/material.dart';
 
 class MenuSemanalView extends StatelessWidget {
@@ -9,15 +11,7 @@ class MenuSemanalView extends StatelessWidget {
 
   MenuSemanalView({super.key, required this.menu, required this.user});
 
-  final List<String> dias = [
-    'lunes',
-    'martes',
-    'miércoles',
-    'jueves',
-    'viernes',
-    'sábado',
-    'domingo',
-  ];
+  final dias = miFecha.DateUtils.diasSemana();
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +38,11 @@ class MenuSemanalView extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         itemCount: dias.length,
         itemBuilder: (context, index) {
-          final dia = dias[index];
-          final almuerzo = menu[dia]?['almuerzo'] ?? 'Sin asignar';
-          final cena = menu[dia]?['cena'] ?? 'Sin asignar';
+          final String dia = dias[index];
+          final MenuDiaModel diaModel = MenuDiaModel.fromMap(dia, menu[dia]);
+
+          final String almuerzo = diaModel.almuerzo?.nombre ?? 'Sin asignar';
+          final String cena = diaModel.cena?.nombre ?? 'Sin asignar';
 
           return Container(
             margin: const EdgeInsets.only(bottom: 12),
@@ -62,7 +58,7 @@ class MenuSemanalView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  dia[0].toUpperCase() + dia.substring(1),
+                  miFecha.DateUtils.ponerMayuscula(diaModel.dia),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,

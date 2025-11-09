@@ -15,22 +15,24 @@ class ConfiguracionView extends StatefulWidget {
 class _ConfiguracionViewState extends State<ConfiguracionView> {
   final ConfiguracionController _controller = ConfiguracionController();
   bool cargando = true;
+  late TextEditingController _urlController;
 
   @override
   void initState() {
     super.initState();
-
-    print('UID autenticado: ${FirebaseAuth.instance.currentUser?.uid}');
-
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
       _controller.cargarConfiguracion(uid).then((_) {
-        setState(() => cargando = false);
+        setState(() {
+          cargando = false;
+        });
       });
     } else {
       print('Usuario no autenticado');
       // Aquí podrías redirigir al login o mostrar un error
     }
+
+    print('UID autenticado: ${FirebaseAuth.instance.currentUser?.uid}');
   }
 
   @override

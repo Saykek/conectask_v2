@@ -3,6 +3,7 @@ import 'package:conectask_v2/views/debug_view.dart';
 import 'package:conectask_v2/views/menu_semanal_view.dart';
 import 'package:conectask_v2/controllers/menu_semanal_controller.dart';
 import 'package:conectask_v2/views/recompensas_view.dart';
+import 'package:conectask_v2/views/task_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
@@ -139,6 +140,22 @@ class _HomeViewState extends State<HomeView> {
                               builder: (context) => MenuSemanalView(
                                 menu: menuMap,
                                 user: widget.user,
+                              ),
+                            ),
+                          );
+                        } else if (modulo['titulo'] == 'Tareas') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TasksView(),
+                            ),
+                          );
+                        } else {
+                          // Para otros módulos, mostrar un SnackBar temporalmente
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Módulo "${modulo['titulo']}" en desarrollo.',
                               ),
                             ),
                           );

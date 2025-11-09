@@ -1,19 +1,14 @@
-import 'package:firebase_database/firebase_database.dart';
 import '../models/configuracion_model.dart';
+import '../services/configuracion_service.dart';
 
 class ConfiguracionController {
-  final DatabaseReference _db = FirebaseDatabase.instance.ref();
+  final ConfiguracionService _service = ConfiguracionService();
   late ConfiguracionModel configuracion;
 
   Future<void> cargarConfiguracion(String uid) async {
-    print('Accediendo a configuraciones/$uid');
+    final data = await _service.leerConfiguracion(uid);
 
-    final snapshot = await _db.child('configuraciones/$uid').get();
-
-    print('📦 Snapshot existe: ${snapshot.exists}');
-
-    if (snapshot.exists) {
-      final data = Map<String, dynamic>.from(snapshot.value as Map);
+    if (data != null) {
       configuracion = ConfiguracionModel.fromMap(data);
     } else {
       configuracion = ConfiguracionModel(
@@ -28,7 +23,7 @@ class ConfiguracionController {
   }
 
   Future<void> guardarConfiguracion(String uid) async {
-    await _db.child('configuraciones/$uid').set(configuracion.toMap());
+    await _service.guardarConfiguracion(uid, configuracion.toMap());
   }
 
   void actualizarCampo(String campo, dynamic valor) {

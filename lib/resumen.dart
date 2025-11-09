@@ -14,3 +14,6 @@ Resumen de la app de menú semanal:
   - Crear vista de edición
   - para crear menu que se pueda escribir... 
 */
+/* MVC 
+- CONFIGURACION OK
+*/
