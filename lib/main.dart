@@ -1,9 +1,11 @@
-import 'package:conectask_v2/firebase_options.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:conectask_v2/controllers/tarea_controller.dart';
+import 'package:conectask_v2/views/login_view.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'views/login_view.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +19,12 @@ void main() async {
     );
   }
 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => TareaController(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -38,7 +45,6 @@ class MyApp extends StatelessWidget {
         Locale('es', 'ES'), // español
         Locale('en', 'US'), // inglés opcional
       ],
-
       home: const LoginView(),
     );
   }

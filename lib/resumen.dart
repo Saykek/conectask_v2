@@ -16,4 +16,5 @@ Resumen de la app de menú semanal:
 */
 /* MVC 
 - CONFIGURACION OK
+- MENU SEMANAL OK ( falta incluir recetas, foto...)
 */
