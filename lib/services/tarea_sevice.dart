@@ -9,10 +9,12 @@ class TareaService {
 
   /// Guardar tarea por fecha y responsable y guardar título y puntos en tareasTitulos
   Future<void> guardarTarea(Tarea tarea) async {
-    // Guardar título y puntos en tareasTitulos
-    await FirebaseDatabase.instance.ref('tareasTitulos/${tarea.titulo}').set({
-      'puntos': tarea.puntos ?? 0,
-    });
+    //  Actualizar siempre los puntos del título
+
+    final tituloRef = FirebaseDatabase.instance.ref(
+      'tareasTitulos/${tarea.titulo}',
+    );
+    await tituloRef.set({'puntos': tarea.puntos ?? 0});
 
     try {
       print('➡️ Intentando guardar tarea...');
