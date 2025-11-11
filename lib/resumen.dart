@@ -23,6 +23,7 @@ Resumen de la app de menú semanal:
 - Añadir para repetir las tareas X dias
 - Poner autocompletar en tareas y apartado de puntos.
 - Que se pueda seleccionar mas de un usuario en asignar.
+- Cambiar logo tareas de ver en calendario o seleccionar dias
 - Añadir para enlace PDF
 - En los niños que solo se vean sus tareas
 */

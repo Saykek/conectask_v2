@@ -158,14 +158,12 @@ class _TaskDetailViewState extends State<TaskDetailView> {
                   '🔥 Prioridad: ${tarea.prioridad}',
                   style: const TextStyle(fontSize: 16),
                 ),
-                if (tarea.recompensa != null &&
-                    tarea.recompensa!.trim().isNotEmpty) ...[
                   const SizedBox(height: 8),
                   Text(
-                    '🎁 Recompensa: ${tarea.recompensa}',
+                    '⭐ Puntos: ${tarea.puntos ?? 0}',
                     style: const TextStyle(fontSize: 16),
                   ),
-                ],
+                
                 const SizedBox(height: 8),
                 Text(
                   '📝 Descripción:',

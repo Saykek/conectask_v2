@@ -8,6 +8,7 @@ class Tarea {
   final String estado; // "pendiente", "hecha", "validada"
   final String? recompensa;
   final String? validadaPor;
+  final int? puntos;
 
   Tarea({
     required this.id,
@@ -19,6 +20,7 @@ class Tarea {
     required this.estado,
     this.recompensa,
     this.validadaPor,
+    this.puntos,
   });
 
   // Convertir a Map para Realtime Database
@@ -33,6 +35,7 @@ class Tarea {
       'estado': estado,
       'recompensa': recompensa,
       'validadaPor': validadaPor,
+      'puntos': puntos,
     };
   }
 
@@ -48,6 +51,7 @@ class Tarea {
       estado: map['estado'] ?? 'pendiente',
       recompensa: map['recompensa'],
       validadaPor: map['validadaPor'],
+      puntos: map['puntos'] != null ? map['puntos'] as int : null,
     );
   }
   static DateTime _parseFecha(dynamic valor) {

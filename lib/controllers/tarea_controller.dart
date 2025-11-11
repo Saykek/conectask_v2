@@ -24,7 +24,7 @@ class TareaController extends ChangeNotifier {
   }).toList();
 }
 
-  
+    
 
   void setFechaSeleccionada(DateTime nuevaFecha) {
     _fechaSeleccionada = nuevaFecha;
@@ -38,16 +38,10 @@ class TareaController extends ChangeNotifier {
 
  void _escucharTareas() {
   _tareaService.escucharTareas().listen((nuevasTareas) {
-    for (var t in nuevasTareas) {
-      if (t.fecha == null) {
-        print("⚠️ Tarea con fecha nula: ${t.id}");
-      }
-    }
-    _tareas = nuevasTareas;
+  _tareas = nuevasTareas;
     notifyListeners();
   });
 }
-  
 
   Future<void> agregarTarea(Tarea tarea) async {
     await _tareaService.guardarTarea(tarea);
@@ -64,4 +58,14 @@ class TareaController extends ChangeNotifier {
   Future<void> eliminarTarea(Tarea tarea) async {
     await _tareaService.eliminarTareaDesdeObjeto(tarea);
   }
+
+// **************  TASK EDIT ************** 
+
+  Future<void> guardarTareaDesdeFormulario(Tarea tarea, {required bool esNueva}) async {
+  if (esNueva) {
+    await agregarTarea(tarea);
+  } else {
+    await actualizarTarea(tarea);
+  }
+}
 }
