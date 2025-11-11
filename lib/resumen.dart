@@ -25,7 +25,8 @@ Resumen de la app de menú semanal:
 - Que se pueda seleccionar mas de un usuario en asignar.
 - Cambiar logo tareas de ver en calendario o seleccionar dias
 - Añadir para enlace PDF
-- En los niños que solo se vean sus tareas
+- En los niños que solo se vean sus tareas ✅
+- poner calendario en español y de lunes a domingo
 
 Recomendación de orden para implementar
 - ✅ Resumen de tareas por día (muy fácil, útil ya)
