@@ -1,10 +1,11 @@
+import 'package:conectask_v2/Utils/color_utils.dart';
 import 'package:conectask_v2/controllers/tarea_controller.dart';
 import 'package:conectask_v2/models/user_model.dart';
+import 'package:conectask_v2/views/calendar_view.dart';
 import 'package:conectask_v2/views/task_add_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import 'task_detail_view.dart';
 
 class TasksView extends StatelessWidget {
@@ -17,21 +18,17 @@ class TasksView extends StatelessWidget {
     UserModel(id: 'erik', nombre: 'Erik', rol: 'niño'),
   ];
 
-  final Map<String, Color> coloresUsuarios = {
-    'mama': Colors.pink[200]!,
-    'papa': Colors.blue[200]!,
-    'alex': const Color(0xFF482D87),
-    'erik': const Color(0xFF42B14D),
-  };
 
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<TareaController>(context);
-    final hoy = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
+    final formato = DateFormat('yyyy-MM-dd');
+    final fechaTexto = DateFormat('EEEE, d MMMM', 'es_ES')
+    .format(controller.fechaSeleccionada);
     final tareasHoy = controller.tareas
-        .where((t) => DateFormat('yyyy-MM-dd').format(t.fecha) == hoy)
-        .toList();
+    .where((t) => formato.format(t.fecha) == formato.format(controller.fechaSeleccionada))
+    .toList();
+    
 
     return Scaffold(
       appBar: AppBar(
@@ -47,9 +44,49 @@ class TasksView extends StatelessWidget {
               );
             },
           ),
+          IconButton(
+  icon: const Icon(Icons.calendar_today),
+  tooltip: 'Seleccionar día',
+  onPressed: () async {
+    final fechaSeleccionada = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2023),
+      lastDate: DateTime(2030),
+    );
+    if (fechaSeleccionada != null) {
+      controller.setFechaSeleccionada(fechaSeleccionada);
+    }
+  },
+),
+IconButton(
+  icon: const Icon(Icons.view_agenda),
+  tooltip: 'Ver en calendario',
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CalendarView(fechaInicial: controller.fechaSeleccionada),
+      ),
+    );
+  },
+),
+
         ],
       ),
-      body: SingleChildScrollView(
+      body: Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Padding(
+      padding: const EdgeInsets.all(16),
+      child: Text(
+        "Tareas para el día: $fechaTexto",
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+      ),
+    ),
+    Expanded(
+ 
+      child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           children: usuarios.map((usuario) {
@@ -180,9 +217,12 @@ class TasksView extends StatelessWidget {
                 ],
               ),
             );
-          }).toList(),
+           }).toList(),
+          ),
         ),
       ),
-    );
-  }
+    ],
+  ),
+); 
+} 
 }

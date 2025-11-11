@@ -43,13 +43,19 @@ class Tarea {
       titulo: map['titulo'] ?? '',
       descripcion: map['descripcion'] ?? '',
       responsable: map['responsable'] ?? '',
-      fecha: map['fecha'] != null
-          ? DateTime.parse(map['fecha'])
-          : DateTime.now(),
+      fecha: _parseFecha(map['fecha']),
       prioridad: map['prioridad'] ?? 'normal',
       estado: map['estado'] ?? 'pendiente',
       recompensa: map['recompensa'],
       validadaPor: map['validadaPor'],
     );
   }
+  static DateTime _parseFecha(dynamic valor) {
+  try {
+    if (valor is String && valor.isNotEmpty) {
+      return DateTime.parse(valor);
+    }
+  } catch (_) {}
+  return DateTime.now(); // Valor por defecto si falla
+}
 }
