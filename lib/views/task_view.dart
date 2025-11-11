@@ -9,7 +9,9 @@ import 'package:provider/provider.dart';
 import 'task_detail_view.dart';
 
 class TasksView extends StatelessWidget {
-  TasksView({super.key});
+  final UserModel user;
+  TasksView({super.key, required this.user});
+  
 
   final List<UserModel> usuarios = [
     UserModel(id: 'mama', nombre: 'Mamá', rol: 'adulto'),
@@ -66,7 +68,7 @@ IconButton(
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => CalendarView(fechaInicial: controller.fechaSeleccionada),
+        builder: (_) => CalendarView(fechaInicial: controller.fechaSeleccionada, user: user,),
       ),
     );
   },
@@ -207,7 +209,7 @@ IconButton(
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => TaskDetailView(tarea: tarea),
+                                builder: (_) => TaskDetailView(tarea: tarea, user: user,),
                               ),
                             );
                           },

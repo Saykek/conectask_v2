@@ -1,3 +1,4 @@
+import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/services/tarea_sevice.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -6,8 +7,9 @@ import 'task_edit_view.dart';
 
 class TaskDetailView extends StatefulWidget {
   final Tarea tarea;
+  final UserModel user;
 
-  const TaskDetailView({Key? key, required this.tarea}) : super(key: key);
+  const TaskDetailView({Key? key, required this.tarea, required this.user}) : super(key: key);
 
   @override
   State<TaskDetailView> createState() => _TaskDetailViewState();
@@ -17,6 +19,7 @@ class _TaskDetailViewState extends State<TaskDetailView> {
   final TareaService _tareaService = TareaService();
   late Tarea tarea;
 
+
   @override
   void initState() {
     super.initState();
@@ -24,8 +27,15 @@ class _TaskDetailViewState extends State<TaskDetailView> {
   }
 
   Future<void> _actualizarEstado() async {
-    final nuevoEstado = tarea.estado == 'hecha' ? 'pendiente' : 'hecha';
-    await _tareaService.actualizarEstadoTarea(tarea, nuevoEstado);
+  final nuevoEstado = tarea.estado == 'hecha' ? 'validada' : 'hecha';
+
+  try {
+    if (nuevoEstado == 'validada') {
+      await _tareaService.validarTarea(tarea, widget.user.id); // 👈 Aquí llamas al nuevo método
+    } else {
+      await _tareaService.actualizarEstadoTarea(tarea, nuevoEstado);
+    }
+
     setState(() {
       tarea = Tarea(
         id: tarea.id,
@@ -36,11 +46,24 @@ class _TaskDetailViewState extends State<TaskDetailView> {
         prioridad: tarea.prioridad,
         estado: nuevoEstado,
         recompensa: tarea.recompensa,
-        validadaPor: tarea.validadaPor,
+        validadaPor: nuevoEstado == 'validada' ? widget.user.id : null,
+        puntos: tarea.puntos,
       );
     });
-  }
 
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(nuevoEstado == 'validada'
+            ? 'Tarea validada y puntos asignados'
+            : 'Estado actualizado'),
+      ),
+    );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error al actualizar tarea: $e')),
+    );
+  }
+}
   void _editarTarea() async {
     final resultado = await Navigator.push(
       context,

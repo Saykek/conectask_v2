@@ -29,7 +29,7 @@ class UserService {
     }
   }
 
-  // 🔍 Nuevo método: buscar niño por nombre
+  // buscar niño por nombre
   Future<UserModel?> obtenerUsuarioPorNombre(String nombre) async {
     try {
       final snapshot = await usersRef.get();
@@ -60,4 +60,21 @@ class UserService {
       return null;
     }
   }
+
+  Future<void> sumarPuntos(String userId, int puntos) async {
+  try {
+    final ref = usersRef.child(userId).child('puntos');
+    final snapshot = await ref.get();
+
+    int puntosActuales = 0;
+    if (snapshot.exists && snapshot.value != null) {
+      puntosActuales = int.tryParse(snapshot.value.toString()) ?? 0;
+    }
+
+    await ref.set(puntosActuales + puntos);
+  } catch (e) {
+    print('Error al sumar puntos: $e');
+    rethrow;
+  }
+}
 }

@@ -1,3 +1,4 @@
+import 'package:conectask_v2/services/user_service.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../models/tarea_model.dart';
 import 'package:uuid/uuid.dart';
@@ -122,4 +123,20 @@ class TareaService {
       print('Error al eliminar: $e');
     }
   }
+
+  // Validar tarea 
+
+  Future<void> validarTarea(Tarea tarea, String validadorId) async {
+  final tareaRef = FirebaseDatabase.instance.ref().child('tareas').child(tarea.id);
+
+  await tareaRef.update({
+    'estado': 'validada',
+    'validadaPor': validadorId,
+  });
+
+  if (tarea.puntos != null && tarea.puntos! > 0) {
+    final userService = UserService();
+    await userService.sumarPuntos(tarea.responsable, tarea.puntos!);
+  }
+}
 }

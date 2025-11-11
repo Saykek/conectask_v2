@@ -147,7 +147,7 @@ class _HomeViewState extends State<HomeView> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => TasksView(),
+                              builder: (context) => TasksView(user: widget.user),
                             ),
                           );
                         } else {

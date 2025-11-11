@@ -1,15 +1,17 @@
 import 'package:conectask_v2/Utils/color_utils.dart';
 import 'package:conectask_v2/controllers/tarea_controller.dart';
+import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/views/task_detail_view.dart';
 import 'package:flutter/material.dart';
-
-
-
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';class CalendarView extends StatelessWidget {
-  final DateTime fechaInicial;
+import 'package:provider/provider.dart';
 
-  const CalendarView({super.key, required this.fechaInicial});
+
+class CalendarView extends StatelessWidget {
+  final DateTime fechaInicial;
+  final UserModel user;
+
+  const CalendarView({super.key, required this.fechaInicial, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,7 @@ import 'package:provider/provider.dart';class CalendarView extends StatelessWidg
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => CalendarView(fechaInicial: nuevaFecha),
+                      builder: (_) => CalendarView(fechaInicial: nuevaFecha, user:user),
                     ),
                   );
                 }
@@ -92,7 +94,7 @@ import 'package:provider/provider.dart';class CalendarView extends StatelessWidg
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => TaskDetailView(tarea: tarea),
+                                builder: (_) => TaskDetailView(tarea: tarea, user:user,),
                               ),
                             );
                           },

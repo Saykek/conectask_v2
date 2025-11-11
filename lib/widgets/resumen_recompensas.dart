@@ -1,4 +1,5 @@
 import 'package:conectask_v2/models/recompensa_model.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 
@@ -7,6 +8,8 @@ class ResumenRecompensas extends StatelessWidget {
   final List<RecompensaModel> recompensas;
 
   const ResumenRecompensas({super.key, required this.user, required this.recompensas});
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +39,32 @@ class ResumenRecompensas extends StatelessWidget {
                 ),
               ],
             ),
+
+            StreamBuilder<DatabaseEvent>(
+  stream: FirebaseDatabase.instance.ref('usuarios/${user.id}').onValue,
+  builder: (context, snapshot) {
+    if (!snapshot.hasData || snapshot.data!.snapshot.value == null) {
+      return const Text('Cargando puntos...');
+    }
+
+    final data = Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map);
+    final puntos = data['puntos'] ?? 0;
+
+    return Text(
+      '⭐ Puntos acumulados: $puntos',
+      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    );
+  },
+),
             const SizedBox(height: 16),
+
+            
 
             // Puntos y nivel
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('💰 Puntos: $puntos'),
+                Text('⭐ Puntos: $puntos'),
                 Text('🔢 Nivel: $nivel'),
               ],
             ),

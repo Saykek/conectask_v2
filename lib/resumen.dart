@@ -26,6 +26,17 @@ Resumen de la app de menú semanal:
 - Cambiar logo tareas de ver en calendario o seleccionar dias
 - Añadir para enlace PDF
 - En los niños que solo se vean sus tareas
+
+Recomendación de orden para implementar
+- ✅ Resumen de tareas por día (muy fácil, útil ya)
+- ✅ Sistema de puntos (motivador, visual)
+- ✅ Autocompletar desde Firebase (mejora UX)
+- 🔁 Tareas recurrentes (más compleja, pero muy potente)
+- 📆 Vista mensual (ideal para planificación)
+- 🔔 Notificaciones (requiere permisos y lógica)
+- 🧒 Modo infantil (puede ser parte del sistema de puntos)
+
+
 */
 /* en mi proyecto Flutter con dart en vsc estoy haciendo una aplicación
  de gestión familiar, donde están los modulos de tareas, menú semanal, 
