@@ -33,6 +33,8 @@ class _TaskAddViewState extends State<TaskAddView> {
   ];
 
   final List<String> _prioridades = ['Alta', 'Media', 'Baja'];
+  List<String> titulosDisponibles = [];
+  Map<String, int> titulosConPuntos = {};
 
   @override
   void initState() {
@@ -53,7 +55,15 @@ class _TaskAddViewState extends State<TaskAddView> {
         'yyyy-MM-dd',
       ).format(_fechaSeleccionada);
     }
-    
+    cargarTitulos();
+  }
+
+  Future<void> cargarTitulos() async {
+    final controller = Provider.of<TareaController>(context, listen: false);
+    final datos = await controller.cargarTitulosConPuntos();
+    setState(() {
+      titulosConPuntos = datos;
+    });
   }
 
   Future<void> _seleccionarFecha(BuildContext context) async {
@@ -75,50 +85,52 @@ class _TaskAddViewState extends State<TaskAddView> {
   }
 
   void _guardarTarea() async {
-  if (_formKey.currentState!.validate()) {
-    if (_responsableSeleccionado == null || _prioridadSeleccionada == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Completa todos los campos')),
-      );
-      return;
-    }
+    if (_formKey.currentState!.validate()) {
+      if (_responsableSeleccionado == null || _prioridadSeleccionada == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Completa todos los campos')),
+        );
+        return;
+      }
 
-    final tareaNueva = Tarea(
-      id: widget.tarea?.id ?? '',
-      titulo: _tituloController.text.trim(),
-      descripcion: _descripcionController.text.trim(),
-      fecha: _fechaSeleccionada,
-      responsable: _responsableSeleccionado!,
-      prioridad: _prioridadSeleccionada!,
-      estado: widget.tarea?.estado ?? 'pendiente',
-      puntos: _puntosController.text.isNotEmpty 
-        ? int.tryParse(_puntosController.text)
-        : null,
-      );
-
-    try {
-      final controller = Provider.of<TareaController>(context, listen: false);
-      await controller.guardarTareaDesdeFormulario(
-        tareaNueva,
-        esNueva: widget.tarea == null,
+      final tareaNueva = Tarea(
+        id: widget.tarea?.id ?? '',
+        titulo: _tituloController.text.trim(),
+        descripcion: _descripcionController.text.trim(),
+        fecha: _fechaSeleccionada,
+        responsable: _responsableSeleccionado!,
+        prioridad: _prioridadSeleccionada!,
+        estado: widget.tarea?.estado ?? 'pendiente',
+        puntos: _puntosController.text.isNotEmpty
+            ? int.tryParse(_puntosController.text)
+            : null,
       );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(widget.tarea == null
-              ? 'Tarea añadida correctamente'
-              : 'Tarea actualizada correctamente'),
-        ),
-      );
+      try {
+        final controller = Provider.of<TareaController>(context, listen: false);
+        await controller.guardarTareaDesdeFormulario(
+          tareaNueva,
+          esNueva: widget.tarea == null,
+        );
 
-      Navigator.pop(context);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              widget.tarea == null
+                  ? 'Tarea añadida correctamente'
+                  : 'Tarea actualizada correctamente',
+            ),
+          ),
+        );
+
+        Navigator.pop(context);
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -132,11 +144,45 @@ class _TaskAddViewState extends State<TaskAddView> {
           key: _formKey,
           child: ListView(
             children: [
-              TextFormField(
-                controller: _tituloController,
-                decoration: const InputDecoration(labelText: 'Título'),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Campo obligatorio' : null,
+              Autocomplete<String>(
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  if (textEditingValue.text == '') {
+                    return const Iterable<String>.empty();
+                  }
+                  return titulosConPuntos.keys.where(
+                    (titulo) => titulo.toLowerCase().contains(
+                      textEditingValue.text.toLowerCase(),
+                    ),
+                  );
+                },
+                onSelected: (String seleccion) {
+                  _tituloController.text = seleccion;
+                  // Rellenar puntos si existen
+                  final puntos = titulosConPuntos[seleccion];
+                  if (puntos != null) {
+                    _puntosController.text = puntos.toString();
+                  }
+                },
+
+                fieldViewBuilder:
+                    (
+                      BuildContext context,
+                      TextEditingController textEditingController,
+                      FocusNode focusNode,
+                      VoidCallback onFieldSubmitted,
+                    ) {
+                      return TextFormField(
+                        controller: textEditingController,
+                        focusNode: focusNode,
+                        decoration: const InputDecoration(labelText: 'Título'),
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Campo obligatorio'
+                            : null,
+                        onChanged: (value) {
+                          _tituloController.text = value;
+                        },
+                      );
+                    },
               ),
               const SizedBox(height: 10),
               TextFormField(
@@ -147,14 +193,16 @@ class _TaskAddViewState extends State<TaskAddView> {
                 controller: _puntosController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
-                labelText: 'Puntos de recompensa',
-                suffixIcon: Icon(Icons.star),
+                  labelText: 'Puntos de recompensa',
+                  suffixIcon: Icon(Icons.star),
                 ),
                 validator: (value) {
-              if (value != null && value.isNotEmpty && int.tryParse(value) == null) {
-              return 'Debe ser un número';
-              }
-              return null;
+                  if (value != null &&
+                      value.isNotEmpty &&
+                      int.tryParse(value) == null) {
+                    return 'Debe ser un número';
+                  }
+                  return null;
                 },
               ),
               const SizedBox(height: 10),

@@ -13,35 +13,32 @@ class TareaController extends ChangeNotifier {
   List<Tarea> get tareas => _tareas;
 
   List<Tarea> get tareasDelDia {
-  final formato = DateFormat('yyyy-MM-dd');
-  final fechaFiltrada = formato.format(_fechaSeleccionada);
-  return _tareas.where((t) {
-    try {
-      return formato.format(t.fecha) == fechaFiltrada;
-    } catch (_) {
-      return false;
-    }
-  }).toList();
-}
-
-    
+    final formato = DateFormat('yyyy-MM-dd');
+    final fechaFiltrada = formato.format(_fechaSeleccionada);
+    return _tareas.where((t) {
+      try {
+        return formato.format(t.fecha) == fechaFiltrada;
+      } catch (_) {
+        return false;
+      }
+    }).toList();
+  }
 
   void setFechaSeleccionada(DateTime nuevaFecha) {
     _fechaSeleccionada = nuevaFecha;
     notifyListeners();
   }
 
-
   TareaController() {
     _escucharTareas();
   }
 
- void _escucharTareas() {
-  _tareaService.escucharTareas().listen((nuevasTareas) {
-  _tareas = nuevasTareas;
-    notifyListeners();
-  });
-}
+  void _escucharTareas() {
+    _tareaService.escucharTareas().listen((nuevasTareas) {
+      _tareas = nuevasTareas;
+      notifyListeners();
+    });
+  }
 
   Future<void> agregarTarea(Tarea tarea) async {
     await _tareaService.guardarTarea(tarea);
@@ -59,13 +56,29 @@ class TareaController extends ChangeNotifier {
     await _tareaService.eliminarTareaDesdeObjeto(tarea);
   }
 
-// **************  TASK EDIT ************** 
+  // Devolver tareas por titulos
 
-  Future<void> guardarTareaDesdeFormulario(Tarea tarea, {required bool esNueva}) async {
-  if (esNueva) {
-    await agregarTarea(tarea);
-  } else {
-    await actualizarTarea(tarea);
+  List<String> obtenerTitulosDisponibles() {
+    final titulos = _tareas.map((t) => t.titulo.trim()).toSet().toList();
+    return titulos.where((t) => t.isNotEmpty).toList();
   }
-}
+
+  // Cargar títulos desde el servicio
+
+  Future<Map<String, int>> cargarTitulosConPuntos() async {
+    return await _tareaService.obtenerTitulosConPuntos();
+  }
+
+  // **************  TASK EDIT **************
+
+  Future<void> guardarTareaDesdeFormulario(
+    Tarea tarea, {
+    required bool esNueva,
+  }) async {
+    if (esNueva) {
+      await agregarTarea(tarea);
+    } else {
+      await actualizarTarea(tarea);
+    }
+  }
 }

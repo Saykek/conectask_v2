@@ -7,8 +7,13 @@ import 'package:intl/intl.dart';
 class TareaService {
   final DatabaseReference _db = FirebaseDatabase.instance.ref('tareas');
 
-  /// Guardar tarea por fecha y responsable
+  /// Guardar tarea por fecha y responsable y guardar título y puntos en tareasTitulos
   Future<void> guardarTarea(Tarea tarea) async {
+    // Guardar título y puntos en tareasTitulos
+    await FirebaseDatabase.instance.ref('tareasTitulos/${tarea.titulo}').set({
+      'puntos': tarea.puntos ?? 0,
+    });
+
     try {
       print('➡️ Intentando guardar tarea...');
 
@@ -124,19 +129,63 @@ class TareaService {
     }
   }
 
-  // Validar tarea 
+  // Validar tarea
 
   Future<void> validarTarea(Tarea tarea, String validadorId) async {
-  final tareaRef = FirebaseDatabase.instance.ref().child('tareas').child(tarea.id);
+    final tareaRef = FirebaseDatabase.instance
+        .ref()
+        .child('tareas')
+        .child(tarea.id);
 
-  await tareaRef.update({
-    'estado': 'validada',
-    'validadaPor': validadorId,
-  });
+    await tareaRef.update({'estado': 'validada', 'validadaPor': validadorId});
 
-  if (tarea.puntos != null && tarea.puntos! > 0) {
-    final userService = UserService();
-    await userService.sumarPuntos(tarea.responsable, tarea.puntos!);
+    if (tarea.puntos != null && tarea.puntos! > 0) {
+      final userService = UserService();
+      await userService.sumarPuntos(tarea.responsable, tarea.puntos!);
+    }
   }
-}
+
+  // Obtener tareas
+  Future<List<String>> obtenerTitulosDeTareas() async {
+    final ref = FirebaseDatabase.instance.ref('tareas');
+    final snapshot = await ref.get();
+
+    final Set<String> titulos = {};
+
+    if (snapshot.exists) {
+      for (final fechaEntry in snapshot.children) {
+        for (final userEntry in fechaEntry.children) {
+          for (final tareaEntry in userEntry.children) {
+            final datos = tareaEntry.value as Map;
+            final titulo = datos['titulo']?.toString().trim();
+            if (titulo != null && titulo.isNotEmpty) {
+              titulos.add(titulo);
+            }
+          }
+        }
+      }
+    }
+
+    return titulos.toList();
+  }
+  // Obtener títulos con puntos
+
+  Future<Map<String, int>> obtenerTitulosConPuntos() async {
+    final ref = FirebaseDatabase.instance.ref('tareasTitulos');
+    final snapshot = await ref.get();
+
+    final Map<String, int> titulos = {};
+
+    if (snapshot.exists) {
+      for (final entrada in snapshot.children) {
+        final titulo = entrada.key;
+        final puntos = (entrada.value as Map)['puntos'];
+        if (titulo != null && puntos != null) {
+          titulos[titulo] = puntos;
+        }
+      }
+    }
+
+    return titulos;
+  }
 }
