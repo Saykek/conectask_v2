@@ -36,6 +36,7 @@ class TasksView extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Tareas Familiares"),
         actions: [
+          if (user.rol == "admin")
           IconButton(
             icon: const Icon(Icons.add),
             tooltip: 'Añadir nueva tarea',

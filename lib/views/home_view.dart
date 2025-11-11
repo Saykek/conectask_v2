@@ -1,3 +1,4 @@
+import 'package:conectask_v2/views/calendar_view.dart';
 import 'package:conectask_v2/views/configuracion_view.dart';
 import 'package:conectask_v2/views/debug_view.dart';
 import 'package:conectask_v2/views/menu_semanal_view.dart';
@@ -150,7 +151,18 @@ class _HomeViewState extends State<HomeView> {
                               builder: (context) => TasksView(user: widget.user),
                             ),
                           );
-                        } else {
+                        } else if (modulo['titulo'] == 'Calendario') {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => CalendarView(
+        fechaInicial: DateTime.now(),
+        user: widget.user,
+      ),
+    ),
+  );
+}
+                        else {
                           // Para otros módulos, mostrar un SnackBar temporalmente
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
