@@ -91,42 +91,45 @@ IconButton(
  
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: Row(
-          children: usuarios.map((usuario) {
-            final color = coloresUsuarios[usuario.id] ?? Colors.grey;
-            final tareasUsuario = tareasHoy
-                .where((t) => t.responsable == usuario.id)
-                .toList();
+       child: Row(
+  children: usuarios.map((usuario) {
+    final color = coloresUsuarios[usuario.id] ?? Colors.grey;
+    final tareasUsuario = tareasHoy
+        .where((t) => t.responsable == usuario.id)
+        .toList();
 
-            return Container(
-              width: 180,
-              margin: const EdgeInsets.all(8),
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: color),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    usuario.nombre,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: color,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  if (tareasUsuario.isEmpty)
-                    const Text(
-                      'Sin tareas hoy',
-                      style: TextStyle(fontStyle: FontStyle.italic),
-                    )
-                  else
-                    ...tareasUsuario.map(
-                      (tarea) => Card(
+    return Container(
+      width: 180,
+      margin: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            usuario.nombre,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: color,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Expanded(
+            child: tareasUsuario.isEmpty
+                ? const Text(
+                    'Sin tareas hoy',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  )
+                : ListView.builder(
+                    itemCount: tareasUsuario.length,
+                    itemBuilder: (context, index) {
+                      final tarea = tareasUsuario[index];
+                      return Card(
                         margin: const EdgeInsets.symmetric(vertical: 4),
                         elevation: 2,
                         child: ListTile(
@@ -166,13 +169,13 @@ IconButton(
                                     tarea.prioridad == 'Alta'
                                         ? Icons.flash_on
                                         : tarea.prioridad == 'Media'
-                                        ? Icons.access_time
-                                        : Icons.hourglass_bottom,
+                                            ? Icons.access_time
+                                            : Icons.hourglass_bottom,
                                     color: tarea.prioridad == 'Alta'
                                         ? Colors.red
                                         : tarea.prioridad == 'Media'
-                                        ? Colors.amber
-                                        : Colors.green,
+                                            ? Colors.amber
+                                            : Colors.green,
                                     size: 22,
                                   ),
                                 ),
@@ -194,8 +197,8 @@ IconButton(
                                     onPressed: () async {
                                       final nuevoEstado =
                                           tarea.estado == 'hecha'
-                                          ? 'pendiente'
-                                          : 'hecha';
+                                              ? 'pendiente'
+                                              : 'hecha';
                                       await controller.cambiarEstado(
                                         tarea,
                                         nuevoEstado,
@@ -210,20 +213,25 @@ IconButton(
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => TaskDetailView(tarea: tarea, user: user,),
+                                builder: (_) => TaskDetailView(
+                                  tarea: tarea,
+                                  user: user,
+                                ),
                               ),
                             );
                           },
                         ),
-                      ),
-                    ),
-                ],
-              ),
-            );
-           }).toList(),
+                      );
+                    },
+                  ),
           ),
-        ),
+        ],
       ),
+    );
+  }).toList(),
+),
+      ),
+    ),
     ],
   ),
 ); 
