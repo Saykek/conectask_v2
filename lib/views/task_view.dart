@@ -1,8 +1,10 @@
 import 'package:conectask_v2/Utils/color_utils.dart';
 import 'package:conectask_v2/controllers/tarea_controller.dart';
+import 'package:conectask_v2/models/tarea_model.dart';
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/views/calendar_view.dart';
 import 'package:conectask_v2/views/task_add_view.dart';
+import 'package:conectask_v2/Utils/usuarios_local.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -12,13 +14,16 @@ class TasksView extends StatelessWidget {
   final UserModel user;
   TasksView({super.key, required this.user});
   
+Color getColor(Tarea tarea) {
+  final esHecha = tarea.estado == 'hecha' || tarea.estado == 'validada';
+  final esValidada = tarea.validadaPor != null;
+  final esAdulto = !['alex', 'erik'].contains(tarea.responsable);
 
-  final List<UserModel> usuarios = [
-    UserModel(id: 'mama', nombre: 'Mamá', rol: 'adulto'),
-    UserModel(id: 'papa', nombre: 'Papá', rol: 'adulto'),
-    UserModel(id: 'alex', nombre: 'Álex', rol: 'niño'),
-    UserModel(id: 'erik', nombre: 'Erik', rol: 'niño'),
-  ];
+  if (!esHecha) return Colors.grey;
+  if (esValidada || esAdulto) return Colors.green;
+  return Colors.amber;
+}
+
 
 
   @override
@@ -48,7 +53,7 @@ class TasksView extends StatelessWidget {
             },
           ),
           IconButton(
-  icon: const Icon(Icons.calendar_today),
+  icon: const Icon(Icons.calendar_month),
   tooltip: 'Seleccionar día',
   onPressed: () async {
     final fechaSeleccionada = await showDatePicker(
@@ -63,7 +68,7 @@ class TasksView extends StatelessWidget {
   },
 ),
 IconButton(
-  icon: const Icon(Icons.view_agenda),
+  icon: const Icon(Icons.calendar_today),
   tooltip: 'Ver en calendario',
   onPressed: () {
     Navigator.push(
@@ -92,7 +97,7 @@ IconButton(
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
        child: Row(
-  children: usuarios.map((usuario) {
+  children: usuariosLocales.map((usuario) {
     final color = coloresUsuarios[usuario.id] ?? Colors.grey;
     final tareasUsuario = tareasHoy
         .where((t) => t.responsable == usuario.id)
@@ -140,9 +145,10 @@ IconButton(
                           title: Text(
                             tarea.titulo,
                             style: TextStyle(
-                              decoration: tarea.estado == 'hecha'
+                              decoration: (tarea.estado == 'hecha' || tarea.estado == 'validada')
                                   ? TextDecoration.lineThrough
                                   : TextDecoration.none,
+                                  
                             ),
                           ),
                           subtitle: Text(
@@ -179,6 +185,7 @@ IconButton(
                                     size: 22,
                                   ),
                                 ),
+                              
                                 Positioned(
                                   bottom: -15,
                                   right: -2,
@@ -187,13 +194,11 @@ IconButton(
                                     padding: EdgeInsets.zero,
                                     splashRadius: 20,
                                     icon: Icon(
-                                      tarea.estado == 'hecha'
-                                          ? Icons.check_circle
-                                          : Icons.radio_button_unchecked,
-                                      color: tarea.estado == 'hecha'
-                                          ? Colors.green
-                                          : Colors.grey,
-                                    ),
+                                  (tarea.estado == 'hecha' || tarea.estado == 'validada')
+                                   ? Icons.check_circle
+                                   : Icons.radio_button_unchecked,
+                                   color: getColor(tarea),
+),
                                     onPressed: () async {
                                       final nuevoEstado =
                                           tarea.estado == 'hecha'

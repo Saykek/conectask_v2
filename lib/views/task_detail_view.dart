@@ -1,3 +1,4 @@
+import 'package:conectask_v2/Utils/usuarios_local.dart';
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/services/tarea_sevice.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'task_edit_view.dart';
 class TaskDetailView extends StatefulWidget {
   final Tarea tarea;
   final UserModel user;
+  
 
   const TaskDetailView({Key? key, required this.tarea, required this.user}) : super(key: key);
 
@@ -18,7 +20,11 @@ class TaskDetailView extends StatefulWidget {
 class _TaskDetailViewState extends State<TaskDetailView> {
   final TareaService _tareaService = TareaService();
   late Tarea tarea;
-
+  
+bool puedeValidarse(Tarea tarea) {
+    const ninos = ['alex', 'erik'];
+    return ninos.contains(tarea.responsable);
+  }
 
   @override
   void initState() {
@@ -27,37 +33,92 @@ class _TaskDetailViewState extends State<TaskDetailView> {
   }
 
   Future<void> _actualizarEstado() async {
-  final nuevoEstado = tarea.estado == 'hecha' ? 'validada' : 'hecha';
+    final esNino = puedeValidarse(tarea);
+    final esAdmin = widget.user.rol == 'admin';
 
-  try {
-    if (nuevoEstado == 'validada') {
-      await _tareaService.validarTarea(tarea, widget.user.id); // 👈 Aquí llamas al nuevo método
-    } else {
-      await _tareaService.actualizarEstadoTarea(tarea, nuevoEstado);
-    }
-
-    setState(() {
-      tarea = Tarea(
-        id: tarea.id,
-        titulo: tarea.titulo,
-        descripcion: tarea.descripcion,
-        responsable: tarea.responsable,
-        fecha: tarea.fecha,
-        prioridad: tarea.prioridad,
-        estado: nuevoEstado,
-        recompensa: tarea.recompensa,
-        validadaPor: nuevoEstado == 'validada' ? widget.user.id : null,
-        puntos: tarea.puntos,
-      );
-    });
+    try {
+      if (tarea.estado == 'pendiente') {
+        if (esNino) {
+          await _tareaService.actualizarEstadoTarea(tarea, 'hecha');
+          setState(() {
+            tarea = Tarea(
+              id: tarea.id,
+              titulo: tarea.titulo,
+              descripcion: tarea.descripcion,
+              responsable: tarea.responsable,
+              fecha: tarea.fecha,
+              prioridad: tarea.prioridad,
+              estado: 'hecha',
+              recompensa: tarea.recompensa,
+              validadaPor: null,
+              puntos: tarea.puntos,
+            );
+          });
+        } else {
+          await _tareaService.validarTarea(tarea, widget.user.id);
+          setState(() {
+            tarea = Tarea(
+              id: tarea.id,
+              titulo: tarea.titulo,
+              descripcion: tarea.descripcion,
+              responsable: tarea.responsable,
+              fecha: tarea.fecha,
+              prioridad: tarea.prioridad,
+              estado: 'validada',
+              recompensa: tarea.recompensa,
+              validadaPor: widget.user.id,
+              puntos: tarea.puntos,
+            );
+          });
+        }
+      } else if (tarea.estado == 'hecha' &&
+          esAdmin &&
+          esNino &&
+          tarea.validadaPor == null) {
+        await _tareaService.validarTarea(tarea, widget.user.id);
+        setState(() {
+          tarea = Tarea(
+            id: tarea.id,
+            titulo: tarea.titulo,
+            descripcion: tarea.descripcion,
+            responsable: tarea.responsable,
+            fecha: tarea.fecha,
+            prioridad: tarea.prioridad,
+            estado: 'validada',
+            recompensa: tarea.recompensa,
+            validadaPor: widget.user.id,
+            puntos: tarea.puntos,
+          );
+        });
+      } else {
+        await _tareaService.actualizarEstadoTarea(tarea, 'pendiente');
+        setState(() {
+          tarea = Tarea(
+            id: tarea.id,
+            titulo: tarea.titulo,
+            descripcion: tarea.descripcion,
+            responsable: tarea.responsable,
+            fecha: tarea.fecha,
+            prioridad: tarea.prioridad,
+            estado: 'pendiente',
+            recompensa: tarea.recompensa,
+            validadaPor: null,
+            puntos: tarea.puntos,
+          );
+        });
+      }
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(nuevoEstado == 'validada'
-            ? 'Tarea validada y puntos asignados'
-            : 'Estado actualizado'),
-      ),
-    );
+  SnackBar(
+    content: Text(
+      tarea.estado == 'validada'
+          ? 'Tarea validada y puntos asignados'
+          : tarea.estado == 'hecha'
+              ? 'Tarea marcada como hecha'
+              : 'Estado actualizado',
+    ),
+  ),
+);
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Error al actualizar tarea: $e')),
@@ -202,9 +263,26 @@ class _TaskDetailViewState extends State<TaskDetailView> {
                   style: const TextStyle(fontSize: 16, height: 1.4),
                 ),
                 const SizedBox(height: 16),
+                if (widget.user.rol == 'admin' &&
+    tarea.estado == 'hecha' &&
+    tarea.validadaPor == null &&
+    puedeValidarse(tarea))
+  Padding(
+    padding: const EdgeInsets.symmetric(vertical: 12),
+    child: ElevatedButton.icon(
+      icon: const Icon(Icons.verified, color: Colors.white),
+      label: const Text('Validar tarea'),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.green,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        textStyle: const TextStyle(fontSize: 16),
+      ),
+      onPressed: _actualizarEstado,
+    ),
+  ),
                 if (tarea.validadaPor != null)
                   Text(
-                    '✅ Validada por: ${tarea.validadaPor}',
+                   '✅ Validada por: ${getNombreUsuario(tarea.validadaPor!)}',
                     style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.italic,

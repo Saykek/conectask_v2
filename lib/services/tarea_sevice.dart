@@ -134,9 +134,13 @@ class TareaService {
   // Validar tarea
 
   Future<void> validarTarea(Tarea tarea, String validadorId) async {
+    final fechaKey = DateFormat('yyyy-MM-dd').format(tarea.fecha);
+
     final tareaRef = FirebaseDatabase.instance
         .ref()
         .child('tareas')
+        .child(fechaKey)
+        .child(tarea.responsable)
         .child(tarea.id);
 
     await tareaRef.update({'estado': 'validada', 'validadaPor': validadorId});

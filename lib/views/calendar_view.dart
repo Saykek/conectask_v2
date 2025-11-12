@@ -11,6 +11,7 @@ class CalendarView extends StatefulWidget {
   final DateTime fechaInicial;
   final UserModel user;
 
+
   const CalendarView({super.key, required this.fechaInicial, required this.user});
 
   @override
@@ -45,20 +46,22 @@ class _CalendarViewState extends State<CalendarView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TableCalendar(
-                firstDay: DateTime.utc(2020, 1, 1),
-                lastDay: DateTime.utc(2030, 12, 31),
-                focusedDay: fechaSeleccionada,
-                selectedDayPredicate: (day) => isSameDay(day, fechaSeleccionada),
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    fechaSeleccionada = selectedDay;
-                  });
-                },
-                calendarStyle: CalendarStyle(
-                  todayDecoration: BoxDecoration(color: Colors.orange, shape: BoxShape.circle),
-                  selectedDecoration: BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
-                ),
-              ),
+  locale: 'es_ES',
+  firstDay: DateTime.utc(2020, 1, 1),
+  lastDay: DateTime.utc(2030, 12, 31),
+  focusedDay: fechaSeleccionada,
+  selectedDayPredicate: (day) => isSameDay(day, fechaSeleccionada),
+  onDaySelected: (selectedDay, focusedDay) {
+    setState(() {
+      fechaSeleccionada = selectedDay;
+    });
+  },
+  startingDayOfWeek: StartingDayOfWeek.monday,
+  calendarStyle: CalendarStyle(
+    todayDecoration: BoxDecoration(color: Colors.orange, shape: BoxShape.circle),
+    selectedDecoration: BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
+  ),
+),
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 icon: const Icon(Icons.calendar_today),
