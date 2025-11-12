@@ -19,8 +19,6 @@ class ColegioView extends StatelessWidget {
     final formato = DateFormat('yyyy-MM-dd');
     final usuarioController = Provider.of<UsuarioController>(context);
 
-    print('Usuarios cargados: ${usuarioController.usuarios.length}');
-
     final examenesHoy = controller.examenes
         .where(
           (e) =>
@@ -30,7 +28,9 @@ class ColegioView extends StatelessWidget {
         .toList();
 
     final esAdulto = user.rol == 'admin' || user.rol == 'adulto';
-    final usuarios = esAdulto ? controller.usuariosLocales : [user];
+    final usuarios = esAdulto
+        ? usuarioController.usuarios.where((u) => u.rol == 'niño').toList()
+        : [user];
 
     return Scaffold(
       appBar: AppBar(title: const Text('Vista Colegio')),
