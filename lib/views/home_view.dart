@@ -1,4 +1,7 @@
+import 'package:conectask_v2/controllers/colegio_controller.dart';
+import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/views/calendar_view.dart';
+import 'package:conectask_v2/views/colegio_view.dart';
 import 'package:conectask_v2/views/configuracion_view.dart';
 import 'package:conectask_v2/views/debug_view.dart';
 import 'package:conectask_v2/views/menu_semanal_view.dart';
@@ -7,7 +10,8 @@ import 'package:conectask_v2/views/recompensas_view.dart';
 import 'package:conectask_v2/views/task_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../models/user_model.dart';
+import 'package:provider/provider.dart';
+
 
 class HomeView extends StatefulWidget {
   final UserModel user; // Usuario recibido desde login o registro
@@ -151,7 +155,20 @@ class _HomeViewState extends State<HomeView> {
                               builder: (context) => TasksView(user: widget.user),
                             ),
                           );
-                        } else if (modulo['titulo'] == 'Calendario') {
+                        } else if (modulo['titulo'] == 'Colegio') {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ChangeNotifierProvider(
+        create: (_) => ColegioController(),
+        child: ColegioView(user: widget.user),
+      ),
+    ),
+  );
+}
+
+                        
+                        else if (modulo['titulo'] == 'Calendario') {
   Navigator.push(
     context,
     MaterialPageRoute(
