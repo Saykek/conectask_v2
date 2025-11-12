@@ -22,12 +22,12 @@ Resumen de la app de menú semanal:
 
 - Añadir para repetir las tareas X dias
 - Poner autocompletar en tareas y apartado de puntos. ✅
-- Cambiar logo tareas de ver en calendario o seleccionar dias
+- Cambiar logo tareas de ver en calendario o seleccionar dias ✅
 - Añadir para enlace PDF
 - En los niños que solo se vean sus tareas ✅
 - poner calendario en español y de lunes a domingo ✅
 - Que no se puedan crear tareas en fechas anteriores
-- Cambiar que salga el boton validar cuando sea adulto y no admin.
+- Cambiar que salga el boton validar cuando sea adulto y no admin. ✅
 - Q en validad por salga el nombre de quien valida.
 
 Recomendación de orden para implementar

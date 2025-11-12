@@ -23,6 +23,12 @@ class TareaController extends ChangeNotifier {
       }
     }).toList();
   }
+ // TAREAS FILTRADAS POR USUARIO
+ 
+  List<Tarea> tareasFiltradasPorUsuario(String? idUsuario) {
+  if (idUsuario == null) return tareasDelDia;
+  return tareasDelDia.where((t) => t.responsable == idUsuario).toList();
+}
 
   void setFechaSeleccionada(DateTime nuevaFecha) {
     _fechaSeleccionada = nuevaFecha;

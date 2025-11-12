@@ -5,30 +5,44 @@ import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/views/calendar_view.dart';
 import 'package:conectask_v2/views/task_add_view.dart';
 import 'package:conectask_v2/Utils/usuarios_local.dart';
+import 'package:conectask_v2/widgets/navegacion.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'task_detail_view.dart';
 
-class TasksView extends StatelessWidget {
+class TasksView extends StatefulWidget {
   final UserModel user;
-  TasksView({super.key, required this.user});
-  
-Color getColor(Tarea tarea) {
-  final esHecha = tarea.estado == 'hecha' || tarea.estado == 'validada';
-  final esValidada = tarea.validadaPor != null;
-  final esAdulto = !['alex', 'erik'].contains(tarea.responsable);
 
-  if (!esHecha) return Colors.grey;
-  if (esValidada || esAdulto) return Colors.green;
-  return Colors.amber;
+
+  const TasksView({super.key, required this.user});
+
+
+@override
+  State<TasksView> createState() => _TasksViewState();
 }
 
+class _TasksViewState extends State<TasksView> {
+  UserModel? usuarioSeleccionado;
+
+  Color getColor(Tarea tarea) {
+    final esHecha = tarea.estado == 'hecha' || tarea.estado == 'validada';
+    final esValidada = tarea.validadaPor != null;
+    final esAdulto = !['alex', 'erik'].contains(tarea.responsable);
+
+    if (!esHecha) return Colors.grey;
+    if (esValidada || esAdulto) return Colors.green;
+    return Colors.amber;
+  }
 
 
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<TareaController>(context);
+    final esAdulto = widget.user.rol == 'admin' || widget.user.rol == 'padre';
+    final tareasParaMostrar = esAdulto
+    ? controller.tareasFiltradasPorUsuario(null) // adultos ven todas
+    : controller.tareasFiltradasPorUsuario(widget.user.id); // niños ven solo las suyas
     final formato = DateFormat('yyyy-MM-dd');
     final fechaTexto = DateFormat('EEEE, d MMMM', 'es_ES')
     .format(controller.fechaSeleccionada);
@@ -41,7 +55,7 @@ Color getColor(Tarea tarea) {
       appBar: AppBar(
         title: const Text("Tareas Familiares"),
         actions: [
-          if (user.rol == "admin")
+          if (widget.user.rol == "admin")
           IconButton(
             icon: const Icon(Icons.add),
             tooltip: 'Añadir nueva tarea',
@@ -74,7 +88,7 @@ IconButton(
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => CalendarView(fechaInicial: controller.fechaSeleccionada, user: user,),
+        builder: (_) => CalendarView(fechaInicial: controller.fechaSeleccionada, user: widget.user,),
       ),
     );
   },
@@ -86,14 +100,13 @@ IconButton(
   crossAxisAlignment: CrossAxisAlignment.start,
   children: [
     Padding(
-      padding: const EdgeInsets.all(16),
-      child: Text(
-        "Tareas para el día: $fechaTexto",
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-      ),
-    ),
+  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+  child: NavegacionFecha(
+    fechaActual: controller.fechaSeleccionada,
+    onFechaCambiada: controller.setFechaSeleccionada,
+  ),
+),
     Expanded(
- 
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
        child: Row(
@@ -131,9 +144,9 @@ IconButton(
                     style: TextStyle(fontStyle: FontStyle.italic),
                   )
                 : ListView.builder(
-                    itemCount: tareasUsuario.length,
+                    itemCount: tareasParaMostrar.length,
                     itemBuilder: (context, index) {
-                      final tarea = tareasUsuario[index];
+                      final tarea = tareasParaMostrar[index];
                       return Card(
                         margin: const EdgeInsets.symmetric(vertical: 4),
                         elevation: 2,
@@ -220,7 +233,7 @@ IconButton(
                               MaterialPageRoute(
                                 builder: (_) => TaskDetailView(
                                   tarea: tarea,
-                                  user: user,
+                                  user: widget.user,
                                 ),
                               ),
                             );
