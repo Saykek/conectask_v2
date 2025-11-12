@@ -15,6 +15,34 @@ class UserService {
     }
   }
 
+  // OBTENER TODOS LOS USUARIOS
+
+  Future<List<UserModel>> obtenerTodosLosUsuarios() async {
+    try {
+      final snapshot = await usersRef.get();
+      print('📦 Snapshot recibido: ${snapshot.value}');
+
+      if (snapshot.exists) {
+        final data = snapshot.value as Map<dynamic, dynamic>;
+
+        final usuarios = data.entries.map((entry) {
+          final userData = Map<String, dynamic>.from(entry.value as Map);
+          final id = entry.key ?? '';
+          return UserModel.fromMap(id, userData);
+        }).toList();
+
+        print('✅ Usuarios obtenidos: ${usuarios.length}');
+        return usuarios;
+      } else {
+        print('❌ No hay datos en la ruta usuarios');
+        return [];
+      }
+    } catch (e) {
+      print('🚨 Error al obtener todos los usuarios: $e');
+      return [];
+    }
+  }
+
   Future<UserModel?> obtenerUsuario(String uid) async {
     try {
       final snapshot = await usersRef.child(uid).get();
@@ -62,19 +90,19 @@ class UserService {
   }
 
   Future<void> sumarPuntos(String userId, int puntos) async {
-  try {
-    final ref = usersRef.child(userId).child('puntos');
-    final snapshot = await ref.get();
+    try {
+      final ref = usersRef.child(userId).child('puntos');
+      final snapshot = await ref.get();
 
-    int puntosActuales = 0;
-    if (snapshot.exists && snapshot.value != null) {
-      puntosActuales = int.tryParse(snapshot.value.toString()) ?? 0;
+      int puntosActuales = 0;
+      if (snapshot.exists && snapshot.value != null) {
+        puntosActuales = int.tryParse(snapshot.value.toString()) ?? 0;
+      }
+
+      await ref.set(puntosActuales + puntos);
+    } catch (e) {
+      print('Error al sumar puntos: $e');
+      rethrow;
     }
-
-    await ref.set(puntosActuales + puntos);
-  } catch (e) {
-    print('Error al sumar puntos: $e');
-    rethrow;
   }
-}
 }

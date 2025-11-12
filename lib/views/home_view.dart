@@ -1,4 +1,5 @@
 import 'package:conectask_v2/controllers/colegio_controller.dart';
+import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/views/calendar_view.dart';
 import 'package:conectask_v2/views/colegio_view.dart';
@@ -11,7 +12,6 @@ import 'package:conectask_v2/views/task_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 
 class HomeView extends StatefulWidget {
   final UserModel user; // Usuario recibido desde login o registro
@@ -35,12 +35,24 @@ class _HomeViewState extends State<HomeView> {
     {'titulo': 'Configuración', 'icono': Icons.settings},
   ];
 
+  void cargarDatosIniciales() async {
+    final usuarioController = Provider.of<UsuarioController>(
+      context,
+      listen: false,
+    );
+    await usuarioController.cargarUsuarios();
+
+    print('✅ Usuarios cargados: ${usuarioController.usuarios.length}');
+  }
+
   @override
   void initState() {
     super.initState();
 
     final firebaseUser = FirebaseAuth.instance.currentUser;
     final uid = firebaseUser?.uid;
+
+    cargarDatosIniciales();
 
     print('UID autenticado por Firebase: $uid');
     print('ID del modelo recibido: ${widget.user.id}');
@@ -152,34 +164,31 @@ class _HomeViewState extends State<HomeView> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => TasksView(user: widget.user),
+                              builder: (context) =>
+                                  TasksView(user: widget.user),
                             ),
                           );
                         } else if (modulo['titulo'] == 'Colegio') {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => ChangeNotifierProvider(
-        create: (_) => ColegioController(),
-        child: ColegioView(user: widget.user),
-      ),
-    ),
-  );
-}
-
-                        
-                        else if (modulo['titulo'] == 'Calendario') {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => CalendarView(
-        fechaInicial: DateTime.now(),
-        user: widget.user,
-      ),
-    ),
-  );
-}
-                        else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChangeNotifierProvider(
+                                create: (_) => ColegioController(),
+                                child: ColegioView(user: widget.user),
+                              ),
+                            ),
+                          );
+                        } else if (modulo['titulo'] == 'Calendario') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CalendarView(
+                                fechaInicial: DateTime.now(),
+                                user: widget.user,
+                              ),
+                            ),
+                          );
+                        } else {
                           // Para otros módulos, mostrar un SnackBar temporalmente
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

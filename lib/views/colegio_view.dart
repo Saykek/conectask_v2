@@ -1,4 +1,5 @@
 import 'package:conectask_v2/controllers/colegio_controller.dart';
+import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/widgets/navegacion.dart';
 import 'package:conectask_v2/models/examen_model.dart';
@@ -6,7 +7,6 @@ import 'package:conectask_v2/widgets/temporizador_estudio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 
 class ColegioView extends StatelessWidget {
   final UserModel user;
@@ -17,16 +17,20 @@ class ColegioView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Provider.of<ColegioController>(context);
     final formato = DateFormat('yyyy-MM-dd');
-    final esAdmin = user.rol == 'admin';
+    final usuarioController = Provider.of<UsuarioController>(context);
 
-    final examenesHoy = controller.examenes.where((e) =>
-      formato.format(e.fecha) == formato.format(controller.fechaSeleccionada)
-    ).toList();
+    print('Usuarios cargados: ${usuarioController.usuarios.length}');
+
+    final examenesHoy = controller.examenes
+        .where(
+          (e) =>
+              formato.format(e.fecha) ==
+              formato.format(controller.fechaSeleccionada),
+        )
+        .toList();
 
     final esAdulto = user.rol == 'admin' || user.rol == 'adulto';
-    final usuarios = esAdulto
-    ? controller.usuariosLocales
-    : [user];
+    final usuarios = esAdulto ? controller.usuariosLocales : [user];
 
     return Scaffold(
       appBar: AppBar(title: const Text('Vista Colegio')),
@@ -49,7 +53,11 @@ class ColegioView extends StatelessWidget {
                           .where((e) => e.responsable == usuario.id)
                           .toList();
 
-                      return _buildTarjetaUsuario(usuario, examenesUsuario, context);
+                      return _buildTarjetaUsuario(
+                        usuario,
+                        examenesUsuario,
+                        context,
+                      );
                     },
                   )
                 : _buildTarjetaUsuario(
@@ -63,12 +71,18 @@ class ColegioView extends StatelessWidget {
     );
   }
 
-  Widget _buildTarjetaUsuario(UserModel usuario, List<Examen> examenes, BuildContext context) {
+  Widget _buildTarjetaUsuario(
+    UserModel usuario,
+    List<Examen> examenes,
+    BuildContext context,
+  ) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: ExpansionTile(
         title: Text(usuario.nombre),
-        subtitle: Text('${examenes.length} examen${examenes.length == 1 ? '' : 'es'}'),
+        subtitle: Text(
+          '${examenes.length} examen${examenes.length == 1 ? '' : 'es'}',
+        ),
         children: examenes.map((examen) {
           return ListTile(
             title: Text(examen.titulo),

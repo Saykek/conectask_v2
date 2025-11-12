@@ -63,7 +63,8 @@ Recomendación de orden para implementar
    Los ultimos avances: 
         - al actualizar los puntos de una tarea se actualizan en firebase
         - Tareas con autocompletado y nueva base de datos en firebase para que no tenga que cargar todos los datos, solo titulo y puntos.
-    
+        - Las tareas marcan si estan hechas, pendiente o validadas ( solo para los niños)
+        -pendiente modulo de colegio. pendiente de mostrar columnas
     Necesito que me digas en que clase y lugar va cada parte de codigo que me proporciones. 
    
    */

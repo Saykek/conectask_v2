@@ -1,4 +1,6 @@
+import 'package:conectask_v2/controllers/colegio_controller.dart';
 import 'package:conectask_v2/controllers/tarea_controller.dart';
+import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/views/login_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +22,15 @@ void main() async {
   }
 
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => TareaController(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => TareaController()),
+        ChangeNotifierProvider(create: (_) => UsuarioController()), // ✅ nuevo
+        ChangeNotifierProvider(
+          create: (_) => ColegioController(),
+        ), // si lo usas
+        // Añade aquí otros controladores que necesites
+      ],
       child: const MyApp(),
     ),
   );
