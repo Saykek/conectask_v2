@@ -1,17 +1,19 @@
 import 'package:conectask_v2/Utils/usuarios_local.dart';
+import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/services/tarea_sevice.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../models/tarea_model.dart';
 import 'task_edit_view.dart';
 
 class TaskDetailView extends StatefulWidget {
   final Tarea tarea;
   final UserModel user;
-  
 
-  const TaskDetailView({Key? key, required this.tarea, required this.user}) : super(key: key);
+  const TaskDetailView({Key? key, required this.tarea, required this.user})
+    : super(key: key);
 
   @override
   State<TaskDetailView> createState() => _TaskDetailViewState();
@@ -19,9 +21,10 @@ class TaskDetailView extends StatefulWidget {
 
 class _TaskDetailViewState extends State<TaskDetailView> {
   final TareaService _tareaService = TareaService();
+
   late Tarea tarea;
-  
-bool puedeValidarse(Tarea tarea) {
+
+  bool puedeValidarse(Tarea tarea) {
     const ninos = ['alex', 'erik'];
     return ninos.contains(tarea.responsable);
   }
@@ -108,23 +111,24 @@ bool puedeValidarse(Tarea tarea) {
         });
       }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-  SnackBar(
-    content: Text(
-      tarea.estado == 'validada'
-          ? 'Tarea validada y puntos asignados'
-          : tarea.estado == 'hecha'
-              ? 'Tarea marcada como hecha'
-              : 'Estado actualizado',
-    ),
-  ),
-);
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error al actualizar tarea: $e')),
-    );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            tarea.estado == 'validada'
+                ? 'Tarea validada y puntos asignados'
+                : tarea.estado == 'hecha'
+                ? 'Tarea marcada como hecha'
+                : 'Estado actualizado',
+          ),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error al actualizar tarea: $e')));
+    }
   }
-}
+
   void _editarTarea() async {
     final resultado = await Navigator.push(
       context,
@@ -141,6 +145,10 @@ bool puedeValidarse(Tarea tarea) {
   @override
   Widget build(BuildContext context) {
     final fechaFormateada = DateFormat('dd/MM/yyyy').format(tarea.fecha);
+    final usuarioController = Provider.of<UsuarioController>(context);
+    final nombreValidador = tarea.validadaPor != null
+        ? usuarioController.getNombreUsuario(tarea.validadaPor!)
+        : '';
 
     return Scaffold(
       appBar: AppBar(
@@ -242,12 +250,12 @@ bool puedeValidarse(Tarea tarea) {
                   '🔥 Prioridad: ${tarea.prioridad}',
                   style: const TextStyle(fontSize: 16),
                 ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '⭐ Puntos: ${tarea.puntos ?? 0}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                
+                const SizedBox(height: 8),
+                Text(
+                  '⭐ Puntos: ${tarea.puntos ?? 0}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+
                 const SizedBox(height: 8),
                 Text(
                   '📝 Descripción:',
@@ -264,25 +272,28 @@ bool puedeValidarse(Tarea tarea) {
                 ),
                 const SizedBox(height: 16),
                 if (widget.user.rol == 'admin' &&
-    tarea.estado == 'hecha' &&
-    tarea.validadaPor == null &&
-    puedeValidarse(tarea))
-  Padding(
-    padding: const EdgeInsets.symmetric(vertical: 12),
-    child: ElevatedButton.icon(
-      icon: const Icon(Icons.verified, color: Colors.white),
-      label: const Text('Validar tarea'),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        textStyle: const TextStyle(fontSize: 16),
-      ),
-      onPressed: _actualizarEstado,
-    ),
-  ),
+                    tarea.estado == 'hecha' &&
+                    tarea.validadaPor == null &&
+                    puedeValidarse(tarea))
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.verified, color: Colors.white),
+                      label: const Text('Validar tarea'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        textStyle: const TextStyle(fontSize: 16),
+                      ),
+                      onPressed: _actualizarEstado,
+                    ),
+                  ),
                 if (tarea.validadaPor != null)
                   Text(
-                   '✅ Validada por: ${getNombreUsuario(tarea.validadaPor!)}',
+                    '✅ Validada por: $nombreValidador',
                     style: const TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.italic,

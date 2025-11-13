@@ -1,12 +1,14 @@
 import 'package:conectask_v2/controllers/colegio_controller.dart';
 import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/models/user_model.dart';
+import 'package:conectask_v2/views/aula_view.dart';
 import 'package:conectask_v2/views/calendar_view.dart';
 import 'package:conectask_v2/views/colegio_view.dart';
 import 'package:conectask_v2/views/configuracion_view.dart';
 import 'package:conectask_v2/views/debug_view.dart';
 import 'package:conectask_v2/views/menu_semanal_view.dart';
 import 'package:conectask_v2/controllers/menu_semanal_controller.dart';
+import 'package:conectask_v2/views/prueba_imagen_view.dart';
 import 'package:conectask_v2/views/recompensas_view.dart';
 import 'package:conectask_v2/views/task_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -127,6 +129,17 @@ class _HomeViewState extends State<HomeView> {
                     child: InkWell(
                       // Navegación a cada módulo
                       onTap: () async {
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const PruebaImagenView(),
+                              ),
+                            );
+                          },
+                          child: const Text('Ver imagen de fondo'),
+                        );
                         if (modulo['titulo'] == 'Recompensas') {
                           Navigator.push(
                             context,
@@ -169,15 +182,25 @@ class _HomeViewState extends State<HomeView> {
                             ),
                           );
                         } else if (modulo['titulo'] == 'Colegio') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChangeNotifierProvider(
-                                create: (_) => ColegioController(),
-                                child: ColegioView(user: widget.user),
+                          if (widget.user.rol == 'niño') {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    AulaView(user: widget.user),
                               ),
-                            ),
-                          );
+                            );
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChangeNotifierProvider(
+                                  create: (_) => ColegioController(),
+                                  child: ColegioView(user: widget.user),
+                                ),
+                              ),
+                            );
+                          }
                         } else if (modulo['titulo'] == 'Calendario') {
                           Navigator.push(
                             context,

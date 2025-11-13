@@ -38,6 +38,8 @@ dev_dependencies:
 
 
 flutter:
+  assets:
+    - assets/images/fondo_aula.png
 
  
   uses-material-design: true

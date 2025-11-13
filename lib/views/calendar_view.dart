@@ -11,8 +11,11 @@ class CalendarView extends StatefulWidget {
   final DateTime fechaInicial;
   final UserModel user;
 
-
-  const CalendarView({super.key, required this.fechaInicial, required this.user});
+  const CalendarView({
+    super.key,
+    required this.fechaInicial,
+    required this.user,
+  });
 
   @override
   State<CalendarView> createState() => _CalendarViewState();
@@ -32,13 +35,13 @@ class _CalendarViewState extends State<CalendarView> {
     final controller = Provider.of<TareaController>(context);
     final formato = DateFormat('yyyy-MM-dd');
     final tareasDelDia = controller.tareas
-        .where((t) => formato.format(t.fecha) == formato.format(fechaSeleccionada))
+        .where(
+          (t) => formato.format(t.fecha) == formato.format(fechaSeleccionada),
+        )
         .toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Calendario Familiar"),
-      ),
+      appBar: AppBar(title: const Text("Calendario Familiar")),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
@@ -46,26 +49,35 @@ class _CalendarViewState extends State<CalendarView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TableCalendar(
-  locale: 'es_ES',
-  firstDay: DateTime.utc(2020, 1, 1),
-  lastDay: DateTime.utc(2030, 12, 31),
-  focusedDay: fechaSeleccionada,
-  selectedDayPredicate: (day) => isSameDay(day, fechaSeleccionada),
-  onDaySelected: (selectedDay, focusedDay) {
-    setState(() {
-      fechaSeleccionada = selectedDay;
-    });
-  },
-  startingDayOfWeek: StartingDayOfWeek.monday,
-  calendarStyle: CalendarStyle(
-    todayDecoration: BoxDecoration(color: Colors.orange, shape: BoxShape.circle),
-    selectedDecoration: BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
-  ),
-),
+                locale: 'es_ES',
+                firstDay: DateTime.utc(2020, 1, 1),
+                lastDay: DateTime.utc(2030, 12, 31),
+                focusedDay: fechaSeleccionada,
+                selectedDayPredicate: (day) =>
+                    isSameDay(day, fechaSeleccionada),
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(() {
+                    fechaSeleccionada = selectedDay;
+                  });
+                },
+                startingDayOfWeek: StartingDayOfWeek.monday,
+                calendarStyle: CalendarStyle(
+                  todayDecoration: BoxDecoration(
+                    color: Colors.orange,
+                    shape: BoxShape.circle,
+                  ),
+                  selectedDecoration: BoxDecoration(
+                    color: Colors.blue,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 icon: const Icon(Icons.calendar_today),
-                label: Text(DateFormat('EEEE, d MMMM', 'es_ES').format(fechaSeleccionada)),
+                label: Text(
+                  DateFormat('EEEE, d MMMM', 'es_ES').format(fechaSeleccionada),
+                ),
                 onPressed: () async {
                   final nuevaFecha = await showDatePicker(
                     context: context,
@@ -83,7 +95,10 @@ class _CalendarViewState extends State<CalendarView> {
               const SizedBox(height: 24),
               Text(
                 "Tareas para ${DateFormat('EEEE, d MMMM', 'es_ES').format(fechaSeleccionada)}",
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 12),
               tareasDelDia.isEmpty
@@ -94,7 +109,8 @@ class _CalendarViewState extends State<CalendarView> {
                       itemCount: tareasDelDia.length,
                       itemBuilder: (context, index) {
                         final tarea = tareasDelDia[index];
-                        final color = coloresUsuarios[tarea.responsable] ?? Colors.grey;
+                        final color =
+                            coloresUsuarios[tarea.responsable] ?? Colors.grey;
                         return Card(
                           margin: const EdgeInsets.symmetric(vertical: 8),
                           child: ListTile(
@@ -117,7 +133,10 @@ class _CalendarViewState extends State<CalendarView> {
                                 const SizedBox(height: 4),
                                 Text(
                                   "Responsable: ${tarea.responsable}",
-                                  style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 13),
+                                  style: const TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 13,
+                                  ),
                                 ),
                               ],
                             ),
@@ -125,13 +144,18 @@ class _CalendarViewState extends State<CalendarView> {
                               tarea.estado == 'hecha'
                                   ? Icons.check_circle
                                   : Icons.radio_button_unchecked,
-                              color: tarea.estado == 'hecha' ? Colors.green : Colors.grey,
+                              color: tarea.estado == 'hecha'
+                                  ? Colors.green
+                                  : Colors.grey,
                             ),
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => TaskDetailView(tarea: tarea, user: widget.user),
+                                  builder: (_) => TaskDetailView(
+                                    tarea: tarea,
+                                    user: widget.user,
+                                  ),
                                 ),
                               );
                             },

@@ -27,8 +27,14 @@ Resumen de la app de menú semanal:
 - En los niños que solo se vean sus tareas ✅
 - poner calendario en español y de lunes a domingo ✅
 - Que no se puedan crear tareas en fechas anteriores
-- Cambiar que salga el boton validar cuando sea adulto y no admin. ✅
+- Cambiar que salga el boton validar cuando sea adulto y no niño. ✅
 - Q en validad por salga el nombre de quien valida.
+- En el registro que no cuenten acentos
+- Los colores de las tareas se tienen que poner aleatoriamente segun se crea usuario
+- quitar insignias fijas de recompensas y que se puedan añadir nuevas desde firebase
+- Recompensas salgan usuarios reales
+- en recompensas perfil niño no se rellena la barra progresiva cuando tiene puntos
+- crear boton cerrar sesion
 
 Recomendación de orden para implementar
 - ✅ Resumen de tareas por día (muy fácil, útil ya)
@@ -64,7 +70,12 @@ Recomendación de orden para implementar
         - al actualizar los puntos de una tarea se actualizan en firebase
         - Tareas con autocompletado y nueva base de datos en firebase para que no tenga que cargar todos los datos, solo titulo y puntos.
         - Las tareas marcan si estan hechas, pendiente o validadas ( solo para los niños)
-        -pendiente modulo de colegio. pendiente de mostrar columnas
-    Necesito que me digas en que clase y lugar va cada parte de codigo que me proporciones. 
+        -pendiente en el modulo de colegio mostrar columnas. He creado una clase que se llama
+        aula que llevara una foto de fondo de un aula, donde solo lo veran los niños, al pulsar
+        la pizarra se mostraran los examenes, al pulsar la libreria se abre los logros o algo asi
+        al pulsar en el globo terraqueo se abrira otra cosa.. pero en el movil no podra verse asi
+        imagino...
+    Necesito que me digas en que clase y lugar va cada parte de codigo que me proporciones. Paso por
+    paso, y hasta que no te de el ok no me pongas nada.
    
    */

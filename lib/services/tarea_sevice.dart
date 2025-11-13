@@ -40,6 +40,21 @@ class TareaService {
     try {
       final fechaKey = DateFormat('yyyy-MM-dd').format(tarea.fecha);
       final ref = _db.child(fechaKey).child(tarea.responsable).child(tarea.id);
+      final id = const Uuid().v4();
+      final tareaConId = Tarea(
+        id: id,
+        titulo: tarea.titulo,
+        descripcion: tarea.descripcion,
+        responsable: tarea.responsable,
+        fecha: tarea.fecha,
+        prioridad: tarea.prioridad,
+        estado: tarea.estado,
+        recompensa: tarea.recompensa,
+        validadaPor: tarea.validadaPor,
+        puntos: tarea.puntos,
+      );
+
+      await ref.set(tareaConId.toMap());
       await ref.update(tarea.toMap());
       print('✅ Tarea actualizada: ${tarea.titulo}');
     } catch (e) {
@@ -53,6 +68,11 @@ class TareaService {
     try {
       final fechaKey = DateFormat('yyyy-MM-dd').format(tarea.fecha);
       final ref = _db.child(fechaKey).child(tarea.responsable).child(tarea.id);
+
+      if (tarea.id.isEmpty) {
+        print('❌ No se puede actualizar tarea sin ID válido');
+        return;
+      }
       await ref.update({'estado': nuevoEstado});
       print('✅ Estado actualizado a $nuevoEstado para tarea ${tarea.titulo}');
     } catch (e) {
@@ -93,7 +113,11 @@ class TareaService {
                   final tarea = Tarea.fromMap(
                     Map<String, dynamic>.from(tareaData),
                   );
-                  tareas.add(tarea);
+                  if (tarea.id.isNotEmpty && tarea.titulo.trim().isNotEmpty) {
+                    tareas.add(tarea);
+                  } else {
+                    print('⚠️ Tarea ignorada por datos incompletos: $id');
+                  }
                 } catch (e) {
                   print('❌ Error parseando tarea $id: $e');
                 }

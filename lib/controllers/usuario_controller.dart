@@ -28,4 +28,12 @@ class UsuarioController extends ChangeNotifier {
     final usuario = getUsuarioPorId(id);
     return usuario?.rol == 'adulto' || usuario?.rol == 'admin';
   }
+
+  String getNombreUsuario(String id) {
+    final usuario = getUsuarioPorId(id);
+    if (usuario == null) return 'Desconocido';
+    if (usuario.nombre.isNotEmpty) return usuario.nombre;
+    if (usuario.rol == 'admin') return 'Administrador';
+    return 'Desconocido';
+  }
 }

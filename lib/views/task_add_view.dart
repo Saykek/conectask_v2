@@ -1,4 +1,5 @@
 import 'package:conectask_v2/controllers/tarea_controller.dart';
+import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/models/tarea_model.dart';
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:flutter/material.dart';
@@ -24,13 +25,6 @@ class _TaskAddViewState extends State<TaskAddView> {
   String? _responsableSeleccionado;
   String? _prioridadSeleccionada;
   DateTime _fechaSeleccionada = DateTime.now();
-
-  final List<UserModel> _usuarios = [
-    UserModel(id: 'mama', nombre: 'Mamá', rol: 'adulto'),
-    UserModel(id: 'papa', nombre: 'Papá', rol: 'adulto'),
-    UserModel(id: 'alex', nombre: 'Álex', rol: 'niño'),
-    UserModel(id: 'erik', nombre: 'Erik', rol: 'niño'),
-  ];
 
   final List<String> _prioridades = ['Alta', 'Media', 'Baja'];
   List<String> titulosDisponibles = [];
@@ -134,6 +128,9 @@ class _TaskAddViewState extends State<TaskAddView> {
 
   @override
   Widget build(BuildContext context) {
+    final usuarioController = Provider.of<UsuarioController>(context);
+    final List<UserModel> usuariosDisponibles = usuarioController.usuarios;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.tarea == null ? 'Añadir tarea' : 'Editar tarea'),
@@ -221,7 +218,7 @@ class _TaskAddViewState extends State<TaskAddView> {
               DropdownButtonFormField<String>(
                 value: _responsableSeleccionado,
                 decoration: const InputDecoration(labelText: 'Asignar a'),
-                items: _usuarios.map((usuario) {
+                items: usuariosDisponibles.map((usuario) {
                   return DropdownMenuItem<String>(
                     value: usuario.id,
                     child: Text(usuario.nombre),
