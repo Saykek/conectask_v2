@@ -7,9 +7,11 @@ class ResumenRecompensas extends StatelessWidget {
   final UserModel user;
   final List<RecompensaModel> recompensas;
 
-  const ResumenRecompensas({super.key, required this.user, required this.recompensas});
-
-  
+  const ResumenRecompensas({
+    super.key,
+    required this.user,
+    required this.recompensas,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,44 +37,50 @@ class ResumenRecompensas extends StatelessWidget {
                 const SizedBox(width: 16),
                 Text(
                   user.nombre,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
 
             StreamBuilder<DatabaseEvent>(
-  stream: FirebaseDatabase.instance.ref('usuarios/${user.id}').onValue,
-  builder: (context, snapshot) {
-    if (!snapshot.hasData || snapshot.data!.snapshot.value == null) {
-      return const Text('Cargando puntos...');
-    }
+              stream: FirebaseDatabase.instance
+                  .ref('usuarios/${user.id}')
+                  .onValue,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData ||
+                    snapshot.data!.snapshot.value == null) {
+                  return const Text('Cargando puntos...');
+                }
 
-    final data = Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map);
-    final puntos = data['puntos'] ?? 0;
+                final data = Map<String, dynamic>.from(
+                  snapshot.data!.snapshot.value as Map,
+                );
+                final puntos = data['puntos'] ?? 0;
 
-    return Text(
-      '⭐ Puntos acumulados: $puntos',
-      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-    );
-  },
-),
+                return Text(
+                  '⭐ Puntos acumulados: $puntos',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                );
+              },
+            ),
             const SizedBox(height: 16),
-
-            
 
             // Puntos y nivel
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('⭐ Puntos: $puntos'),
-                Text('🔢 Nivel: $nivel'),
-              ],
+              children: [Text('⭐ Puntos: $puntos'), Text('🔢 Nivel: $nivel')],
             ),
             const SizedBox(height: 8),
 
             // Barra de progreso (simulada)
             LinearProgressIndicator(
-              value: (nivel % 10) / 10, // Simulación de progreso
+              value: (puntos % 100) / 100,
               minHeight: 8,
               backgroundColor: Colors.grey[300],
               color: Colors.blueAccent,
@@ -80,7 +88,10 @@ class ResumenRecompensas extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Insignias (simuladas)
-            const Text('🏅 Insignias:', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text(
+              '🏅 Insignias:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -93,7 +104,10 @@ class ResumenRecompensas extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Recompensas disponibles (simuladas)
-            const Text('🎁 Recompensas disponibles:', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text(
+              '🎁 Recompensas disponibles:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,

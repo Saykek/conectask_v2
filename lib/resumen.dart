@@ -20,29 +20,61 @@ Resumen de la app de menú semanal:
 */
 /*                                                         *********** PENDIENTE *************
 
-- Añadir para repetir las tareas X dias
+- Añadir para repetir las tareas X dias 1.5-2 horas
 - Poner autocompletar en tareas y apartado de puntos. ✅
 - Cambiar logo tareas de ver en calendario o seleccionar dias ✅
-- Añadir para enlace PDF
+- Añadir para enlace PDF 30-45 min
 - En los niños que solo se vean sus tareas ✅
 - poner calendario en español y de lunes a domingo ✅
-- Que no se puedan crear tareas en fechas anteriores
+- Que no se puedan crear tareas en fechas anteriores 15-20 min
 - Cambiar que salga el boton validar cuando sea adulto y no niño. ✅
-- Q en validad por salga el nombre de quien valida.
-- En el registro que no cuenten acentos
-- Los colores de las tareas se tienen que poner aleatoriamente segun se crea usuario
-- quitar insignias fijas de recompensas y que se puedan añadir nuevas desde firebase
-- Recompensas salgan usuarios reales
-- en recompensas perfil niño no se rellena la barra progresiva cuando tiene puntos
-- crear boton cerrar sesion
+- Q en validad por salga el nombre de quien valida.✅
+- En el registro que no cuenten acentos 20-30 min
+- Mostrar requisitos de contraseña al registrarse 30-45 min
+- Misiones especiales: tareas con recompensas extra si se completan en grupo o en tiempo récord.2-3 horas
+- Calendario visual de tareas: con colores por usuario y prioridad.2-3 horas
+- Recordatorios automáticos: para tareas pendientes o próximas.2-3 horas
+- Historial de tareas completadas: con filtros por fecha, tipo o responsable.1.5-2 horas
+- horario en tareas? 30-45 min
+
+
+🧠 Inteligencia y personalización
+- Recomendaciones de tareas según hábitos: por ejemplo, si Alex siempre hace tareas por la tarde. 3-4 horas
+- Estadísticas por usuario: tiempo medio de entrega, tareas favoritas, evolución de puntos. 2.-3 horas
+- Temas visuales personalizados: cada niño elige su color, avatar o fondo. 1.5-2 horas
+
+🔒 Seguridad y control
+- Control parental: para validar tareas, limitar recompensas o ver actividad. 2-3 horas
+- Bloqueo por PIN para recompensas sensibles: como ver TV o usar tablet.1-1.5 horas
+- Historial de canjeos: para que los padres vean qué se ha usado y cuándo. 1-1.5 horas
+
+🌐 Conectividad y multimedia
+- Adjuntar fotos o vídeos a tareas: como prueba de que se hizo. 2-3 horas
+- Enlaces a recursos educativos: PDFs, vídeos, juegos didácticos. 1.5-2 horas
+- Modo offline: para que funcione sin conexión y sincronice después. 4 - 6 horas
+
+🧩 Extras divertidos
+- Mini juegos desbloqueables: al alcanzar ciertos niveles. 3-4 horas
+- Sistema de “tienda” con recompensas virtuales: como cambiar el avatar, fondo, etc. 2.5-3 horas
+- Mensajes motivadores automáticos: “¡Buen trabajo, Erik! Has subido de nivel 🎉” 1-1.5 horas
+
+
+
+
+
+- Los colores de las tareas se tienen que poner aleatoriamente segun se crea usuario 30-45 min
+- quitar insignias fijas de recompensas y que se puedan añadir nuevas desde firebase 2-4 horas
+- Recompensas salgan usuarios reales ✅
+- en recompensas perfil niño no se rellena la barra progresiva cuando tiene puntos✅
+- crear boton cerrar sesion 20-30 min
 
 Recomendación de orden para implementar
-- ✅ Resumen de tareas por día (muy fácil, útil ya)
+- ✅ Resumen de tareas por día 1-1.5 horas
 - ✅ Sistema de puntos (motivador, visual)
 - ✅ Autocompletar desde Firebase (mejora UX) ✅
 - 🔁 Tareas recurrentes (más compleja, pero muy potente)
 - 📆 Vista mensual (ideal para planificación) ✅
-- 🔔 Notificaciones (requiere permisos y lógica)
+- 🔔 Notificaciones (requiere permisos y lógica) 2-3 horas
 - 🧒 Modo infantil (puede ser parte del sistema de puntos)
 
 */

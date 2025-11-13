@@ -1,4 +1,6 @@
+import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/user_model.dart';
 import '../models/recompensa_model.dart';
 import '../controllers/recompensa_controller.dart';
@@ -18,17 +20,11 @@ class RecompensasView extends StatefulWidget {
 class _RecompensasViewState extends State<RecompensasView> {
   final RecompensaController _controller = RecompensaController();
 
-  final List<UserModel> listaNinos = [
-    UserModel(id: '1', nombre: 'Juan', rol: 'nino', nivel: 2, puntos: 80),
-    UserModel(id: '2', nombre: 'Lucia', rol: 'nino', nivel: 3, puntos: 120),
-    UserModel(id: '3', nombre: 'Mario', rol: 'nino', nivel: 1, puntos: 40),
-  ];
-
-  String seleccion = 'Todos';
   Map<String, List<RecompensaModel>> recompensasPorNino = {};
   List<RecompensaModel> listaGeneral = [];
   bool cargando = true;
   bool mostrarListaGeneral = false;
+  String seleccion = 'Todos';
 
   @override
   void initState() {
@@ -41,11 +37,20 @@ class _RecompensasViewState extends State<RecompensasView> {
   }
 
   Future<void> _cargarRecompensas() async {
+    final usuarioController = Provider.of<UsuarioController>(
+      context,
+      listen: false,
+    );
+    final ninos = usuarioController.usuarios
+        .where((u) => u.rol == 'niño')
+        .toList();
+
     final Map<String, List<RecompensaModel>> mapa = {};
-    for (final nino in listaNinos) {
+    for (final nino in ninos) {
       final lista = await _controller.getRecompensasPara(nino);
       mapa[nino.id] = lista;
     }
+
     final propias = await _controller.getRecompensasPara(widget.user);
     mapa[widget.user.id] = propias;
 
@@ -65,6 +70,11 @@ class _RecompensasViewState extends State<RecompensasView> {
 
   @override
   Widget build(BuildContext context) {
+    final usuarioController = Provider.of<UsuarioController>(context);
+    final List<UserModel> listaNinos = usuarioController.usuarios
+        .where((u) => u.rol == 'niño')
+        .toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Recompensas'),
