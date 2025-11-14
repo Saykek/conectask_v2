@@ -130,7 +130,7 @@ class _CalendarViewState extends State<CalendarView> {
                             leading: CircleAvatar(
                               backgroundColor: color,
                               child: Text(
-                                tarea.responsable[0].toUpperCase(),
+                                (usuario?.nombre ?? '?')[0].toUpperCase(),
                                 style: const TextStyle(color: Colors.white),
                               ),
                             ),
@@ -145,7 +145,7 @@ class _CalendarViewState extends State<CalendarView> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  "Responsable: ${tarea.responsable}",
+                                  "Responsable: ${usuario?.nombre ?? 'Desconocido'}",
                                   style: const TextStyle(
                                     fontStyle: FontStyle.italic,
                                     fontSize: 13,

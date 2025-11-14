@@ -21,8 +21,6 @@ class TasksView extends StatefulWidget {
 }
 
 class _TasksViewState extends State<TasksView> {
-  UserModel? usuarioSeleccionado;
-
   Color getColor(Tarea tarea) {
     final esHecha = tarea.estado == 'hecha' || tarea.estado == 'validada';
     final esValidada = tarea.validadaPor != null;
@@ -37,30 +35,16 @@ class _TasksViewState extends State<TasksView> {
   Widget build(BuildContext context) {
     final controller = Provider.of<TareaController>(context);
     final usuarioController = Provider.of<UsuarioController>(context);
-    final List<UserModel> usuariosLocales = usuarioController.usuarios;
+    final usuariosLocales = usuarioController.usuarios;
     final esAdulto = widget.user.rol == 'admin' || widget.user.rol == 'padre';
-    final tareasParaMostrar = esAdulto
-        ? controller.tareasFiltradasPorUsuario(null) // adultos ven todas
-        : controller.tareasFiltradasPorUsuario(
-            widget.user.id,
-          ); // niños ven solo las suyas
-    final formato = DateFormat('yyyy-MM-dd');
-    final fechaTexto = DateFormat(
-      'EEEE, d MMMM',
-      'es_ES',
-    ).format(controller.fechaSeleccionada);
     final tareasHoy = controller.tareas.where((t) {
+      final formato = DateFormat('yyyy-MM-dd');
       final mismaFecha =
           formato.format(t.fecha) ==
           formato.format(controller.fechaSeleccionada);
-      final esDelUsuario =
-          widget.user.rol == 'admin' || widget.user.rol == 'padre'
-          ? true
-          : t.responsable == widget.user.id;
+      final esDelUsuario = esAdulto || t.responsable == widget.user.id;
       return mismaFecha && esDelUsuario;
     }).toList();
-
-    print('Usuarios cargados: ${usuariosLocales.map((u) => u.id).toList()}');
 
     return Scaffold(
       appBar: AppBar(
@@ -125,42 +109,48 @@ class _TasksViewState extends State<TasksView> {
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(
-                children: usuariosLocales.map((usuario) {
-                  final color = obtenerColorUsuario(usuario);
-                  final tareasUsuario = tareasHoy
-                      .where((t) => t.responsable == usuario.id)
-                      .toList();
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minWidth: usuariosLocales.length * 200.0,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: usuariosLocales.map((usuario) {
+                    final color = obtenerColorUsuario(usuario);
+                    final tareasUsuario = tareasHoy
+                        .where((t) => t.responsable == usuario.id)
+                        .toList();
 
-                  return Container(
-                    width: 180,
-                    margin: const EdgeInsets.all(8),
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: color.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: color),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          usuario.nombre,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: color,
+                    return Container(
+                      width: 180,
+                      margin: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: color.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: color),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            usuario.nombre,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: color,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        Expanded(
-                          child: tareasUsuario.isEmpty
+                          const SizedBox(height: 8),
+                          tareasUsuario.isEmpty
                               ? const Text(
                                   'Sin tareas hoy',
                                   style: TextStyle(fontStyle: FontStyle.italic),
                                 )
                               : ListView.builder(
                                   itemCount: tareasUsuario.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     final tarea = tareasUsuario[index];
                                     return Card(
@@ -195,64 +185,18 @@ class _TasksViewState extends State<TasksView> {
                                                 : FontStyle.normal,
                                           ),
                                         ),
-                                        trailing: SizedBox(
-                                          width: 48,
-                                          height: 56,
-                                          child: Stack(
-                                            clipBehavior: Clip.none,
-                                            children: [
-                                              Positioned(
-                                                top: -18,
-                                                right: 2,
-                                                child: Icon(
-                                                  tarea.prioridad == 'Alta'
-                                                      ? Icons.flash_on
-                                                      : tarea.prioridad ==
-                                                            'Media'
-                                                      ? Icons.access_time
-                                                      : Icons.hourglass_bottom,
-                                                  color:
-                                                      tarea.prioridad == 'Alta'
-                                                      ? Colors.red
-                                                      : tarea.prioridad ==
-                                                            'Media'
-                                                      ? Colors.amber
-                                                      : Colors.green,
-                                                  size: 22,
-                                                ),
-                                              ),
-
-                                              Positioned(
-                                                bottom: -15,
-                                                right: -2,
-                                                child: IconButton(
-                                                  iconSize: 26,
-                                                  padding: EdgeInsets.zero,
-                                                  splashRadius: 20,
-                                                  icon: Icon(
-                                                    (tarea.estado == 'hecha' ||
-                                                            tarea.estado ==
-                                                                'validada')
-                                                        ? Icons.check_circle
-                                                        : Icons
-                                                              .radio_button_unchecked,
-                                                    color: getColor(tarea),
-                                                  ),
-                                                  onPressed: () async {
-                                                    final nuevoEstado =
-                                                        tarea.estado == 'hecha'
-                                                        ? 'pendiente'
-                                                        : 'hecha';
-                                                    await controller
-                                                        .cambiarEstado(
-                                                          tarea,
-                                                          nuevoEstado,
-                                                        );
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                        trailing: Icon(
+                                          tarea.prioridad == 'Alta'
+                                              ? Icons.flash_on
+                                              : tarea.prioridad == 'Media'
+                                              ? Icons.access_time
+                                              : Icons.hourglass_bottom,
+                                          color: tarea.prioridad == 'Alta'
+                                              ? Colors.red
+                                              : tarea.prioridad == 'Media'
+                                              ? Colors.amber
+                                              : Colors.green,
+                                          size: 22,
                                         ),
                                         onTap: () {
                                           Navigator.push(
@@ -269,11 +213,11 @@ class _TasksViewState extends State<TasksView> {
                                     );
                                   },
                                 ),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
             ),
           ),
