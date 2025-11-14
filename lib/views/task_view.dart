@@ -5,7 +5,6 @@ import 'package:conectask_v2/models/tarea_model.dart';
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/views/calendar_view.dart';
 import 'package:conectask_v2/views/task_add_view.dart';
-import 'package:conectask_v2/Utils/usuarios_local.dart';
 import 'package:conectask_v2/widgets/navegacion.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -128,7 +127,7 @@ class _TasksViewState extends State<TasksView> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: usuariosLocales.map((usuario) {
-                  final color = coloresUsuarios[usuario.id] ?? Colors.grey;
+                  final color = obtenerColorUsuario(usuario.id);
                   final tareasUsuario = tareasHoy
                       .where((t) => t.responsable == usuario.id)
                       .toList();
