@@ -21,6 +21,7 @@ Resumen de la app de menú semanal:
 /*                                                         *********** PENDIENTE *************
 
 - Añadir para repetir las tareas X dias 1.5-2 horas
+- Scroll horizontal en tareas
 - Poner autocompletar en tareas y apartado de puntos. ✅
 - Cambiar logo tareas de ver en calendario o seleccionar dias ✅
 - Añadir para enlace PDF 30-45 min
@@ -106,7 +107,10 @@ Recomendación de orden para implementar
         aula que llevara una foto de fondo de un aula, donde solo lo veran los niños, al pulsar
         la pizarra se mostraran los examenes, al pulsar la libreria se abre los logros o algo asi
         al pulsar en el globo terraqueo se abrira otra cosa.. pero en el movil no podra verse asi
-        imagino...
+        imagino...(POR AHORA ESTO LO VOY A DEJAR PARA LINEAS FUTURAS), 
+        - ya se cogen los usuarios reales de la base de datos de realtime.
+        -
+        Fijate en los ✅ y asi sabras lo que llevo hecho.
     Necesito que me digas en que clase y lugar va cada parte de codigo que me proporciones. Paso por
     paso, y hasta que no te de el ok no me pongas nada.
    
