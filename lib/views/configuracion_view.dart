@@ -1,7 +1,9 @@
+import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/views/crear_nino_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../controllers/configuracion_controller.dart';
 import '../models/user_model.dart'; // si usas uid desde aquí
 
@@ -119,20 +121,24 @@ class _ConfiguracionViewState extends State<ConfiguracionView> {
           ),
           const SizedBox(height: 16),
           const Text('👤 Gestión de usuarios', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-         ElevatedButton.icon(
-  icon: const Icon(Icons.person_add),
-  label: const Text('Crear niño'),
-  onPressed: () async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const CrearNinoView()),
-    );
-    final nuevos = await _controller.cargarNinos();
-    setState(() {
-      _ninos = nuevos;
-    });
-  },
-),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.person_add),
+            label: const Text('Crear niño'),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const CrearNinoView()),
+              );
+              final nuevos = await _controller.cargarNinos();
+              setState(() {
+                _ninos = nuevos;
+              });
+
+              // 🔄 Recargar usuarios globales para que Lola aparezca en tareas
+              final usuarioController = Provider.of<UsuarioController>(context, listen: false);
+              await usuarioController.cargarUsuarios();
+            },
+          ),
           const SizedBox(height: 16),
           const Text('👶 Perfiles de niños', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           ..._ninos.map((nino) => Card(
@@ -146,18 +152,21 @@ class _ConfiguracionViewState extends State<ConfiguracionView> {
                   IconButton(
                     icon: const Icon(Icons.edit),
                     onPressed: () async {
-  await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => CrearNinoView(nino: nino),
-    ),
-  );
-  // Recargar la lista de niños después de volver
-  final nuevos = await _controller.cargarNinos();
-  setState(() {
-    _ninos = nuevos;
-  });
-},
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CrearNinoView(nino: nino),
+                        ),
+                      );
+                      final nuevos = await _controller.cargarNinos();
+                      setState(() {
+                        _ninos = nuevos;
+                      });
+
+                      // 🔄 Recargar usuarios globales para que cambios se reflejen en tareas
+                      final usuarioController = Provider.of<UsuarioController>(context, listen: false);
+                      await usuarioController.cargarUsuarios();
+                    },
                   ),
                   IconButton(
                     icon: const Icon(Icons.delete),
@@ -170,6 +179,10 @@ class _ConfiguracionViewState extends State<ConfiguracionView> {
                       setState(() {
                         _ninos.removeWhere((u) => u.id == nino.id);
                       });
+
+                      // 🔄 Recargar usuarios globales tras eliminar
+                      final usuarioController = Provider.of<UsuarioController>(context, listen: false);
+                      await usuarioController.cargarUsuarios();
                     },
                   ),
                 ],
