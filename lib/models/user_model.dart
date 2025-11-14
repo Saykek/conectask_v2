@@ -6,6 +6,7 @@ class UserModel {
   final String? pin;
   final int? nivel;
   final int? puntos;
+  final String? colorHex;
 
   UserModel({
     required this.id,
@@ -15,6 +16,7 @@ class UserModel {
     this.pin,
     this.nivel,
     this.puntos,
+    this.colorHex,
   });
 
   Map<String, dynamic> toMap() {
@@ -26,6 +28,7 @@ class UserModel {
       if (pin != null) 'pin': pin,
       if (nivel != null) 'nivel': nivel,
       if (puntos != null) 'puntos': puntos,
+      if (colorHex != null) 'colorHex': colorHex,
     };
     return map;
   }
@@ -39,6 +42,7 @@ class UserModel {
       pin: map['pin']?.toString(),
       nivel: map['nivel'],
       puntos: map['puntos'],
+      colorHex: map['colorHex'],
     );
   }
 }

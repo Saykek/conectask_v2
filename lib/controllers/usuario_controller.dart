@@ -36,4 +36,20 @@ class UsuarioController extends ChangeNotifier {
     if (usuario.rol == 'admin') return 'Administrador';
     return 'Desconocido';
   }
+
+  // GENERAR COLOR USUARIO
+
+  String generarColorHexDesdeNombre(String nombre) {
+    final hash = nombre.hashCode;
+    final r = (hash & 0xFF0000) >> 16;
+    final g = (hash & 0x00FF00) >> 8;
+    final b = (hash & 0x0000FF);
+    final color = Color.fromARGB(
+      255,
+      (r + 180) % 256,
+      (g + 180) % 256,
+      (b + 180) % 256,
+    );
+    return color.value.toRadixString(16);
+  }
 }

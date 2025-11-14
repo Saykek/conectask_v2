@@ -127,7 +127,7 @@ class _TasksViewState extends State<TasksView> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: usuariosLocales.map((usuario) {
-                  final color = obtenerColorUsuario(usuario.id);
+                  final color = obtenerColorUsuario(usuario);
                   final tareasUsuario = tareasHoy
                       .where((t) => t.responsable == usuario.id)
                       .toList();

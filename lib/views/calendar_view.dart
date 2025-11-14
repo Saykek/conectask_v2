@@ -1,11 +1,14 @@
 import 'package:conectask_v2/Utils/color_utils.dart';
 import 'package:conectask_v2/controllers/tarea_controller.dart';
+import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/views/task_detail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+import '../Utils/color_utils.dart';
 
 class CalendarView extends StatefulWidget {
   final DateTime fechaInicial;
@@ -109,8 +112,18 @@ class _CalendarViewState extends State<CalendarView> {
                       itemCount: tareasDelDia.length,
                       itemBuilder: (context, index) {
                         final tarea = tareasDelDia[index];
-                        final color =
-                            coloresUsuarios[tarea.responsable] ?? Colors.grey;
+                        final usuarioController =
+                            Provider.of<UsuarioController>(
+                              context,
+                              listen: false,
+                            );
+                        final usuario = usuarioController.getUsuarioPorId(
+                          tarea.responsable,
+                        );
+                        final color = usuario != null
+                            ? obtenerColorUsuario(usuario)
+                            : Colors.grey;
+
                         return Card(
                           margin: const EdgeInsets.symmetric(vertical: 8),
                           child: ListTile(
