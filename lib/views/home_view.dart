@@ -6,6 +6,7 @@ import 'package:conectask_v2/views/calendar_view.dart';
 import 'package:conectask_v2/views/colegio_view.dart';
 import 'package:conectask_v2/views/configuracion_view.dart';
 import 'package:conectask_v2/views/debug_view.dart';
+import 'package:conectask_v2/views/login_view.dart';
 import 'package:conectask_v2/views/menu_semanal_view.dart';
 import 'package:conectask_v2/controllers/menu_semanal_controller.dart';
 import 'package:conectask_v2/views/prueba_imagen_view.dart';
@@ -76,10 +77,42 @@ class _HomeViewState extends State<HomeView> {
     print('Rol del usuario: ${widget.user.rol}');
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Bienvenido, ${widget.user.nombre}',
-        ), // Muestra el nombre del usuario
-      ),
+  title: Text('Bienvenido, ${widget.user.nombre}'),
+  actions: [
+    IconButton(
+      icon: const Icon(Icons.logout),
+      tooltip: 'Cerrar sesión',
+      onPressed: () async {
+        final confirmar = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('¿Cerrar sesión?'),
+            content: Text('¿Quieres cerrar sesión, ${widget.user.nombre}?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancelar'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Cerrar sesión'),
+              ),
+            ],
+          ),
+        );
+
+        if (confirmar == true) {
+          await FirebaseAuth.instance.signOut();
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => const LoginView()),
+            (route) => false,
+          );
+        }
+      },
+    ),
+  ],
+),
       body: Column(
         children: [
           SwitchListTile(

@@ -37,6 +37,13 @@ Resumen de la app de menú semanal:
 - Recordatorios automáticos: para tareas pendientes o próximas.2-3 horas
 - Historial de tareas completadas: con filtros por fecha, tipo o responsable.1.5-2 horas
 - horario en tareas? 30-45 min
+- Los colores de las tareas se tienen que poner aleatoriamente segun se crea usuario 30-45 min
+- quitar insignias fijas de recompensas y que se puedan añadir nuevas desde firebase 2-4 horas
+- Recompensas salgan usuarios reales ✅
+- en recompensas perfil niño no se rellena la barra progresiva cuando tiene puntos✅
+- crear boton cerrar sesion 20-30 min ✅
+- crear niños desde config y editarlos ✅
+- quitar modulo de configuracion del home del niño
 
 
 🧠 Inteligencia y personalización
@@ -59,15 +66,6 @@ Resumen de la app de menú semanal:
 - Sistema de “tienda” con recompensas virtuales: como cambiar el avatar, fondo, etc. 2.5-3 horas
 - Mensajes motivadores automáticos: “¡Buen trabajo, Erik! Has subido de nivel 🎉” 1-1.5 horas
 
-
-
-
-
-- Los colores de las tareas se tienen que poner aleatoriamente segun se crea usuario 30-45 min
-- quitar insignias fijas de recompensas y que se puedan añadir nuevas desde firebase 2-4 horas
-- Recompensas salgan usuarios reales ✅
-- en recompensas perfil niño no se rellena la barra progresiva cuando tiene puntos✅
-- crear boton cerrar sesion 20-30 min
 
 Recomendación de orden para implementar
 - ✅ Resumen de tareas por día 1-1.5 horas
