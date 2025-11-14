@@ -6,6 +6,10 @@ class Examen {
   final DateTime fecha;
   final String estado;
   final String prioridad;
+  final String uidAlumno; // Nuevo: ID del alumno
+  final String asignatura; // Nuevo: nombre de la asignatura
+  final double? nota; // Nuevo: nota del examen (nullable)
+  final String? comentario; // Nuevo: observaciones (nullable)
 
   Examen({
     required this.id,
@@ -15,6 +19,10 @@ class Examen {
     required this.fecha,
     required this.estado,
     required this.prioridad,
+    required this.uidAlumno,
+    required this.asignatura,
+    this.nota,
+    this.comentario,
   });
 
   factory Examen.fromJson(Map<String, dynamic> json) {
@@ -26,6 +34,12 @@ class Examen {
       fecha: DateTime.tryParse(json['fecha'] ?? '') ?? DateTime.now(),
       estado: json['estado'] ?? 'pendiente',
       prioridad: json['prioridad'] ?? 'Media',
+      uidAlumno: json['uidAlumno'] ?? '',
+      asignatura: json['asignatura'] ?? '',
+      nota: (json['nota'] != null)
+          ? double.tryParse(json['nota'].toString())
+          : null,
+      comentario: json['comentario'],
     );
   }
 
@@ -38,6 +52,10 @@ class Examen {
       'fecha': fecha.toIso8601String(),
       'estado': estado,
       'prioridad': prioridad,
+      'uidAlumno': uidAlumno,
+      'asignatura': asignatura,
+      'nota': nota,
+      'comentario': comentario,
     };
   }
 }

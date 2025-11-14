@@ -44,6 +44,9 @@ Resumen de la app de menú semanal:
 - crear boton cerrar sesion 20-30 min ✅
 - crear niños desde config y editarlos ✅
 - quitar modulo de configuracion del home del niño
+- al validar una tarea los puntos se suman en un sitio pero en otro nol
+- Una vez que validas la tarea si luego la dejas como no hecha al volver a darla ya sale validad, no pasa por el paso
+intermedio, y los puntos siguen sumandos.
 
 
 🧠 Inteligencia y personalización
