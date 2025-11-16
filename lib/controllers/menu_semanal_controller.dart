@@ -1,4 +1,4 @@
-import 'package:conectask_v2/Utils/date_utils.dart' as miFecha;
+import 'package:conectask_v2/utils/date_utils.dart' as miFecha;
 import '../models/menu_dia_model.dart';
 import '../services/menu_semanal_service.dart';
 

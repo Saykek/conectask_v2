@@ -1,5 +1,6 @@
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:conectask_v2/models/tarea_model.dart';
 
 final Map<String, Color> coloresDisponibles = {
   'Rosa': const Color(0xFFF5A1EA),
@@ -26,6 +27,18 @@ final Map<String, Color> coloresDisponibles = {
 
 Color obtenerColorDesdeHex(String hex) {
   return Color(int.parse(hex, radix: 16)).withOpacity(1);
+}
+
+// OBTENER COLOR ESTADO TAREA
+
+Color obtenerColorTarea(Tarea tarea) {
+  final esHecha = tarea.estado == 'hecha' || tarea.estado == 'validada';
+  final esValidada = tarea.validadaPor != null;
+  final esAdulto = !['alex', 'erik'].contains(tarea.responsable);
+
+  if (!esHecha) return Colors.grey;
+  if (esValidada || esAdulto) return Colors.green;
+  return Colors.amber;
 }
 
 final Map<String, Color> coloresUsuarios = {

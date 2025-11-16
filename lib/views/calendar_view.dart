@@ -1,4 +1,4 @@
-import 'package:conectask_v2/Utils/color_utils.dart';
+import 'package:conectask_v2/utils/color_utils.dart';
 import 'package:conectask_v2/controllers/tarea_controller.dart';
 import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/models/user_model.dart';
@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-
-import '../Utils/color_utils.dart';
 
 class CalendarView extends StatefulWidget {
   final DateTime fechaInicial;
@@ -124,6 +122,10 @@ class _CalendarViewState extends State<CalendarView> {
                             ? obtenerColorUsuario(usuario)
                             : Colors.grey;
 
+                        final estadoColor = tarea != null
+                            ? obtenerColorTarea(tarea)
+                            : Colors.grey;
+
                         return Card(
                           margin: const EdgeInsets.symmetric(vertical: 8),
                           child: ListTile(
@@ -154,12 +156,11 @@ class _CalendarViewState extends State<CalendarView> {
                               ],
                             ),
                             trailing: Icon(
-                              tarea.estado == 'hecha'
+                              (tarea.estado == 'hecha' ||
+                                      tarea.estado == 'validada')
                                   ? Icons.check_circle
                                   : Icons.radio_button_unchecked,
-                              color: tarea.estado == 'hecha'
-                                  ? Colors.green
-                                  : Colors.grey,
+                              color: obtenerColorTarea(tarea),
                             ),
                             onTap: () {
                               Navigator.push(
