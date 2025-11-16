@@ -31,6 +31,14 @@ class _TasksViewState extends State<TasksView> {
     return Colors.amber;
   }
 
+  final ScrollController usuariosScrollController = ScrollController();
+
+  @override
+  void dispose() {
+    usuariosScrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<TareaController>(context);
@@ -107,22 +115,25 @@ class _TasksViewState extends State<TasksView> {
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minWidth: usuariosLocales.length * 200.0,
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: usuariosLocales.map((usuario) {
-                    final color = obtenerColorUsuario(usuario);
-                    final tareasUsuario = tareasHoy
-                        .where((t) => t.responsable == usuario.id)
-                        .toList();
+            child: Scrollbar(
+              controller: usuariosScrollController,
+              thumbVisibility: true,
+              child: ListView.builder(
+                controller: usuariosScrollController,
+                scrollDirection: Axis.horizontal,
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                itemCount: usuariosLocales.length,
+                itemBuilder: (context, i) {
+                  final usuario = usuariosLocales[i];
+                  final color = obtenerColorUsuario(usuario);
+                  final tareasUsuario = tareasHoy
+                      .where((t) => t.responsable == usuario.id)
+                      .toList();
 
-                    return Container(
-                      width: 180,
+                  return SizedBox(
+                    width: 180,
+                    child: Container(
                       margin: const EdgeInsets.all(8),
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
@@ -151,9 +162,10 @@ class _TasksViewState extends State<TasksView> {
                                     ),
                                   )
                                 : ListView.builder(
+                                    key: PageStorageKey('tareas_${usuario.id}'),
+                                    primary: false,
+                                    physics: const ClampingScrollPhysics(),
                                     itemCount: tareasUsuario.length,
-                                    shrinkWrap: true,
-
                                     itemBuilder: (context, index) {
                                       final tarea = tareasUsuario[index];
                                       return Card(
@@ -178,7 +190,6 @@ class _TasksViewState extends State<TasksView> {
                                                   : TextDecoration.none,
                                             ),
                                           ),
-
                                           subtitle: Text(
                                             tarea.descripcion,
                                             style: TextStyle(
@@ -253,7 +264,6 @@ class _TasksViewState extends State<TasksView> {
                                               ],
                                             ),
                                           ),
-
                                           onTap: () {
                                             Navigator.push(
                                               context,
@@ -272,9 +282,9 @@ class _TasksViewState extends State<TasksView> {
                           ),
                         ],
                       ),
-                    );
-                  }).toList(),
-                ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
