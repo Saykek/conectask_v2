@@ -185,18 +185,63 @@ class _TasksViewState extends State<TasksView> {
                                                 : FontStyle.normal,
                                           ),
                                         ),
-                                        trailing: Icon(
-                                          tarea.prioridad == 'Alta'
-                                              ? Icons.flash_on
-                                              : tarea.prioridad == 'Media'
-                                              ? Icons.access_time
-                                              : Icons.hourglass_bottom,
-                                          color: tarea.prioridad == 'Alta'
-                                              ? Colors.red
-                                              : tarea.prioridad == 'Media'
-                                              ? Colors.amber
-                                              : Colors.green,
-                                          size: 22,
+                                        trailing: SizedBox(
+                                          width: 48,
+                                          height: 56,
+                                          child: Stack(
+                                            clipBehavior: Clip.none,
+                                            children: [
+                                              Positioned(
+                                                top: -18,
+                                                right: 2,
+                                                child: Icon(
+                                                  tarea.prioridad == 'Alta'
+                                                      ? Icons.flash_on
+                                                      : tarea.prioridad ==
+                                                            'Media'
+                                                      ? Icons.access_time
+                                                      : Icons.hourglass_bottom,
+                                                  color:
+                                                      tarea.prioridad == 'Alta'
+                                                      ? Colors.red
+                                                      : tarea.prioridad ==
+                                                            'Media'
+                                                      ? Colors.amber
+                                                      : Colors.green,
+                                                  size: 22,
+                                                ),
+                                              ),
+                                              Positioned(
+                                                bottom: -15,
+                                                right: -2,
+                                                child: IconButton(
+                                                  iconSize: 26,
+                                                  padding: EdgeInsets.zero,
+                                                  splashRadius: 20,
+                                                  icon: Icon(
+                                                    (tarea.estado == 'hecha' ||
+                                                            tarea.estado ==
+                                                                'validada')
+                                                        ? Icons.check_circle
+                                                        : Icons
+                                                              .radio_button_unchecked,
+                                                    color: getColor(tarea),
+                                                  ),
+                                                  onPressed: () async {
+                                                    final nuevoEstado =
+                                                        tarea.estado == 'hecha'
+                                                        ? 'pendiente'
+                                                        : 'hecha';
+                                                    await controller
+                                                        .cambiarEstado(
+                                                          tarea,
+                                                          nuevoEstado,
+                                                        );
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                         onTap: () {
                                           Navigator.push(
