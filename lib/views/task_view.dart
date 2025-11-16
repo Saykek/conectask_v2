@@ -1,4 +1,4 @@
-import 'package:conectask_v2/Utils/color_utils.dart';
+import 'package:conectask_v2/utils/color_utils.dart';
 import 'package:conectask_v2/controllers/tarea_controller.dart';
 import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/models/tarea_model.dart';
@@ -142,122 +142,134 @@ class _TasksViewState extends State<TasksView> {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          tareasUsuario.isEmpty
-                              ? const Text(
-                                  'Sin tareas hoy',
-                                  style: TextStyle(fontStyle: FontStyle.italic),
-                                )
-                              : ListView.builder(
-                                  itemCount: tareasUsuario.length,
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    final tarea = tareasUsuario[index];
-                                    return Card(
-                                      margin: const EdgeInsets.symmetric(
-                                        vertical: 4,
-                                      ),
-                                      elevation: 2,
-                                      child: ListTile(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                              horizontal: 8,
-                                              vertical: 16,
-                                            ),
-                                        title: Text(
-                                          tarea.titulo,
-                                          style: TextStyle(
-                                            decoration:
-                                                (tarea.estado == 'hecha' ||
-                                                    tarea.estado == 'validada')
-                                                ? TextDecoration.lineThrough
-                                                : TextDecoration.none,
-                                          ),
+                          Expanded(
+                            child: tareasUsuario.isEmpty
+                                ? const Text(
+                                    'Sin tareas hoy',
+                                    style: TextStyle(
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  )
+                                : ListView.builder(
+                                    itemCount: tareasUsuario.length,
+                                    shrinkWrap: true,
+
+                                    itemBuilder: (context, index) {
+                                      final tarea = tareasUsuario[index];
+                                      return Card(
+                                        margin: const EdgeInsets.symmetric(
+                                          vertical: 4,
                                         ),
-                                        subtitle: Text(
-                                          tarea.descripcion,
-                                          style: TextStyle(
-                                            decoration: tarea.estado == 'hecha'
-                                                ? TextDecoration.lineThrough
-                                                : TextDecoration.none,
-                                            fontStyle: tarea.estado == 'hecha'
-                                                ? FontStyle.italic
-                                                : FontStyle.normal,
-                                          ),
-                                        ),
-                                        trailing: SizedBox(
-                                          width: 48,
-                                          height: 56,
-                                          child: Stack(
-                                            clipBehavior: Clip.none,
-                                            children: [
-                                              Positioned(
-                                                top: -18,
-                                                right: 2,
-                                                child: Icon(
-                                                  tarea.prioridad == 'Alta'
-                                                      ? Icons.flash_on
-                                                      : tarea.prioridad ==
-                                                            'Media'
-                                                      ? Icons.access_time
-                                                      : Icons.hourglass_bottom,
-                                                  color:
-                                                      tarea.prioridad == 'Alta'
-                                                      ? Colors.red
-                                                      : tarea.prioridad ==
-                                                            'Media'
-                                                      ? Colors.amber
-                                                      : Colors.green,
-                                                  size: 22,
-                                                ),
+                                        elevation: 2,
+                                        child: ListTile(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                horizontal: 8,
+                                                vertical: 16,
                                               ),
-                                              Positioned(
-                                                bottom: -15,
-                                                right: -2,
-                                                child: IconButton(
-                                                  iconSize: 26,
-                                                  padding: EdgeInsets.zero,
-                                                  splashRadius: 20,
-                                                  icon: Icon(
-                                                    (tarea.estado == 'hecha' ||
-                                                            tarea.estado ==
-                                                                'validada')
-                                                        ? Icons.check_circle
+                                          title: Text(
+                                            tarea.titulo,
+                                            style: TextStyle(
+                                              decoration:
+                                                  (tarea.estado == 'hecha' ||
+                                                      tarea.estado ==
+                                                          'validada')
+                                                  ? TextDecoration.lineThrough
+                                                  : TextDecoration.none,
+                                            ),
+                                          ),
+
+                                          subtitle: Text(
+                                            tarea.descripcion,
+                                            style: TextStyle(
+                                              decoration:
+                                                  tarea.estado == 'hecha'
+                                                  ? TextDecoration.lineThrough
+                                                  : TextDecoration.none,
+                                              fontStyle: tarea.estado == 'hecha'
+                                                  ? FontStyle.italic
+                                                  : FontStyle.normal,
+                                            ),
+                                          ),
+                                          trailing: SizedBox(
+                                            width: 48,
+                                            height: 56,
+                                            child: Stack(
+                                              clipBehavior: Clip.none,
+                                              children: [
+                                                Positioned(
+                                                  top: -18,
+                                                  right: 2,
+                                                  child: Icon(
+                                                    tarea.prioridad == 'Alta'
+                                                        ? Icons.flash_on
+                                                        : tarea.prioridad ==
+                                                              'Media'
+                                                        ? Icons.access_time
                                                         : Icons
-                                                              .radio_button_unchecked,
-                                                    color: getColor(tarea),
+                                                              .hourglass_bottom,
+                                                    color:
+                                                        tarea.prioridad ==
+                                                            'Alta'
+                                                        ? Colors.red
+                                                        : tarea.prioridad ==
+                                                              'Media'
+                                                        ? Colors.amber
+                                                        : Colors.green,
+                                                    size: 22,
                                                   ),
-                                                  onPressed: () async {
-                                                    final nuevoEstado =
-                                                        tarea.estado == 'hecha'
-                                                        ? 'pendiente'
-                                                        : 'hecha';
-                                                    await controller
-                                                        .cambiarEstado(
-                                                          tarea,
-                                                          nuevoEstado,
-                                                        );
-                                                  },
+                                                ),
+                                                Positioned(
+                                                  bottom: -15,
+                                                  right: -2,
+                                                  child: IconButton(
+                                                    iconSize: 26,
+                                                    padding: EdgeInsets.zero,
+                                                    splashRadius: 20,
+                                                    icon: Icon(
+                                                      (tarea.estado ==
+                                                                  'hecha' ||
+                                                              tarea.estado ==
+                                                                  'validada')
+                                                          ? Icons.check_circle
+                                                          : Icons
+                                                                .radio_button_unchecked,
+                                                      color: getColor(tarea),
+                                                    ),
+                                                    onPressed: () async {
+                                                      final nuevoEstado =
+                                                          tarea.estado ==
+                                                              'hecha'
+                                                          ? 'pendiente'
+                                                          : 'hecha';
+                                                      await controller
+                                                          .cambiarEstado(
+                                                            tarea,
+                                                            nuevoEstado,
+                                                          );
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) => TaskDetailView(
+                                                  tarea: tarea,
+                                                  user: widget.user,
                                                 ),
                                               ),
-                                            ],
-                                          ),
+                                            );
+                                          },
                                         ),
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) => TaskDetailView(
-                                                tarea: tarea,
-                                                user: widget.user,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  },
-                                ),
+                                      );
+                                    },
+                                  ),
+                          ),
                         ],
                       ),
                     );

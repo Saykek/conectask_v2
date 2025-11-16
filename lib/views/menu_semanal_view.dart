@@ -1,7 +1,7 @@
 import 'package:conectask_v2/models/menu_dia_model.dart';
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/views/menu_semanal_edit_view.dart';
-import 'package:conectask_v2/Utils/date_utils.dart' as miFecha;
+import 'package:conectask_v2/utils/date_utils.dart' as miFecha;
 import 'package:flutter/material.dart';
 
 class MenuSemanalView extends StatelessWidget {
