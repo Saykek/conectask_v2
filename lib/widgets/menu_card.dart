@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
 import '../models/comida_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MenuCard extends StatelessWidget {
   final ComidaModel? comida;
 
-  const MenuCard({
-    super.key,
-    required this.comida,
-  });
+  const MenuCard({super.key, required this.comida});
+
+  Future<void> _abrirReceta(BuildContext context) async {
+    if (comida?.url != null && comida!.url!.isNotEmpty) {
+      final uri = Uri.parse(comida!.url!);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No se pudo abrir el enlace')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No hay receta disponible')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +34,7 @@ class MenuCard extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
+            // Foto o icono de comida
             Container(
               width: 80,
               height: 80,
@@ -37,10 +53,22 @@ class MenuCard extends StatelessWidget {
                   : null,
             ),
             const SizedBox(width: 12),
+            // Nombre del plato
             Expanded(
               child: Text(
                 comida?.nombre ?? 'Sin asignar',
-                style: const TextStyle(fontSize: 14, color: Colors.black87),
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+            // Icono de acción a la derecha con tooltip
+            Tooltip(
+              message: "Ver receta",
+              child: IconButton(
+                icon: const Icon(Icons.receipt_long),
+                onPressed: () => _abrirReceta(context),
               ),
             ),
           ],
