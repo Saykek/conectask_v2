@@ -2,14 +2,14 @@ import 'package:conectask_v2/models/comida_model.dart';
 
 class MenuDiaModel {
   final String dia;
-  ComidaModel? almuerzo;
+  ComidaModel? comida;
   ComidaModel? cena;
 
-  MenuDiaModel({required this.dia, this.almuerzo, this.cena});
+  MenuDiaModel({required this.dia, this.comida, this.cena});
 
   Map<String, dynamic> toMap() {
     return {
-      if (almuerzo != null) 'almuerzo': almuerzo!.toMap(),
+      if (comida != null) 'comida': comida!.toMap(),
       if (cena != null) 'cena': cena!.toMap(),
     };
   }
@@ -21,11 +21,11 @@ class MenuDiaModel {
 
     return MenuDiaModel(
       dia: dia,
-      almuerzo: data['almuerzo'] == null
+      comida: data['comida'] == null
           ? null
-          : data['almuerzo'] is String
-          ? ComidaModel(nombre: data['almuerzo'])
-          : ComidaModel.fromMap(Map<String, dynamic>.from(data['almuerzo'])),
+          : data['comida'] is String
+          ? ComidaModel(nombre: data['comida'])
+          : ComidaModel.fromMap(Map<String, dynamic>.from(data['comida'])),
       cena: data['cena'] == null
           ? null
           : data['cena'] is String

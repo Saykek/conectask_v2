@@ -1,8 +1,8 @@
 /*
-Resumen de la app de menú semanal:
+Resumen de la app de gestion familiar:
 
 ************** Modelo: 
-- MenuDiaModel con almuerzo, cena, recetaAlmuerzo, recetaCena
+- MenuDiaModel con comida, cena, recetacomida, recetaCena
 - Comida model
 - Configuracion model
 - Examen model
@@ -46,6 +46,7 @@ Resumen de la app de menú semanal:
 - recompensa service
 - tarea service
 - user service
+- receta service
 
 *************** Utils
 - color utils
@@ -60,6 +61,7 @@ Resumen de la app de menú semanal:
 - tarjeta alumno
 - tarea asignatura
 - temporizador estudio
+- autocompletar
 
 **************** theme
 - app theme
@@ -105,7 +107,7 @@ Resumen de la app de menú semanal:
 - crear boton cerrar sesion 20-30 min ✅
 - crear niños desde config y editarlos ✅
 - quitar modulo de configuracion del home del niño
-- al validar una tarea los puntos se suman en un sitio pero en otro nol
+- al validar una tarea los puntos se suman en un sitio pero en otro no
 - Una vez que validas la tarea si luego la dejas como no hecha al volver a darla ya sale validad, no pasa por el paso
 intermedio, y los puntos siguen sumandos.
 

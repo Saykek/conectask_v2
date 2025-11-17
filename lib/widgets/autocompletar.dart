@@ -1,0 +1,51 @@
+import 'package:conectask_v2/models/comida_model.dart';
+import 'package:flutter/material.dart';
+
+class Autocompletar extends StatelessWidget {
+  final String label;
+  final String? initial;
+  final List<ComidaModel> recetasDisponibles;
+  final Function(String) onChanged;
+  final Function(ComidaModel) onSelected;
+
+  const Autocompletar({
+    super.key,
+    required this.label,
+    this.initial,
+    required this.recetasDisponibles,
+    required this.onChanged,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Autocomplete<ComidaModel>(
+      optionsBuilder: (TextEditingValue textEditingValue) {
+        if (textEditingValue.text.isEmpty) {
+          return const Iterable<ComidaModel>.empty();
+        }
+        return recetasDisponibles.where(
+          (receta) => receta.nombre.toLowerCase().contains(
+                textEditingValue.text.toLowerCase(),
+              ),
+        );
+      },
+      displayStringForOption: (ComidaModel receta) => receta.nombre,
+      onSelected: onSelected,
+      fieldViewBuilder: (context, textController, focusNode, onFieldSubmitted) {
+        if (initial != null && textController.text.isEmpty) {
+          textController.text = initial!;
+        }
+        return TextField(
+          controller: textController,
+          focusNode: focusNode,
+          decoration: InputDecoration(
+            labelText: label,
+            hintText: 'Escribe o selecciona',
+          ),
+          onChanged: onChanged,
+        );
+      },
+    );
+  }
+}
