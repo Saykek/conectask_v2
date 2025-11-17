@@ -22,10 +22,11 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
   @override
   void initState() {
     super.initState();
+
     // Genera todos los días del mes actual
-    fechasMes = miFecha.DateUtils.diasDesdeHoyHastaFinMes()
-    .map((d) => d['fecha'] as DateTime)
-    .toList();
+    fechasMes = miFecha.DateUtils.diasDelMes(DateTime.now())
+        .map((d) => d['fecha'] as DateTime)
+        .toList();
 
     // Selección inicial: el día actual
     diaSeleccionado = DateTime.now();
@@ -34,8 +35,8 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
   @override
   Widget build(BuildContext context) {
     // Convertimos la fecha seleccionada al nombre del día en español
-    final nombreDia = miFecha.DateUtils.diasSemana()[diaSeleccionado.weekday - 1];
-
+    final nombreDia =
+        miFecha.DateUtils.diasSemana()[diaSeleccionado.weekday - 1];
 
     final MenuDiaModel diaModel = MenuDiaModel.fromMap(
       nombreDia,
@@ -63,7 +64,7 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
       ),
       body: Column(
         children: [
-          // Tira horizontal de días
+          // Tira horizontal de días (el scroll se maneja dentro del widget)
           TiraDiasWidget(
             fechas: fechasMes,
             diaSeleccionado: diaSeleccionado,
@@ -73,18 +74,19 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
               });
             },
           ),
+          // Día seleccionado en grande
           Padding(
-  padding: const EdgeInsets.symmetric(vertical: 12),
-  child: Text(
-    miFecha.DateUtils.ponerMayuscula(
-      miFecha.DateUtils.diasSemana()[diaSeleccionado.weekday - 1],
-    ),
-    style: const TextStyle(
-      fontSize: 22,
-      fontWeight: FontWeight.bold,
-    ),
-  ),
-),
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Text(
+              miFecha.DateUtils.ponerMayuscula(
+                miFecha.DateUtils.diasSemana()[diaSeleccionado.weekday - 1],
+              ),
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           const SizedBox(height: 16),
           // Tarjetas de comida y cena
           Expanded(

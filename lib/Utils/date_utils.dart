@@ -33,12 +33,12 @@ class DateUtils {
   }
 
   /// Devuelve todos los días del mes como lista de mapas.
-  static List<Map<String, dynamic>> diasDesdeHoyHastaFinMes() {
-  final hoy = DateTime.now();
-  final ultimoDia = DateTime(hoy.year, hoy.month + 1, 0);
+ static List<Map<String, dynamic>> diasDelMes(DateTime fecha) {
+  final primerDia = DateTime(fecha.year, fecha.month, 1);
+  final ultimoDia = DateTime(fecha.year, fecha.month + 1, 0);
 
-  return List.generate(ultimoDia.day - hoy.day + 1, (i) {
-    final dia = hoy.add(Duration(days: i));
+  return List.generate(ultimoDia.day, (i) {
+    final dia = primerDia.add(Duration(days: i));
     final letra = ['L','M','X','J','V','S','D'][dia.weekday - 1];
     return {
       'letra': letra,

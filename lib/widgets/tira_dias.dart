@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TiraDiasWidget extends StatelessWidget {
+class TiraDiasWidget extends StatefulWidget {
   final List<DateTime> fechas;
   final DateTime diaSeleccionado;
   final Function(DateTime) onSelectDia;
@@ -11,6 +11,37 @@ class TiraDiasWidget extends StatelessWidget {
     required this.diaSeleccionado,
     required this.onSelectDia,
   });
+
+  @override
+  State<TiraDiasWidget> createState() => _TiraDiasWidgetState();
+}
+
+class _TiraDiasWidgetState extends State<TiraDiasWidget> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Después de construir la vista, desplaza el scroll hasta el día actual
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final indexHoy = widget.fechas.indexWhere((f) =>
+          f.day == DateTime.now().day &&
+          f.month == DateTime.now().month &&
+          f.year == DateTime.now().year);
+
+      if (indexHoy != -1) {
+        // 70.0 es el ancho aproximado de cada item
+        _scrollController.jumpTo(indexHoy * 70.0);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   bool esHoy(DateTime fecha) {
     final hoy = DateTime.now();
@@ -23,46 +54,51 @@ class TiraDiasWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 100,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: fechas.length,
-        itemBuilder: (context, index) {
-          final fecha = fechas[index];
-          final letra = ['L','M','X','J','V','S','D'][fecha.weekday - 1];
-          final isSelected = fecha.day == diaSeleccionado.day &&
-              fecha.month == diaSeleccionado.month &&
-              fecha.year == diaSeleccionado.year;
+      child: Scrollbar(
+        controller: _scrollController,
+        thumbVisibility: false, // el scroll funciona pero no se ve la barra
+        child: ListView.builder(
+          controller: _scrollController,
+          scrollDirection: Axis.horizontal,
+          itemCount: widget.fechas.length,
+          itemBuilder: (context, index) {
+            final fecha = widget.fechas[index];
+            final letra = ['L','M','X','J','V','S','D'][fecha.weekday - 1];
+            final isSelected = fecha.day == widget.diaSeleccionado.day &&
+                fecha.month == widget.diaSeleccionado.month &&
+                fecha.year == widget.diaSeleccionado.year;
 
-          return GestureDetector(
-            onTap: () => onSelectDia(fecha),
-            child: Container(
-              width: 70,
-              margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-              child: Column(
-                children: [
-                  Text(letra, style: const TextStyle(fontSize: 12)),
-                  const SizedBox(height: 4),
-                  CircleAvatar(
-                    radius: 22,
-                    backgroundColor: esHoy(fecha)
-                        ? Colors.redAccent
-                        : (isSelected ? Colors.blueAccent : Colors.grey.shade300),
-                    child: Text(
-                      fecha.day.toString(),
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: (esHoy(fecha) || isSelected)
-                            ? Colors.white
-                            : Colors.black87,
+            return GestureDetector(
+              onTap: () => widget.onSelectDia(fecha),
+              child: Container(
+                width: 70,
+                margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                child: Column(
+                  children: [
+                    Text(letra, style: const TextStyle(fontSize: 12)),
+                    const SizedBox(height: 4),
+                    CircleAvatar(
+                      radius: 22,
+                      backgroundColor: esHoy(fecha)
+                          ? Colors.redAccent
+                          : (isSelected ? Colors.blueAccent : Colors.grey.shade300),
+                      child: Text(
+                        fecha.day.toString(),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: (esHoy(fecha) || isSelected)
+                              ? Colors.white
+                              : Colors.black87,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
