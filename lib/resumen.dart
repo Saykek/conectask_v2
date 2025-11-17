@@ -1,27 +1,88 @@
 /*
 Resumen de la app de menú semanal:
 
-- Modelo: MenuDiaModel con almuerzo, cena, recetaAlmuerzo, recetaCena
-- Vista: ListView vertical con botón "Ver receta"
+************** Modelo: 
+- MenuDiaModel con almuerzo, cena, recetaAlmuerzo, recetaCena
+- Comida model
+- Configuracion model
+- Examen model
+- recompensa model
+- tarea model
+- user model
+
+************** Vista: 
+- aula view
+- calendar view
+- colegio view
+- configuracion view
+- crear nino view
+- debug view
+- home view
+- login view
+- menu semanal edit view
+- menu semanal view 
+- prueba imagen view
+- recompensa add view
+- recompensa detail view
+- recompensas view
+- register view
+- task add view 
+- task detail view
+- task edit view
+- task view 
+
+************** Controllers:
+- colegio controller
+- configuracion controller
+- login controller
+- menu semanal controller
+- recompensa controller
+- tarea controller
+- usuario controller
+
+************** Services
+- configuracion service
+- menu semanal service
+- recompensa service
+- tarea service
+- user service
+
+*************** Utils
+- color utils
+- date utils
+- text utils
+- usuarios local
+
+*************** widgets
+- lista recompensa
+- navegacion
+- resumen recompensas
+- tarjeta alumno
+- tarea asignatura
+- temporizador estudio
+
+**************** theme
+- app theme
+- colegio theme
+
+
 - Firebase:
-  - Realtime Database: guarda menú y enlaces
-  - Storage: subir PDFs, usar reglas públicas en /recetas/
+  - Realtime Database: guarda menú
+  - guarda enlaces ?
+  - Guarda usuarios
+  - Guarda tareas
+  - Guarda recompensas
+
 - Errores resueltos:
   - Tipos Map<String, dynamic> vs Map<String, String>
-- Siguientes pasos:
-  - Subir PDFs
-  - Mostrar recetas
-  - Crear vista de edición
-  - para crear menu que se pueda escribir... 
-*/
-/* MVC 
-- CONFIGURACION OK
-- MENU SEMANAL OK ( falta incluir recetas, foto...)
-*/
-/*                                                         *********** PENDIENTE *************
+  - scroll horizontal
+
+
+
+                                                         *********** PENDIENTE *************
 
 - Añadir para repetir las tareas X dias 1.5-2 horas
-- Scroll horizontal en tareas
+- Scroll horizontal en tareas ✅
 - Poner autocompletar en tareas y apartado de puntos. ✅
 - Cambiar logo tareas de ver en calendario o seleccionar dias ✅
 - Añadir para enlace PDF 30-45 min
@@ -37,7 +98,7 @@ Resumen de la app de menú semanal:
 - Recordatorios automáticos: para tareas pendientes o próximas.2-3 horas
 - Historial de tareas completadas: con filtros por fecha, tipo o responsable.1.5-2 horas
 - horario en tareas? 30-45 min
-- Los colores de las tareas se tienen que poner aleatoriamente segun se crea usuario 30-45 min
+- Los colores de las tareas se tienen que poner aleatoriamente segun se crea usuario 30-45 min ✅
 - quitar insignias fijas de recompensas y que se puedan añadir nuevas desde firebase 2-4 horas
 - Recompensas salgan usuarios reales ✅
 - en recompensas perfil niño no se rellena la barra progresiva cuando tiene puntos✅
@@ -110,7 +171,8 @@ Recomendación de orden para implementar
         al pulsar en el globo terraqueo se abrira otra cosa.. pero en el movil no podra verse asi
         imagino...(POR AHORA ESTO LO VOY A DEJAR PARA LINEAS FUTURAS), 
         - ya se cogen los usuarios reales de la base de datos de realtime.
-        -
+        - Scroll en tareas y usuaarios.
+
         Fijate en los ✅ y asi sabras lo que llevo hecho.
     Necesito que me digas en que clase y lugar va cada parte de codigo que me proporciones. Paso por
     paso, y hasta que no te de el ok no me pongas nada.
