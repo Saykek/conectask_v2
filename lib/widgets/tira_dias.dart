@@ -22,8 +22,6 @@ class _TiraDiasWidgetState extends State<TiraDiasWidget> {
   @override
   void initState() {
     super.initState();
-
-    // Después de construir la vista, desplaza el scroll hasta el día actual
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final indexHoy = widget.fechas.indexWhere((f) =>
           f.day == DateTime.now().day &&
@@ -31,7 +29,6 @@ class _TiraDiasWidgetState extends State<TiraDiasWidget> {
           f.year == DateTime.now().year);
 
       if (indexHoy != -1) {
-        // 70.0 es el ancho aproximado de cada item
         _scrollController.jumpTo(indexHoy * 70.0);
       }
     });
@@ -56,7 +53,7 @@ class _TiraDiasWidgetState extends State<TiraDiasWidget> {
       height: 100,
       child: Scrollbar(
         controller: _scrollController,
-        thumbVisibility: false, // el scroll funciona pero no se ve la barra
+        thumbVisibility: false,
         child: ListView.builder(
           controller: _scrollController,
           scrollDirection: Axis.horizontal,

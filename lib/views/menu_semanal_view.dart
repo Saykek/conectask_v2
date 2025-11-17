@@ -1,9 +1,11 @@
 import 'package:conectask_v2/models/menu_dia_model.dart';
+import 'package:conectask_v2/views/menu_semanal_detalle_view.dart';
 import 'package:conectask_v2/views/menu_semanal_edit_view.dart';
 import 'package:conectask_v2/widgets/menu_card.dart';
 import 'package:conectask_v2/widgets/tira_dias.dart';
 import 'package:flutter/material.dart';
 import 'package:conectask_v2/utils/date_utils.dart' as miFecha;
+
 
 class MenuSemanalView extends StatefulWidget {
   final Map<String, dynamic> menu;
@@ -22,22 +24,21 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
   @override
   void initState() {
     super.initState();
-
     // Genera todos los días del mes actual
     fechasMes = miFecha.DateUtils.diasDelMes(DateTime.now())
         .map((d) => d['fecha'] as DateTime)
         .toList();
-
     // Selección inicial: el día actual
     diaSeleccionado = DateTime.now();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Convertimos la fecha seleccionada al nombre del día en español
+    // Nombre del día en español
     final nombreDia =
         miFecha.DateUtils.diasSemana()[diaSeleccionado.weekday - 1];
 
+    // Modelo del día
     final MenuDiaModel diaModel = MenuDiaModel.fromMap(
       nombreDia,
       widget.menu[nombreDia],
@@ -64,7 +65,7 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
       ),
       body: Column(
         children: [
-          // Tira horizontal de días (el scroll se maneja dentro del widget)
+          // Tira horizontal de días
           TiraDiasWidget(
             fechas: fechasMes,
             diaSeleccionado: diaSeleccionado,
@@ -81,10 +82,7 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
               miFecha.DateUtils.ponerMayuscula(
                 miFecha.DateUtils.diasSemana()[diaSeleccionado.weekday - 1],
               ),
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(height: 16),
@@ -98,13 +96,39 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
                   child: Text("Comida",
                       style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
-                MenuCard(comida: diaModel.comida),
+                MenuCard(
+                  comida: diaModel.comida,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => MenuSemanalDetalleView(
+                          nombreDia: nombreDia,
+                          comida: diaModel.comida,
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: Text("Cena",
                       style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
-                MenuCard(comida: diaModel.cena),
+                MenuCard(
+                  comida: diaModel.cena,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => MenuSemanalDetalleView(
+                          nombreDia: nombreDia,
+                          comida: diaModel.cena,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),

@@ -1,12 +1,12 @@
-import 'package:conectask_v2/models/comida_model.dart';
 import 'package:flutter/material.dart';
+import '../models/comida_model.dart';
 
 class Autocompletar extends StatelessWidget {
   final String label;
   final String? initial;
   final List<ComidaModel> recetasDisponibles;
-  final Function(String) onChanged;
-  final Function(ComidaModel) onSelected;
+  final ValueChanged<String> onChanged;        // 👈 más claro que Function(String)
+  final ValueChanged<ComidaModel> onSelected;  // 👈 más claro que Function(ComidaModel)
 
   const Autocompletar({
     super.key,
@@ -25,13 +25,13 @@ class Autocompletar extends StatelessWidget {
           return const Iterable<ComidaModel>.empty();
         }
         return recetasDisponibles.where(
-          (receta) => receta.nombre.toLowerCase().contains(
-                textEditingValue.text.toLowerCase(),
-              ),
+          (receta) => (receta.nombre ?? '')
+              .toLowerCase()
+              .contains(textEditingValue.text.toLowerCase()),
         );
       },
-      displayStringForOption: (ComidaModel receta) => receta.nombre,
-      onSelected: onSelected,
+      displayStringForOption: (ComidaModel receta) => receta.nombre ?? '',
+      onSelected: (ComidaModel receta) => onSelected(receta),
       fieldViewBuilder: (context, textController, focusNode, onFieldSubmitted) {
         if (initial != null && textController.text.isEmpty) {
           textController.text = initial!;
@@ -43,7 +43,7 @@ class Autocompletar extends StatelessWidget {
             labelText: label,
             hintText: 'Escribe o selecciona',
           ),
-          onChanged: onChanged,
+          onChanged: (value) => onChanged(value),
         );
       },
     );
