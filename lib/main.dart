@@ -25,11 +25,9 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TareaController()),
-        ChangeNotifierProvider(create: (_) => UsuarioController()), // ✅ nuevo
-        ChangeNotifierProvider(
-          create: (_) => ColegioController(),
-        ), // si lo usas
-        // Añade aquí otros controladores que necesites
+        ChangeNotifierProvider(create: (_) => UsuarioController()), 
+        ChangeNotifierProvider(create: (_) => ColegioController(),), 
+       
       ],
       child: const MyApp(),
     ),

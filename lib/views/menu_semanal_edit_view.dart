@@ -2,6 +2,8 @@ import 'package:conectask_v2/models/comida_model.dart';
 import 'package:conectask_v2/services/receta_service.dart';
 import 'package:conectask_v2/widgets/autocompletar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../controllers/menu_semanal_controller.dart';
 import '../models/menu_dia_model.dart';
 import 'package:conectask_v2/Utils/text_utils.dart';
@@ -36,6 +38,9 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
       menu = datos.map((d) => MenuDiaModel(dia: d.dia)).toList();
       recetasDisponibles = recetas;
       cargando = false;
+      final Set<int> mostrarCampoComida = {};
+      final Set<int> mostrarCampoCena = {};
+
     });
   }
 
@@ -81,95 +86,204 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
     );
   }
 
-  /// Vista responsive para móvil: lista vertical
-  Widget _buildMobileView() {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: menu.length,
-      itemBuilder: (context, index) {
-        final dia = menu[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 12),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  TextUtils.ponerMayuscula(dia.dia),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Autocompletar(
-                  label: "🍽️ Comida",
-                  initial: dia.comida?.nombre,
-                  recetasDisponibles: recetasDisponibles,
-                  onChanged: (value) =>
-                      setState(() => dia.comida = ComidaModel(nombre: value)),
-                  onSelected: (comida) =>
-                      setState(() => dia.comida = comida),
-                ),
-                const SizedBox(height: 8),
-                Autocompletar(
-                  label: "🌙 Cena",
-                  initial: dia.cena?.nombre,
-                  recetasDisponibles: recetasDisponibles,
-                  onChanged: (value) =>
-                      setState(() => dia.cena = ComidaModel(nombre: value)),
-                  onSelected: (comida) =>
-                      setState(() => dia.cena = comida),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  /// Vista responsive para web/escritorio: tabla completa
-  Widget _buildWebView() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: DataTable(
-        columns: const [
-          DataColumn(label: Text('Día')),
-          DataColumn(label: Text('Comida')),
-          DataColumn(label: Text('Cena')),
-        ],
-        rows: menu.map((dia) {
-          return DataRow(
-            cells: [
-              DataCell(Text(TextUtils.ponerMayuscula(dia.dia))),
-              DataCell(
-                Autocompletar(
-                  label: "Comida",
-                  initial: dia.comida?.nombre,
-                  recetasDisponibles: recetasDisponibles,
-                  onChanged: (value) =>
-                      setState(() => dia.comida = ComidaModel(nombre: value)),
-                  onSelected: (comida) =>
-                      setState(() => dia.comida = comida),
+ /// Vista responsive para móvil: lista vertical
+Widget _buildMobileView() {
+  return ListView.builder(
+    padding: const EdgeInsets.all(16),
+    itemCount: menu.length,
+    itemBuilder: (context, index) {
+      final dia = menu[index];
+      return Card(
+        margin: const EdgeInsets.only(bottom: 12),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                TextUtils.ponerMayuscula(dia.dia),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
                 ),
               ),
-              DataCell(
-                Autocompletar(
-                  label: "Cena",
-                  initial: dia.cena?.nombre,
-                  recetasDisponibles: recetasDisponibles,
-                  onChanged: (value) =>
-                      setState(() => dia.cena = ComidaModel(nombre: value)),
-                  onSelected: (comida) =>
-                      setState(() => dia.cena = comida),
-                ),
+              const SizedBox(height: 10),
+
+              // --- Comida ---
+              Row(
+                children: [
+                  Expanded(
+                    child: Autocompletar(
+                      label: "🍽️ Comida",
+                      initial: dia.comida.nombre,
+                      recetasDisponibles: recetasDisponibles,
+                      onChanged: (value) {
+                        setState(() {
+                          dia.comida = dia.comida.copyWith(nombre: value);
+                        });
+                      },
+                      onSelected: (comida) {
+                        setState(() {
+                          dia.comida = comida;
+                        });
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.link),
+                    tooltip: "Copiar enlace",
+                    onPressed: () {
+                      final url = dia.comida.url;
+                      if (url != null && url.isNotEmpty) {
+                        Clipboard.setData(ClipboardData(text: url));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Enlace copiado al portapapeles")),
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 8),
+
+              // --- Cena ---
+              Row(
+                children: [
+                  Expanded(
+                    child: Autocompletar(
+                      label: "🌙 Cena",
+                      initial: dia.cena.nombre,
+                      recetasDisponibles: recetasDisponibles,
+                      onChanged: (value) {
+                        setState(() {
+                          dia.cena = dia.cena.copyWith(nombre: value);
+                        });
+                      },
+                      onSelected: (comida) {
+                        setState(() {
+                          dia.cena = comida;
+                        });
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.link),
+                    tooltip: "Copiar enlace",
+                    onPressed: () {
+                      final url = dia.cena.url;
+                      if (url != null && url.isNotEmpty) {
+                        Clipboard.setData(ClipboardData(text: url));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Enlace copiado al portapapeles")),
+                        );
+                      }
+                    },
+                  ),
+                ],
               ),
             ],
-          );
-        }).toList(),
-      ),
-    );
-  }
+          ),
+        ),
+      );
+    },
+  );
+}
+  /// Vista responsive para web/escritorio: tabla completa
+Widget _buildWebView() {
+  return SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    child: DataTable(
+      columnSpacing: 24,
+      columns: const [
+        DataColumn(label: Text('Día')),
+        DataColumn(label: Text('Comida')),
+        DataColumn(label: Text('Cena')),
+      ],
+      rows: menu.map((dia) {
+        return DataRow(
+          cells: [
+            DataCell(Text(TextUtils.ponerMayuscula(dia.dia))),
+
+            // --- Comida ---
+            DataCell(
+              Row(
+                children: [
+                  Expanded(
+                    child: Autocompletar(
+                      label: "Comida",
+                      initial: dia.comida.nombre,
+                      recetasDisponibles: recetasDisponibles,
+                      onChanged: (value) {
+                        setState(() {
+                          dia.comida = dia.comida.copyWith(nombre: value);
+                        });
+                      },
+                      onSelected: (comida) {
+                        setState(() {
+                          dia.comida = comida;
+                        });
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.link),
+                    tooltip: "Copiar enlace",
+                    onPressed: () {
+                      final url = dia.comida.url;
+                      if (url != null && url.isNotEmpty) {
+                        Clipboard.setData(ClipboardData(text: url));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Enlace copiado al portapapeles")),
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+            // --- Cena ---
+            DataCell(
+              Row(
+                children: [
+                  Expanded(
+                    child: Autocompletar(
+                      label: "Cena",
+                      initial: dia.cena.nombre,
+                      recetasDisponibles: recetasDisponibles,
+                      onChanged: (value) {
+                        setState(() {
+                          dia.cena = dia.cena.copyWith(nombre: value);
+                        });
+                      },
+                      onSelected: (comida) {
+                        setState(() {
+                          dia.cena = comida;
+                        });
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.link),
+                    tooltip: "Copiar enlace",
+                    onPressed: () {
+                      final url = dia.cena.url;
+                      if (url != null && url.isNotEmpty) {
+                        Clipboard.setData(ClipboardData(text: url));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Enlace copiado al portapapeles")),
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      }).toList(),
+    ),
+  );
+}
 }

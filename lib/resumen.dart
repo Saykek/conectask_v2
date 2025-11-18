@@ -21,6 +21,7 @@ Resumen de la app de gestion familiar:
 - login view
 - menu semanal edit view
 - menu semanal view 
+- menu semanal detalle
 - prueba imagen view
 - recompensa add view
 - recompensa detail view
@@ -62,6 +63,7 @@ Resumen de la app de gestion familiar:
 - tarea asignatura
 - temporizador estudio
 - autocompletar
+- menu card
 
 **************** theme
 - app theme
@@ -174,6 +176,7 @@ Recomendación de orden para implementar
         imagino...(POR AHORA ESTO LO VOY A DEJAR PARA LINEAS FUTURAS), 
         - ya se cogen los usuarios reales de la base de datos de realtime.
         - Scroll en tareas y usuaarios.
+        - Modulo menu bastante avanzado
 
         Fijate en los ✅ y asi sabras lo que llevo hecho.
     Necesito que me digas en que clase y lugar va cada parte de codigo que me proporciones. Paso por
