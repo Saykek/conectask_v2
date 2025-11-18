@@ -1,5 +1,3 @@
-
-
 import 'package:conectask_v2/models/comida_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -19,6 +17,12 @@ class RecetaService {
   }
 
   Future<void> guardarReceta(ComidaModel comida) async {
-    await _db.child('recetas').child(comida.nombre.toLowerCase()).set(comida.toMap());
+    final nombre = comida.nombre.trim().toLowerCase();
+
+    if (nombre.isEmpty || nombre.contains(RegExp(r'[.#$\[\]]'))) {
+      throw Exception('Nombre de receta inválido para Firebase: "$nombre"');
+    }
+
+    await _db.child('recetas').child(nombre).set(comida.toMap());
   }
 }

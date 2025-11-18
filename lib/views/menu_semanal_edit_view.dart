@@ -321,6 +321,50 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
                         }
                       },
                     ),
+                    IconButton(
+                      icon: const Icon(Icons.image),
+                      tooltip: "Editar imagen",
+                      onPressed: () async {
+                        final controlador = TextEditingController(
+                          text: dia.comida.foto ?? '',
+                        );
+
+                        final nuevaUrl = await showDialog<String>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Editar imagen de receta'),
+                            content: TextField(
+                              controller: controlador,
+                              decoration: const InputDecoration(
+                                hintText: 'https://imagen.jpg',
+                              ),
+                              keyboardType: TextInputType.url,
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('Cancelar'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  final texto = controlador.text.trim();
+                                  Navigator.pop(context, texto);
+                                },
+                                child: const Text('Guardar'),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (nuevaUrl != null) {
+                          setState(() {
+                            dia.comida = dia.comida.copyWith(foto: nuevaUrl);
+                          });
+
+                          await recetaService.guardarReceta(dia.comida);
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -384,6 +428,50 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
                           setState(() {
                             dia.cena = dia.cena.copyWith(url: nuevaUrl);
                           });
+                        }
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.image),
+                      tooltip: "Editar imagen",
+                      onPressed: () async {
+                        final controlador = TextEditingController(
+                          text: dia.cena.foto ?? '',
+                        );
+
+                        final nuevaUrl = await showDialog<String>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Editar imagen de receta'),
+                            content: TextField(
+                              controller: controlador,
+                              decoration: const InputDecoration(
+                                hintText: 'https://imagen.jpg',
+                              ),
+                              keyboardType: TextInputType.url,
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('Cancelar'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  final texto = controlador.text.trim();
+                                  Navigator.pop(context, texto);
+                                },
+                                child: const Text('Guardar'),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (nuevaUrl != null) {
+                          setState(() {
+                            dia.cena = dia.cena.copyWith(foto: nuevaUrl);
+                          });
+
+                          await recetaService.guardarReceta(dia.cena);
                         }
                       },
                     ),

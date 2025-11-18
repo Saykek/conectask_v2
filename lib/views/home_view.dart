@@ -57,8 +57,8 @@ class _HomeViewState extends State<HomeView> {
 
     cargarDatosIniciales();
 
-    print('UID autenticado por Firebase: $uid');
-    print('ID del modelo recibido: ${widget.user.id}');
+    //print('UID autenticado por Firebase: $uid');
+    //print('ID del modelo recibido: ${widget.user.id}');
 
     if (uid != null && uid == widget.user.id) {
       print('✅ UID coincide. Puedes acceder a Firebase.');
@@ -77,42 +77,44 @@ class _HomeViewState extends State<HomeView> {
     print('Rol del usuario: ${widget.user.rol}');
     return Scaffold(
       appBar: AppBar(
-  title: Text('Bienvenido, ${widget.user.nombre}'),
-  actions: [
-    IconButton(
-      icon: const Icon(Icons.logout),
-      tooltip: 'Cerrar sesión',
-      onPressed: () async {
-        final confirmar = await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('¿Cerrar sesión?'),
-            content: Text('¿Quieres cerrar sesión, ${widget.user.nombre}?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancelar'),
-              ),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Cerrar sesión'),
-              ),
-            ],
-          ),
-        );
+        title: Text('Bienvenido, ${widget.user.nombre}'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Cerrar sesión',
+            onPressed: () async {
+              final confirmar = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('¿Cerrar sesión?'),
+                  content: Text(
+                    '¿Quieres cerrar sesión, ${widget.user.nombre}?',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text('Cancelar'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: const Text('Cerrar sesión'),
+                    ),
+                  ],
+                ),
+              );
 
-        if (confirmar == true) {
-          await FirebaseAuth.instance.signOut();
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (_) => const LoginView()),
-            (route) => false,
-          );
-        }
-      },
-    ),
-  ],
-),
+              if (confirmar == true) {
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginView()),
+                  (route) => false,
+                );
+              }
+            },
+          ),
+        ],
+      ),
       body: Column(
         children: [
           SwitchListTile(

@@ -28,9 +28,9 @@ class TareaService {
 
       await ref.set(data);
 
-      print('✅ Tarea guardada correctamente con ID: $id');
+      //print('✅ Tarea guardada correctamente con ID: $id');
     } catch (e) {
-      print('❌ Error al guardar tarea: $e');
+      // print('❌ Error al guardar tarea: $e');
       rethrow;
     }
   }
