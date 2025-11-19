@@ -20,7 +20,7 @@ class MenuSemanalController {
       // Buscar si ya existe en Firebase, si no crear vacío
       final existente = datos.firstWhere(
         (d) => d.fecha == fechaStr,
-        orElse: () => MenuDiaModel(fecha: fechaStr),
+        orElse: () => MenuDiaModel(fecha: fechaStr), // <-- ahora crea con listas vacías
       );
 
       return existente;

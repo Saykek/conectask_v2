@@ -54,4 +54,18 @@ class DateUtils {
     return "${fecha.year}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}";
   }
 
+  /// Devuelve una lista con los próximos [cantidad] días a partir de [desde].
+static List<Map<String, dynamic>> proximosDias(DateTime desde, int cantidad) {
+  return List.generate(cantidad, (i) {
+    final dia = desde.add(Duration(days: i));
+    final letra = ['L','M','X','J','V','S','D'][dia.weekday - 1];
+    return {
+      'letra': letra,
+      'numero': dia.day,
+      'nombre': diasSemana()[dia.weekday - 1],
+      'fecha': dia,
+    };
+  });
+}
+
 }

@@ -2,6 +2,8 @@ import 'package:conectask_v2/Utils/date_utils.dart' as miFecha;
 import 'package:conectask_v2/models/comida_model.dart';
 import 'package:conectask_v2/services/receta_service.dart';
 import 'package:conectask_v2/widgets/autocompletar.dart';
+import 'package:conectask_v2/widgets/menu_card.dart';
+import 'package:conectask_v2/widgets/tira_dias.dart';
 import 'package:flutter/material.dart';
 import '../controllers/menu_semanal_controller.dart';
 import '../models/menu_dia_model.dart';
@@ -22,73 +24,118 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
   List<ComidaModel> recetasDisponibles = [];
   bool cargando = true;
 
+  // Tira de días (mes completo) + día seleccionado
+  late List<DateTime> fechasMes;
+  DateTime diaSeleccionado = DateTime.now();
+
   @override
   void initState() {
     super.initState();
     cargarDatos();
+
+    // Genera todos los días del mes actual (tira superior)
+    fechasMes = miFecha.DateUtils.diasDelMes(DateTime.now())
+        .map((d) => d['fecha'] as DateTime)
+        .toList();
   }
 
   Future<void> cargarDatos() async {
-  final datos = await controller.cargarMenuMensual(DateTime.now());
-  final recetas = await recetaService.leerRecetas();
+    final datos = await controller.cargarMenuMensual(DateTime.now());
+    final recetas = await recetaService.leerRecetas();
 
-  
+    setState(() {
+      menu = datos;                 // lista completa del mes
+      recetasDisponibles = recetas; // recetas para autocompletar
+      cargando = false;
+    });
+  }
 
-  setState(() {
-    // Ya no recreamos con "dia", usamos directamente los objetos con fecha
-    menu = datos;
-    recetasDisponibles = recetas;
-    cargando = false;
-  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Editar Menú Semanal'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.save),
+            tooltip: 'Guardar menú',
+            onPressed: () async {
+  await controller.guardarMenu(menu);
+
+  for (final dia in menu) {
+    for (final plato in dia.comidas) {
+      if (plato.nombre.isNotEmpty) {
+        await recetaService.guardarReceta(plato);
+      }
+    }
+    for (final plato in dia.cenas) {
+      if (plato.nombre.isNotEmpty) {
+        await recetaService.guardarReceta(plato);
+      }
+    }
+  }
+
+  if (mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Menú guardado correctamente')),
+    );
+    Navigator.pop(context);
+  }
 }
+          ),
+        ],
+      ),
+      body: cargando
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              children: [
+                // Tira superior: mes completo (si cabe, verás el siguiente al hacer scroll)
+                TiraDiasWidget(
+                  fechas: fechasMes,
+                  diaSeleccionado: diaSeleccionado,
+                  onSelectDia: (nuevoDia) {
+                    setState(() {
+                      diaSeleccionado = nuevoDia;
+                    });
+                  },
+                ),
 
-@override
-Widget build(BuildContext context) {
-  final isMobile = MediaQuery.of(context).size.width < 600;
+                // Encabezado con el día seleccionado (solo informativo, no filtra el listado)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Text(
+                    "${miFecha.DateUtils.ponerMayuscula(miFecha.DateUtils.diasSemana()[diaSeleccionado.weekday - 1])} ${diaSeleccionado.day}/${diaSeleccionado.month}",
+                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                ),
 
-  return Scaffold(
-    appBar: AppBar(
-      title: const Text('Editar Menú Semanal'),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.save),
-          tooltip: 'Guardar menú',
-          onPressed: () async {
-            await controller.guardarMenu(menu);
+                // Debajo: listado de edición con autocompletado, limitado a ~10 días
+                Expanded(
+                  child: isMobile ? _buildMobileView() : _buildWebView(),
+                ),
+              ],
+            ),
+    );
+  }
 
-            for (var dia in menu) {
-              if (dia.comida.nombre.isNotEmpty) {
-                await recetaService.guardarReceta(dia.comida);
-              }
-              if (dia.cena.nombre.isNotEmpty) {
-                await recetaService.guardarReceta(dia.cena);
-              }
-            }
+  /// Vista móvil: lista vertical limitada a 10 días
+  Widget _buildMobileView() {
+  // Buscar índice del día actual
+  final hoyStr = miFecha.DateUtils.formatearFecha(DateTime.now());
+  final startIndex = menu.indexWhere((d) => d.fecha == hoyStr);
+  final safeStart = startIndex >= 0 ? startIndex : 0;
 
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Menú guardado correctamente')),
-              );
-              Navigator.pop(context);
-            }
-          },
-        ),
-      ],
-    ),
-    body: cargando
-        ? const Center(child: CircularProgressIndicator())
-        : isMobile
-            ? _buildMobileView()
-            : _buildWebView(),
-  );
-}
- /// Vista responsive para móvil: lista vertical
-Widget _buildMobileView() {
+  // Lista visible: 10 días desde hoy
+  final visibles = menu.skip(safeStart).take(10).toList();
+
   return ListView.builder(
     padding: const EdgeInsets.all(16),
-    itemCount: menu.length,
+    itemCount: visibles.length,
     itemBuilder: (context, index) {
-      final dia = menu[index];
+      final dia = visibles[index];
       final fechaObj = DateTime.parse(dia.fecha);
       final nombreDia = miFecha.DateUtils.diasSemana()[fechaObj.weekday - 1];
 
@@ -108,157 +155,187 @@ Widget _buildMobileView() {
               ),
               const SizedBox(height: 10),
 
-              // --- Comida ---
-              Row(
-  children: [
-    Expanded(
-      child: Autocompletar(
-        label: "🍽️ Comida",
-        initial: dia.comida.nombre,
-        recetasDisponibles: recetasDisponibles,
-        onChanged: (value) {
-          setState(() {
-            menu[index] = menu[index].copyWith(
-              comida: menu[index].comida.copyWith(nombre: value),
-            );
-          });
-        },
-        onSelected: (comida) {
-          setState(() {
-            menu[index] = menu[index].copyWith(comida: comida);
-          });
-        },
-      ),
-    ),
-    IconButton(
-      icon: const Icon(Icons.link),
-      tooltip: "Editar enlace receta",
-      onPressed: () async {
-        final controlador = TextEditingController(
-          text: dia.comida.url ?? '',
-        );
-        final nuevaUrl = await showDialog<String>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Editar enlace de receta'),
-            content: TextField(
-              controller: controlador,
-              decoration: const InputDecoration(hintText: 'https://...'),
-              keyboardType: TextInputType.url,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancelar'),
-              ),
-              TextButton(
-                onPressed: () {
-                  final texto = controlador.text.trim();
-                  Navigator.pop(context, texto);
-                },
-                child: const Text('Guardar'),
-              ),
-            ],
-          ),
-        );
+              // --- Comida: dos platos ---
+              for (int i = 0; i < dia.comidas.length; i++) ...[
+                Row(
+                  children: [
+                    Expanded(
+                      child: Autocompletar(
+                        label: "🍽️ Comida ${i + 1}",
+                        initial: dia.comidas[i].nombre,
+                        recetasDisponibles: recetasDisponibles,
+                        onChanged: (value) {
+                          setState(() {
+                            visibles[index] = visibles[index].copyWith(
+                              comidas: List.from(visibles[index].comidas)
+                                ..[i] = visibles[index].comidas[i].copyWith(nombre: value),
+                            );
+                          });
+                        },
+                        onSelected: (comida) {
+                          setState(() {
+                            visibles[index] = visibles[index].copyWith(
+                              comidas: List.from(visibles[index].comidas)..[i] = comida,
+                            );
+                          });
+                        },
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.link),
+                      tooltip: "Editar enlace receta",
+                      onPressed: () async {
+                        final controlador = TextEditingController(text: dia.comidas[i].url ?? '');
+                        final nuevaUrl = await showDialog<String>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Editar enlace de receta'),
+                            content: TextField(
+                              controller: controlador,
+                              decoration: const InputDecoration(hintText: 'https://...'),
+                              keyboardType: TextInputType.url,
+                            ),
+                            actions: [
+                              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+                              TextButton(onPressed: () => Navigator.pop(context, controlador.text.trim()), child: const Text('Guardar')),
+                            ],
+                          ),
+                        );
+                        if (nuevaUrl != null) {
+                          setState(() {
+                            visibles[index] = visibles[index].copyWith(
+                              comidas: List.from(visibles[index].comidas)
+                                ..[i] = visibles[index].comidas[i].copyWith(url: nuevaUrl),
+                            );
+                          });
+                        }
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.photo),
+                      tooltip: "Añadir foto (URL)",
+                      onPressed: () async {
+                        final controlador = TextEditingController(text: dia.comidas[i].foto ?? '');
+                        final nuevaFoto = await showDialog<String>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Añadir foto de receta'),
+                            content: TextField(
+                              controller: controlador,
+                              decoration: const InputDecoration(hintText: 'https://...'),
+                              keyboardType: TextInputType.url,
+                            ),
+                            actions: [
+                              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+                              TextButton(onPressed: () => Navigator.pop(context, controlador.text.trim()), child: const Text('Guardar')),
+                            ],
+                          ),
+                        );
+                        if (nuevaFoto != null) {
+                          setState(() {
+                            visibles[index] = visibles[index].copyWith(
+                              comidas: List.from(visibles[index].comidas)
+                                ..[i] = visibles[index].comidas[i].copyWith(foto: nuevaFoto),
+                            );
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
 
-        if (nuevaUrl != null) {
-          setState(() {
-            menu[index] = menu[index].copyWith(
-              comida: menu[index].comida.copyWith(url: nuevaUrl),
-            );
-          });
-        }
-      },
-    ),
-    IconButton(
-      icon: const Icon(Icons.photo),
-      tooltip: "Añadir foto (URL)",
-      onPressed: () async {
-        final controlador = TextEditingController(
-          text: dia.comida.foto ?? '',
-        );
-        final nuevaFoto = await showDialog<String>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Añadir foto de receta'),
-            content: TextField(
-              controller: controlador,
-              decoration: const InputDecoration(hintText: 'https://...'),
-              keyboardType: TextInputType.url,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancelar'),
-              ),
-              TextButton(
-                onPressed: () {
-                  final texto = controlador.text.trim();
-                  Navigator.pop(context, texto);
-                },
-                child: const Text('Guardar'),
-              ),
-            ],
-          ),
-        );
-
-        if (nuevaFoto != null) {
-          setState(() {
-            menu[index] = menu[index].copyWith(
-              comida: menu[index].comida.copyWith(foto: nuevaFoto),
-            );
-          });
-        }
-      },
-    ),
-  ],
-),
-
-              const SizedBox(height: 8),
-
-              // --- Cena ---
-              IconButton(
-  icon: const Icon(Icons.photo),
-  tooltip: "Añadir foto (URL)",
-  onPressed: () async {
-    final controlador = TextEditingController(
-      text: dia.cena.foto ?? '',
-    );
-    final nuevaFoto = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Añadir foto de receta'),
-        content: TextField(
-          controller: controlador,
-          decoration: const InputDecoration(hintText: 'https://...'),
-          keyboardType: TextInputType.url,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () {
-              final texto = controlador.text.trim();
-              Navigator.pop(context, texto);
-            },
-            child: const Text('Guardar'),
-          ),
-        ],
-      ),
-    );
-
-    if (nuevaFoto != null) {
-      setState(() {
-        menu[index] = menu[index].copyWith(
-          cena: menu[index].cena.copyWith(foto: nuevaFoto),
-        );
-      });
-    }
-  },
-),
+              // --- Cena: dos platos ---
+              for (int i = 0; i < dia.cenas.length; i++) ...[
+                Row(
+                  children: [
+                    Expanded(
+                      child: Autocompletar(
+                        label: "🌙 Cena ${i + 1}",
+                        initial: dia.cenas[i].nombre,
+                        recetasDisponibles: recetasDisponibles,
+                        onChanged: (value) {
+                          setState(() {
+                            visibles[index] = visibles[index].copyWith(
+                              cenas: List.from(visibles[index].cenas)
+                                ..[i] = visibles[index].cenas[i].copyWith(nombre: value),
+                            );
+                          });
+                        },
+                        onSelected: (comida) {
+                          setState(() {
+                            visibles[index] = visibles[index].copyWith(
+                              cenas: List.from(visibles[index].cenas)..[i] = comida,
+                            );
+                          });
+                        },
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.link),
+                      tooltip: "Editar enlace receta",
+                      onPressed: () async {
+                        final controlador = TextEditingController(text: dia.cenas[i].url ?? '');
+                        final nuevaUrl = await showDialog<String>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Editar enlace de receta'),
+                            content: TextField(
+                              controller: controlador,
+                              decoration: const InputDecoration(hintText: 'https://...'),
+                              keyboardType: TextInputType.url,
+                            ),
+                            actions: [
+                              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+                              TextButton(onPressed: () => Navigator.pop(context, controlador.text.trim()), child: const Text('Guardar')),
+                            ],
+                          ),
+                        );
+                        if (nuevaUrl != null) {
+                          setState(() {
+                            visibles[index] = visibles[index].copyWith(
+                              cenas: List.from(visibles[index].cenas)
+                                ..[i] = visibles[index].cenas[i].copyWith(url: nuevaUrl),
+                            );
+                          });
+                        }
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.photo),
+                      tooltip: "Añadir foto (URL)",
+                      onPressed: () async {
+                        final controlador = TextEditingController(text: dia.cenas[i].foto ?? '');
+                        final nuevaFoto = await showDialog<String>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Añadir foto de receta'),
+                            content: TextField(
+                              controller: controlador,
+                              decoration: const InputDecoration(hintText: 'https://...'),
+                              keyboardType: TextInputType.url,
+                            ),
+                            actions: [
+                              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+                              TextButton(onPressed: () => Navigator.pop(context, controlador.text.trim()), child: const Text('Guardar')),
+                            ],
+                          ),
+                        );
+                        if (nuevaFoto != null) {
+                          setState(() {
+                            visibles[index] = visibles[index].copyWith(
+                              cenas: List.from(visibles[index].cenas)
+                                ..[i] = visibles[index].cenas[i].copyWith(foto: nuevaFoto),
+                            );
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
             ],
           ),
         ),
@@ -266,241 +343,419 @@ Widget _buildMobileView() {
     },
   );
 }
-  /// Vista responsive para web: tabla con días y menús
-/// Vista responsive para web: tabla con días y menús
-Widget _buildWebView() {
+
+  /// Vista web: DataTable limitada a 10 filas
+  Widget _buildWebView() {
+  // Índice del día actual dentro de 'menu'
+  final hoyStr = miFecha.DateUtils.formatearFecha(DateTime.now());
+  final startIndex = menu.indexWhere((d) => d.fecha == hoyStr);
+  final safeStart = startIndex >= 0 ? startIndex : 0;
+
+  // 10 días desde hoy
+  final visibles = menu.skip(safeStart).take(10).toList();
+
   return SingleChildScrollView(
     padding: const EdgeInsets.all(16),
     child: DataTable(
+      dataRowMinHeight: 90,
+      dataRowMaxHeight: 115,
       columns: const [
         DataColumn(label: Text("Día")),
-        DataColumn(label: Text("Comida")),
-        DataColumn(label: Text("Cena")),
+        DataColumn(label: Text("Comidas")), // Comida 1 arriba, Comida 2 debajo
+        DataColumn(label: Text("Cenas")),   // Cena 1 arriba, Cena 2 debajo
       ],
-      rows: menu.asMap().entries.map((entry) {
+      rows: visibles.asMap().entries.map((entry) {
         final index = entry.key;
         final dia = entry.value;
+        final realIdx = safeStart + index;
         final fechaObj = DateTime.parse(dia.fecha);
         final nombreDia = miFecha.DateUtils.diasSemana()[fechaObj.weekday - 1];
 
         return DataRow(cells: [
+          // Día
           DataCell(Text(
             "${miFecha.DateUtils.ponerMayuscula(nombreDia)} ${fechaObj.day}/${fechaObj.month}",
           )),
-          DataCell(
-            Row(
-              children: [
-                Expanded(
-                  child: Autocompletar(
-                    label: "🍽️",
-                    initial: dia.comida.nombre,
-                    recetasDisponibles: recetasDisponibles,
-                    onChanged: (value) {
-                      setState(() {
-                        menu[index] = menu[index].copyWith(
-                          comida: menu[index].comida.copyWith(nombre: value),
-                        );
-                      });
-                    },
-                    onSelected: (comida) {
-                      setState(() {
-                        menu[index] = menu[index].copyWith(comida: comida);
-                      });
+
+          // Comidas (apiladas)
+          DataCell(Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // 1er Plato (Comida 1)
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 90,
+                    child: Text("1er plato"),
+                  ),
+                  Expanded(
+                    child: Autocompletar(
+                      label: "🍽️",
+                      initial: dia.comidas[0].nombre,
+                      recetasDisponibles: recetasDisponibles,
+                      onChanged: (value) {
+                        setState(() {
+                          menu[realIdx] = menu[realIdx].copyWith(
+                            comidas: List.from(menu[realIdx].comidas)
+                              ..[0] = menu[realIdx].comidas[0].copyWith(nombre: value),
+                          );
+                        });
+                      },
+                      onSelected: (comida) {
+                        setState(() {
+                          menu[realIdx] = menu[realIdx].copyWith(
+                            comidas: List.from(menu[realIdx].comidas)..[0] = comida,
+                          );
+                        });
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.link),
+                    tooltip: "Editar enlace receta",
+                    onPressed: () async {
+                      final controlador = TextEditingController(text: dia.comidas[0].url ?? '');
+                      final nuevaUrl = await showDialog<String>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Editar enlace de receta'),
+                          content: TextField(
+                            controller: controlador,
+                            decoration: const InputDecoration(hintText: 'https://...'),
+                            keyboardType: TextInputType.url,
+                          ),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+                            TextButton(onPressed: () => Navigator.pop(context, controlador.text.trim()), child: const Text('Guardar')),
+                          ],
+                        ),
+                      );
+                      if (nuevaUrl != null) {
+                        setState(() {
+                          menu[realIdx] = menu[realIdx].copyWith(
+                            comidas: List.from(menu[realIdx].comidas)
+                              ..[0] = menu[realIdx].comidas[0].copyWith(url: nuevaUrl),
+                          );
+                        });
+                      }
                     },
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.link),
-                  tooltip: "Editar enlace receta",
-                  onPressed: () async {
-                    final controlador = TextEditingController(
-                      text: dia.comida.url ?? '',
-                    );
-                    final nuevaUrl = await showDialog<String>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Editar enlace de receta'),
-                        content: TextField(
-                          controller: controlador,
-                          decoration: const InputDecoration(hintText: 'https://...'),
-                          keyboardType: TextInputType.url,
+                  IconButton(
+                    icon: const Icon(Icons.photo),
+                    tooltip: "Añadir foto (URL)",
+                    onPressed: () async {
+                      final controlador = TextEditingController(text: dia.comidas[0].foto ?? '');
+                      final nuevaFoto = await showDialog<String>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Añadir foto de receta'),
+                          content: TextField(
+                            controller: controlador,
+                            decoration: const InputDecoration(hintText: 'https://...'),
+                            keyboardType: TextInputType.url,
+                          ),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+                            TextButton(onPressed: () => Navigator.pop(context, controlador.text.trim()), child: const Text('Guardar')),
+                          ],
                         ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('Cancelar'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              final texto = controlador.text.trim();
-                              Navigator.pop(context, texto);
-                            },
-                            child: const Text('Guardar'),
-                          ),
-                        ],
-                      ),
-                    );
-
-                    if (nuevaUrl != null) {
-                      setState(() {
-                        menu[index] = menu[index].copyWith(
-                          comida: menu[index].comida.copyWith(url: nuevaUrl),
-                        );
-                      });
-                    }
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.photo),
-                  tooltip: "Añadir foto (URL)",
-                  onPressed: () async {
-                    final controlador = TextEditingController(
-                      text: dia.comida.foto ?? '',
-                    );
-                    final nuevaFoto = await showDialog<String>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Añadir foto de receta'),
-                        content: TextField(
-                          controller: controlador,
-                          decoration: const InputDecoration(hintText: 'https://...'),
-                          keyboardType: TextInputType.url,
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('Cancelar'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              final texto = controlador.text.trim();
-                              Navigator.pop(context, texto);
-                            },
-                            child: const Text('Guardar'),
-                          ),
-                        ],
-                      ),
-                    );
-
-                    if (nuevaFoto != null) {
-                      setState(() {
-                        menu[index] = menu[index].copyWith(
-                          comida: menu[index].comida.copyWith(foto: nuevaFoto),
-                        );
-                      });
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-          DataCell(
-            Row(
-              children: [
-                Expanded(
-                  child: Autocompletar(
-                    label: "🌙",
-                    initial: dia.cena.nombre,
-                    recetasDisponibles: recetasDisponibles,
-                    onChanged: (value) {
-                      setState(() {
-                        menu[index] = menu[index].copyWith(
-                          cena: menu[index].cena.copyWith(nombre: value),
-                        );
-                      });
-                    },
-                    onSelected: (comida) {
-                      setState(() {
-                        menu[index] = menu[index].copyWith(cena: comida);
-                      });
+                      );
+                      if (nuevaFoto != null) {
+                        setState(() {
+                          menu[realIdx] = menu[realIdx].copyWith(
+                            comidas: List.from(menu[realIdx].comidas)
+                              ..[0] = menu[realIdx].comidas[0].copyWith(foto: nuevaFoto),
+                          );
+                        });
+                      }
                     },
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.link),
-                  tooltip: "Editar enlace receta",
-                  onPressed: () async {
-                    final controlador = TextEditingController(
-                      text: dia.cena.url ?? '',
-                    );
-                    final nuevaUrl = await showDialog<String>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Editar enlace de receta'),
-                        content: TextField(
-                          controller: controlador,
-                          decoration: const InputDecoration(hintText: 'https://...'),
-                          keyboardType: TextInputType.url,
+                ],
+              ),
+              const SizedBox(height: 8),
+              // 2º Plato (Comida 2)
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 90,
+                    child: Text("2º plato"),
+                  ),
+                  Expanded(
+                    child: Autocompletar(
+                      label: "🍽️",
+                      initial: dia.comidas[1].nombre,
+                      recetasDisponibles: recetasDisponibles,
+                      onChanged: (value) {
+                        setState(() {
+                          menu[realIdx] = menu[realIdx].copyWith(
+                            comidas: List.from(menu[realIdx].comidas)
+                              ..[1] = menu[realIdx].comidas[1].copyWith(nombre: value),
+                          );
+                        });
+                      },
+                      onSelected: (comida) {
+                        setState(() {
+                          menu[realIdx] = menu[realIdx].copyWith(
+                            comidas: List.from(menu[realIdx].comidas)..[1] = comida,
+                          );
+                        });
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.link),
+                    tooltip: "Editar enlace receta",
+                    onPressed: () async {
+                      final controlador = TextEditingController(text: dia.comidas[1].url ?? '');
+                      final nuevaUrl = await showDialog<String>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Editar enlace de receta'),
+                          content: TextField(
+                            controller: controlador,
+                            decoration: const InputDecoration(hintText: 'https://...'),
+                            keyboardType: TextInputType.url,
+                          ),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+                            TextButton(onPressed: () => Navigator.pop(context, controlador.text.trim()), child: const Text('Guardar')),
+                          ],
                         ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('Cancelar'),
+                      );
+                      if (nuevaUrl != null) {
+                        setState(() {
+                          menu[realIdx] = menu[realIdx].copyWith(
+                            comidas: List.from(menu[realIdx].comidas)
+                              ..[1] = menu[realIdx].comidas[1].copyWith(url: nuevaUrl),
+                          );
+                        });
+                      }
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.photo),
+                    tooltip: "Añadir foto (URL)",
+                    onPressed: () async {
+                      final controlador = TextEditingController(text: dia.comidas[1].foto ?? '');
+                      final nuevaFoto = await showDialog<String>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Añadir foto de receta'),
+                          content: TextField(
+                            controller: controlador,
+                            decoration: const InputDecoration(hintText: 'https://...'),
+                            keyboardType: TextInputType.url,
                           ),
-                          TextButton(
-                            onPressed: () {
-                              final texto = controlador.text.trim();
-                              Navigator.pop(context, texto);
-                            },
-                            child: const Text('Guardar'),
-                          ),
-                        ],
-                      ),
-                    );
-
-                    if (nuevaUrl != null) {
-                      setState(() {
-                        menu[index] = menu[index].copyWith(
-                          cena: menu[index].cena.copyWith(url: nuevaUrl),
-                        );
-                      });
-                    }
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.photo),
-                  tooltip: "Añadir foto (URL)",
-                  onPressed: () async {
-                    final controlador = TextEditingController(
-                      text: dia.cena.foto ?? '',
-                    );
-                    final nuevaFoto = await showDialog<String>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Añadir foto de receta'),
-                        content: TextField(
-                          controller: controlador,
-                          decoration: const InputDecoration(hintText: 'https://...'),
-                          keyboardType: TextInputType.url,
+                          actions: [
+                            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+                            TextButton(onPressed: () => Navigator.pop(context, controlador.text.trim()), child: const Text('Guardar')),
+                          ],
                         ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('Cancelar'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              final texto = controlador.text.trim();
-                              Navigator.pop(context, texto);
-                            },
-                            child: const Text('Guardar'),
-                          ),
-                        ],
-                      ),
-                    );
+                      );
+                      if (nuevaFoto != null) {
+                        setState(() {
+                          menu[realIdx] = menu[realIdx].copyWith(
+                            comidas: List.from(menu[realIdx].comidas)
+                              ..[1] = menu[realIdx].comidas[1].copyWith(foto: nuevaFoto),
+                          );
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ],
+          )),
 
-                    if (nuevaFoto != null) {
-                      setState(() {
-                        menu[index] = menu[index].copyWith(
-                          cena: menu[index].cena.copyWith(foto: nuevaFoto),
-                        );
-                      });
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
+          // Cenas (apiladas)
+          DataCell(Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Cena 1
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 90,
+                    child: Text("1er plato"),
+                  ),
+                  Expanded(
+                    child: Autocompletar(
+                      label: "🌙",
+                      initial: dia.cenas[0].nombre,
+                      recetasDisponibles: recetasDisponibles,
+                      onChanged: (value) {
+                        setState(() {
+                          menu[realIdx] = menu[realIdx].copyWith(
+                            cenas: List.from(menu[realIdx].cenas)
+                              ..[0] = menu[realIdx].cenas[0].copyWith(nombre: value),
+                          );
+                        });
+                      },
+                      onSelected: (comida) {
+                        setState(() {
+                          menu[realIdx] = menu[realIdx].copyWith(
+                            cenas: List.from(menu[realIdx].cenas)..[0] = comida,
+                          );
+                        });
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.link),
+                    tooltip: "Editar enlace receta",
+                    onPressed: () async {
+                      final controlador = TextEditingController(text: dia.cenas[0].url ?? '');
+                      final nuevaUrl = await showDialog<String>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Editar enlace de receta'),
+                          content: TextField(
+                            controller: controlador,
+                            decoration: const InputDecoration(hintText: 'https://...'),
+                            keyboardType: TextInputType.url,
+                          ),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+                            TextButton(onPressed: () => Navigator.pop(context, controlador.text.trim()), child: const Text('Guardar')),
+                          ],
+                        ),
+                      );
+                      if (nuevaUrl != null) {
+                        setState(() {
+                          menu[realIdx] = menu[realIdx].copyWith(
+                            cenas: List.from(menu[realIdx].cenas)
+                              ..[0] = menu[realIdx].cenas[0].copyWith(url: nuevaUrl),
+                          );
+                        });
+                      }
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.photo),
+                    tooltip: "Añadir foto (URL)",
+                    onPressed: () async {
+                      final controlador = TextEditingController(text: dia.cenas[0].foto ?? '');
+                      final nuevaFoto = await showDialog<String>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Añadir foto de receta'),
+                          content: TextField(
+                            controller: controlador,
+                            decoration: const InputDecoration(hintText: 'https://...'),
+                            keyboardType: TextInputType.url,
+                          ),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+                            TextButton(onPressed: () => Navigator.pop(context, controlador.text.trim()), child: const Text('Guardar')),
+                          ],
+                        ),
+                      );
+                      if (nuevaFoto != null) {
+                        setState(() {
+                          menu[realIdx] = menu[realIdx].copyWith(
+                            cenas: List.from(menu[realIdx].cenas)
+                              ..[0] = menu[realIdx].cenas[0].copyWith(foto: nuevaFoto),
+                          );
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              // Cena 2
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 90,
+                    child: Text("2º plato"),
+                  ),
+                  Expanded(
+                    child: Autocompletar(
+                      label: "🌙",
+                      initial: dia.cenas[1].nombre,
+                      recetasDisponibles: recetasDisponibles,
+                      onChanged: (value) {
+                        setState(() {
+                          menu[realIdx] = menu[realIdx].copyWith(
+                            cenas: List.from(menu[realIdx].cenas)
+                              ..[1] = menu[realIdx].cenas[1].copyWith(nombre: value),
+                          );
+                        });
+                      },
+                      onSelected: (comida) {
+                        setState(() {
+                          menu[realIdx] = menu[realIdx].copyWith(
+                            cenas: List.from(menu[realIdx].cenas)..[1] = comida,
+                          );
+                        });
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.link),
+                    tooltip: "Editar enlace receta",
+                    onPressed: () async {
+                      final controlador = TextEditingController(text: dia.cenas[1].url ?? '');
+                      final nuevaUrl = await showDialog<String>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Editar enlace de receta'),
+                          content: TextField(
+                            controller: controlador,
+                            decoration: const InputDecoration(hintText: 'https://...'),
+                            keyboardType: TextInputType.url,
+                          ),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+                            TextButton(onPressed: () => Navigator.pop(context, controlador.text.trim()), child: const Text('Guardar')),
+                          ],
+                        ),
+                      );
+                      if (nuevaUrl != null) {
+                        setState(() {
+                          menu[realIdx] = menu[realIdx].copyWith(
+                            cenas: List.from(menu[realIdx].cenas)
+                              ..[1] = menu[realIdx].cenas[1].copyWith(url: nuevaUrl),
+                          );
+                        });
+                      }
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.photo),
+                    tooltip: "Añadir foto (URL)",
+                    onPressed: () async {
+                      final controlador = TextEditingController(text: dia.cenas[1].foto ?? '');
+                      final nuevaFoto = await showDialog<String>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Añadir foto de receta'),
+                          content: TextField(
+                            controller: controlador,
+                            decoration: const InputDecoration(hintText: 'https://...'),
+                            keyboardType: TextInputType.url,
+                          ),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+                            TextButton(onPressed: () => Navigator.pop(context, controlador.text.trim()), child: const Text('Guardar')),
+                          ],
+                        ),
+                      );
+                      if (nuevaFoto != null) {
+                        setState(() {
+                          menu[realIdx] = menu[realIdx].copyWith(
+                            cenas: List.from(menu[realIdx].cenas)
+                              ..[1] = menu[realIdx].cenas[1].copyWith(foto: nuevaFoto),
+                          );
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ],
+          )),
         ]);
       }).toList(),
     ),

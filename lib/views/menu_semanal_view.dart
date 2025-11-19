@@ -72,7 +72,7 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
       ),
       body: Column(
         children: [
-          // Tira horizontal de días
+          // ✅ Scroll horizontal de días (NO se toca)
           TiraDiasWidget(
             fechas: fechasMes,
             diaSeleccionado: diaSeleccionado,
@@ -82,6 +82,7 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
               });
             },
           ),
+
           // Día seleccionado en grande
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -91,50 +92,87 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
             ),
           ),
           const SizedBox(height: 16),
-          // Tarjetas de comida y cena
+
+          // ✅ Aquí añadimos lo nuevo: dos platos en comida y dos en cena
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: Text("Comida",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                ),
-                MenuCard(
-                  comida: diaModel.comida,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => MenuSemanalDetalleView(
-                          fecha:fechaStr,
-                          comida: diaModel.comida,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    child: Text("Comida",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  // Primer plato de comida
+                  MenuCard(
+                    comida: diaModel.comidas[0],
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => MenuSemanalDetalleView(
+                            fecha: fechaStr,
+                            comida: diaModel.comidas[0],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: Text("Cena",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                ),
-                MenuCard(
-                  comida: diaModel.cena,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => MenuSemanalDetalleView(
-                          fecha: fechaStr,
-                          comida: diaModel.cena,
+                      );
+                    },
+                  ),
+                  // Segundo plato de comida
+                  MenuCard(
+                    comida: diaModel.comidas[1],
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => MenuSemanalDetalleView(
+                            fecha: fechaStr,
+                            comida: diaModel.comidas[1],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                      );
+                    },
+                  ),
+
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    child: Text("Cena",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  // Primer plato de cena
+                  MenuCard(
+                    comida: diaModel.cenas[0],
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => MenuSemanalDetalleView(
+                            fecha: fechaStr,
+                            comida: diaModel.cenas[0],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  // Segundo plato de cena
+                  MenuCard(
+                    comida: diaModel.cenas[1],
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => MenuSemanalDetalleView(
+                            fecha: fechaStr,
+                            comida: diaModel.cenas[1],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ],

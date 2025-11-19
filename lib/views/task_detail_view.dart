@@ -1,4 +1,3 @@
-import 'package:conectask_v2/utils/usuarios_local.dart';
 import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/services/tarea_sevice.dart';

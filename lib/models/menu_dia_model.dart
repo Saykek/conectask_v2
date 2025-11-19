@@ -1,21 +1,21 @@
 import 'comida_model.dart';
 
 class MenuDiaModel {
-  final String fecha;        // clave yyyy-MM-dd
-  final ComidaModel comida;
-  final ComidaModel cena;
+  final String fecha;                  // clave yyyy-MM-dd
+  final List<ComidaModel> comidas;     // normalmente 2 platos
+  final List<ComidaModel> cenas;       // normalmente 2 platos
 
   MenuDiaModel({
     required this.fecha,
-    ComidaModel? comida,
-    ComidaModel? cena,
-  })  : comida = comida ?? ComidaModel(nombre: ""),
-        cena = cena ?? ComidaModel(nombre: "");
+    List<ComidaModel>? comidas,
+    List<ComidaModel>? cenas,
+  })  : comidas = comidas ?? [ComidaModel(nombre: ""), ComidaModel(nombre: "")],
+        cenas   = cenas   ?? [ComidaModel(nombre: ""), ComidaModel(nombre: "")];
 
   Map<String, dynamic> toMap() {
     return {
-      'comida': comida.toMap(),
-      'cena': cena.toMap(),
+      'comidas': comidas.map((c) => c.toMap()).toList(),
+      'cenas': cenas.map((c) => c.toMap()).toList(),
     };
   }
 
@@ -24,26 +24,33 @@ class MenuDiaModel {
       return MenuDiaModel(fecha: fecha);
     }
 
+    final comidasData = data['comidas'] as List?;
+    final cenasData = data['cenas'] as List?;
+
     return MenuDiaModel(
       fecha: fecha,
-      comida: (data['comida'] == null)
-          ? ComidaModel(nombre: "")
-          : ComidaModel.fromMap(Map<String, dynamic>.from(data['comida'])),
-      cena: (data['cena'] == null)
-          ? ComidaModel(nombre: "")
-          : ComidaModel.fromMap(Map<String, dynamic>.from(data['cena'])),
+      comidas: comidasData != null && comidasData.isNotEmpty
+          ? comidasData
+              .map((c) => ComidaModel.fromMap(Map<String, dynamic>.from(c)))
+              .toList()
+          : [ComidaModel(nombre: ""), ComidaModel(nombre: "")],
+      cenas: cenasData != null && cenasData.isNotEmpty
+          ? cenasData
+              .map((c) => ComidaModel.fromMap(Map<String, dynamic>.from(c)))
+              .toList()
+          : [ComidaModel(nombre: ""), ComidaModel(nombre: "")],
     );
   }
 
   MenuDiaModel copyWith({
     String? fecha,
-    ComidaModel? comida,
-    ComidaModel? cena,
+    List<ComidaModel>? comidas,
+    List<ComidaModel>? cenas,
   }) {
     return MenuDiaModel(
       fecha: fecha ?? this.fecha,
-      comida: comida ?? this.comida,
-      cena: cena ?? this.cena,
+      comidas: comidas ?? this.comidas,
+      cenas: cenas ?? this.cenas,
     );
   }
 }
