@@ -20,27 +20,32 @@ class MenuDiaModel {
   }
 
   static MenuDiaModel fromMap(String fecha, Map<String, dynamic>? data) {
-    if (data == null) {
-      return MenuDiaModel(fecha: fecha);
-    }
+  // Normaliza la fecha al formato yyyy-MM-dd
+  final fechaFormateada = fecha.length > 10
+      ? fecha.substring(0, 10) // si viene como ISO completo
+      : fecha;
 
-    final comidasData = data['comidas'] as List?;
-    final cenasData = data['cenas'] as List?;
-
-    return MenuDiaModel(
-      fecha: fecha,
-      comidas: comidasData != null && comidasData.isNotEmpty
-          ? comidasData
-              .map((c) => ComidaModel.fromMap(Map<String, dynamic>.from(c)))
-              .toList()
-          : [ComidaModel(nombre: ""), ComidaModel(nombre: "")],
-      cenas: cenasData != null && cenasData.isNotEmpty
-          ? cenasData
-              .map((c) => ComidaModel.fromMap(Map<String, dynamic>.from(c)))
-              .toList()
-          : [ComidaModel(nombre: ""), ComidaModel(nombre: "")],
-    );
+  if (data == null) {
+    return MenuDiaModel(fecha: fechaFormateada);
   }
+
+  final comidasData = data['comidas'] as List?;
+  final cenasData = data['cenas'] as List?;
+
+  return MenuDiaModel(
+    fecha: fechaFormateada,
+    comidas: comidasData != null && comidasData.isNotEmpty
+        ? comidasData
+            .map((c) => ComidaModel.fromMap(Map<String, dynamic>.from(c)))
+            .toList()
+        : [ComidaModel(nombre: ""), ComidaModel(nombre: "")],
+    cenas: cenasData != null && cenasData.isNotEmpty
+        ? cenasData
+            .map((c) => ComidaModel.fromMap(Map<String, dynamic>.from(c)))
+            .toList()
+        : [ComidaModel(nombre: ""), ComidaModel(nombre: "")],
+  );
+}
 
   MenuDiaModel copyWith({
     String? fecha,

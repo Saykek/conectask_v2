@@ -2,7 +2,6 @@ import 'package:conectask_v2/Utils/date_utils.dart' as miFecha;
 import 'package:conectask_v2/models/comida_model.dart';
 import 'package:conectask_v2/services/receta_service.dart';
 import 'package:conectask_v2/widgets/autocompletar.dart';
-import 'package:conectask_v2/widgets/menu_card.dart';
 import 'package:conectask_v2/widgets/tira_dias.dart';
 import 'package:flutter/material.dart';
 import '../controllers/menu_semanal_controller.dart';
@@ -19,6 +18,8 @@ class MenuSemanalEditView extends StatefulWidget {
 class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
   final MenuSemanalController controller = MenuSemanalController();
   final RecetaService recetaService = RecetaService();
+  final ScrollController _scrollController = ScrollController();
+
 
   List<MenuDiaModel> menu = [];
   List<ComidaModel> recetasDisponibles = [];
@@ -48,6 +49,18 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
       recetasDisponibles = recetas; // recetas para autocompletar
       cargando = false;
     });
+   // Mover scroll al día actual después de que se construya la vista
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    final hoyStr = miFecha.DateUtils.formatearFecha(DateTime.now());
+    final idxHoy = menu.indexWhere((d) => d.fecha == hoyStr);
+    if (idxHoy >= 0) {
+      // Ajusta el factor según la altura aproximada de cada fila
+      final offset = idxHoy * 100.0;
+      _scrollController.jumpTo(offset);
+    }
+  });
+
+
   }
 
 
@@ -346,15 +359,22 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
 
   /// Vista web: DataTable limitada a 10 filas
   Widget _buildWebView() {
-  // Índice del día actual dentro de 'menu'
+  // Formatear fechas
   final hoyStr = miFecha.DateUtils.formatearFecha(DateTime.now());
-  final startIndex = menu.indexWhere((d) => d.fecha == hoyStr);
-  final safeStart = startIndex >= 0 ? startIndex : 0;
+  final selStr = miFecha.DateUtils.formatearFecha(diaSeleccionado);
 
-  // 10 días desde hoy
-  final visibles = menu.skip(safeStart).take(10).toList();
+  // Buscar índices en el menú
+  final idxHoy = menu.indexWhere((d) => d.fecha == hoyStr);
+  final idxSel = menu.indexWhere((d) => d.fecha == selStr);
+
+  // Elegir inicio: hoy -> seleccionado -> 0
+  final safeStart = idxHoy >= 0 ? idxHoy : (idxSel >= 0 ? idxSel : 0);
+
+  // Mostrar todo el mes 
+  final visibles = menu;
 
   return SingleChildScrollView(
+    controller: _scrollController,
     padding: const EdgeInsets.all(16),
     child: DataTable(
       dataRowMinHeight: 90,
@@ -372,7 +392,6 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
         final nombreDia = miFecha.DateUtils.diasSemana()[fechaObj.weekday - 1];
 
         return DataRow(cells: [
-          // Día
           DataCell(Text(
             "${miFecha.DateUtils.ponerMayuscula(nombreDia)} ${fechaObj.day}/${fechaObj.month}",
           )),

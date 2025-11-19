@@ -9,22 +9,25 @@ class MenuSemanalController {
   Future<List<MenuDiaModel>> cargarMenuMensual(DateTime mes) async {
     final datos = await _service.leerMenu();
 
-    // Generar todas las fechas del mes
-    final diasMes = DateUtils.diasDelMes(mes);
+    // Generar todas las fechas del mes actual
+    final primerDia = DateTime(mes.year, mes.month, 1);
+    final ultimoDia = DateTime(mes.year, mes.month + 1, 0);
 
-    final menuCompleto = diasMes.map((diaMap) {
-      final fecha = diaMap['fecha'] as DateTime;
+    final List<MenuDiaModel> menuCompleto = [];
+
+    for (int i = 0; i < ultimoDia.day; i++) {
+      final fecha = primerDia.add(Duration(days: i));
       final fechaStr =
           "${fecha.year}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}";
 
       // Buscar si ya existe en Firebase, si no crear vacío
       final existente = datos.firstWhere(
         (d) => d.fecha == fechaStr,
-        orElse: () => MenuDiaModel(fecha: fechaStr), // <-- ahora crea con listas vacías
+        orElse: () => MenuDiaModel(fecha: fechaStr),
       );
 
-      return existente;
-    }).toList();
+      menuCompleto.add(existente);
+    }
 
     return menuCompleto;
   }
