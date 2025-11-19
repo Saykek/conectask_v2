@@ -48,4 +48,10 @@ class DateUtils {
     };
   });
 }
+
+/// Devuelve la fecha en formato yyyy-MM-dd (ej: 2025-11-19)
+  static String formatearFecha(DateTime fecha) {
+    return "${fecha.year}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}";
+  }
+
 }

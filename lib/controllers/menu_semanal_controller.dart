@@ -1,29 +1,49 @@
-import 'package:conectask_v2/utils/date_utils.dart' as miFecha;
-import '../models/menu_dia_model.dart';
-import '../services/menu_semanal_service.dart';
+import 'package:conectask_v2/models/menu_dia_model.dart';
+import 'package:conectask_v2/services/menu_semanal_service.dart';
+import 'package:conectask_v2/utils/date_utils.dart';
 
 class MenuSemanalController {
   final MenuSemanalService _service = MenuSemanalService();
 
-  Future<List<MenuDiaModel>> cargarMenu() async {
+  /// Cargar el menú de un mes completo
+  Future<List<MenuDiaModel>> cargarMenuMensual(DateTime mes) async {
     final datos = await _service.leerMenu();
 
-    final diasSemana = miFecha.DateUtils.diasSemana();
+    // Generar todas las fechas del mes
+    final diasMes = DateUtils.diasDelMes(mes);
 
-    // Combinar datos existentes con los días faltantes
-    final menuCompleto = diasSemana.map((dia) {
+    final menuCompleto = diasMes.map((diaMap) {
+      final fecha = diaMap['fecha'] as DateTime;
+      final fechaStr =
+          "${fecha.year}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}";
+
+      // Buscar si ya existe en Firebase, si no crear vacío
       final existente = datos.firstWhere(
-        (d) => d.dia == dia,
-        orElse: () => MenuDiaModel(dia: dia),
+        (d) => d.fecha == fechaStr,
+        orElse: () => MenuDiaModel(fecha: fechaStr),
       );
+
       return existente;
     }).toList();
 
     return menuCompleto;
   }
 
+  /// Guardar un mes completo
   Future<void> guardarMenu(List<MenuDiaModel> menu) async {
-    final data = {for (var dia in menu) dia.dia: dia.toMap()};
+    final data = {for (var dia in menu) dia.fecha: dia.toMap()};
     await _service.guardarMenu(data);
+  }
+
+  /// Guardar un único día
+  Future<void> guardarMenuDia(MenuDiaModel menuDia) async {
+    await _service.guardarMenuDia(menuDia);
+  }
+
+  /// Leer un único día
+  Future<MenuDiaModel?> leerMenuDia(DateTime fecha) async {
+    final fechaStr =
+        "${fecha.year}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}";
+    return await _service.leerMenuDia(fechaStr);
   }
 }

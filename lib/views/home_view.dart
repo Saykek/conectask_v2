@@ -193,10 +193,10 @@ class _HomeViewState extends State<HomeView> {
                           );
                         } else if (modulo['titulo'] == 'Menú semanal') {
                           final controller = MenuSemanalController();
-                          final menuList = await controller.cargarMenu();
+                          final menuList = await controller.cargarMenuMensual(DateTime.now());
 
                           final Map<String, Map<String, dynamic>> menuMap = {
-                            for (var dia in menuList) dia.dia: dia.toMap(),
+                            for (var dia in menuList) dia.fecha: dia.toMap(),
                           };
 
                           Navigator.push(

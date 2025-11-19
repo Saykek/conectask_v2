@@ -1,12 +1,12 @@
-import 'package:conectask_v2/models/comida_model.dart';
+import 'comida_model.dart';
 
 class MenuDiaModel {
-  final String dia;
-  ComidaModel comida;
-  ComidaModel cena;
+  final String fecha;        // clave yyyy-MM-dd
+  final ComidaModel comida;
+  final ComidaModel cena;
 
   MenuDiaModel({
-    required this.dia,
+    required this.fecha,
     ComidaModel? comida,
     ComidaModel? cena,
   })  : comida = comida ?? ComidaModel(nombre: ""),
@@ -19,23 +19,31 @@ class MenuDiaModel {
     };
   }
 
-  static MenuDiaModel fromMap(String dia, Map<String, dynamic>? data) {
+  static MenuDiaModel fromMap(String fecha, Map<String, dynamic>? data) {
     if (data == null) {
-      return MenuDiaModel(dia: dia);
+      return MenuDiaModel(fecha: fecha);
     }
 
     return MenuDiaModel(
-      dia: dia,
+      fecha: fecha,
       comida: (data['comida'] == null)
           ? ComidaModel(nombre: "")
-          : (data['comida'] is String
-              ? ComidaModel(nombre: data['comida'])
-              : ComidaModel.fromMap(Map<String, dynamic>.from(data['comida']))),
+          : ComidaModel.fromMap(Map<String, dynamic>.from(data['comida'])),
       cena: (data['cena'] == null)
           ? ComidaModel(nombre: "")
-          : (data['cena'] is String
-              ? ComidaModel(nombre: data['cena'])
-              : ComidaModel.fromMap(Map<String, dynamic>.from(data['cena']))),
+          : ComidaModel.fromMap(Map<String, dynamic>.from(data['cena'])),
+    );
+  }
+
+  MenuDiaModel copyWith({
+    String? fecha,
+    ComidaModel? comida,
+    ComidaModel? cena,
+  }) {
+    return MenuDiaModel(
+      fecha: fecha ?? this.fecha,
+      comida: comida ?? this.comida,
+      cena: cena ?? this.cena,
     );
   }
 }

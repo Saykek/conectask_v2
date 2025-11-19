@@ -32,16 +32,23 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
     diaSeleccionado = DateTime.now();
   }
 
+  String _formatearFecha(DateTime fecha) {
+    return "${fecha.year}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}";
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Nombre del día en español
+    // Fecha seleccionada en formato yyyy-MM-dd
+    final fechaStr = _formatearFecha(diaSeleccionado);
+
+    // Nombre del día en español (para mostrar)
     final nombreDia =
         miFecha.DateUtils.diasSemana()[diaSeleccionado.weekday - 1];
 
-    // Modelo del día
+    // Modelo del día (usando la fecha como clave en widget.menu)
     final MenuDiaModel diaModel = MenuDiaModel.fromMap(
-      nombreDia,
-      widget.menu[nombreDia],
+      fechaStr,
+      widget.menu[fechaStr],
     );
 
     return Scaffold(
@@ -79,9 +86,7 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Text(
-              miFecha.DateUtils.ponerMayuscula(
-                miFecha.DateUtils.diasSemana()[diaSeleccionado.weekday - 1],
-              ),
+              "${miFecha.DateUtils.ponerMayuscula(nombreDia)} ${diaSeleccionado.day}/${diaSeleccionado.month}",
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
           ),
@@ -103,7 +108,7 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
                       context,
                       MaterialPageRoute(
                         builder: (_) => MenuSemanalDetalleView(
-                          nombreDia: nombreDia,
+                          fecha:fechaStr,
                           comida: diaModel.comida,
                         ),
                       ),
@@ -122,7 +127,7 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
                       context,
                       MaterialPageRoute(
                         builder: (_) => MenuSemanalDetalleView(
-                          nombreDia: nombreDia,
+                          fecha: fechaStr,
                           comida: diaModel.cena,
                         ),
                       ),

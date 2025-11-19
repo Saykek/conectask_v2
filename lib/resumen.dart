@@ -84,17 +84,21 @@ Resumen de la app de gestion familiar:
 
 
                                                          *********** PENDIENTE *************
-
-- Añadir para repetir las tareas X dias 1.5-2 horas
+- Los colores de las tareas se tienen que poner aleatoriamente segun se crea usuario 30-45 min ✅
+- Recompensas salgan usuarios reales ✅
+- en recompensas perfil niño no se rellena la barra progresiva cuando tiene puntos✅
+- crear boton cerrar sesion 20-30 min ✅
+- crear niños desde config y editarlos ✅
 - Scroll horizontal en tareas ✅
 - Poner autocompletar en tareas y apartado de puntos. ✅
 - Cambiar logo tareas de ver en calendario o seleccionar dias ✅
-- Añadir para enlace PDF 30-45 min
 - En los niños que solo se vean sus tareas ✅
 - poner calendario en español y de lunes a domingo ✅
-- Que no se puedan crear tareas en fechas anteriores 15-20 min
 - Cambiar que salga el boton validar cuando sea adulto y no niño. ✅
 - Q en validad por salga el nombre de quien valida.✅
+- Añadir para enlace PDF 30-45 min
+- Añadir para repetir las tareas X dias 1.5-2 horas
+- Que no se puedan crear tareas en fechas anteriores 15-20 min
 - En el registro que no cuenten acentos 20-30 min
 - Mostrar requisitos de contraseña al registrarse 30-45 min
 - Misiones especiales: tareas con recompensas extra si se completan en grupo o en tiempo récord.2-3 horas
@@ -102,12 +106,7 @@ Resumen de la app de gestion familiar:
 - Recordatorios automáticos: para tareas pendientes o próximas.2-3 horas
 - Historial de tareas completadas: con filtros por fecha, tipo o responsable.1.5-2 horas
 - horario en tareas? 30-45 min
-- Los colores de las tareas se tienen que poner aleatoriamente segun se crea usuario 30-45 min ✅
 - quitar insignias fijas de recompensas y que se puedan añadir nuevas desde firebase 2-4 horas
-- Recompensas salgan usuarios reales ✅
-- en recompensas perfil niño no se rellena la barra progresiva cuando tiene puntos✅
-- crear boton cerrar sesion 20-30 min ✅
-- crear niños desde config y editarlos ✅
 - quitar modulo de configuracion del home del niño
 - al validar una tarea los puntos se suman en un sitio pero en otro no
 - Una vez que validas la tarea si luego la dejas como no hecha al volver a darla ya sale validad, no pasa por el paso
@@ -176,7 +175,7 @@ Recomendación de orden para implementar
         imagino...(POR AHORA ESTO LO VOY A DEJAR PARA LINEAS FUTURAS), 
         - ya se cogen los usuarios reales de la base de datos de realtime.
         - Scroll en tareas y usuaarios.
-        - Modulo menu bastante avanzado
+        - Modulo menu bastante avanzado ya tengo la comida y cena en card (widget), muestra foto si la hay, puedo acceder a receta online..
 
         Fijate en los ✅ y asi sabras lo que llevo hecho.
     Necesito que me digas en que clase y lugar va cada parte de codigo que me proporciones. Paso por
