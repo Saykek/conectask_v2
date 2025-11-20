@@ -117,7 +117,7 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
 
     if (idxSel >= 0) {
       // Estimación de altura de cada fila/card
-      // 👉 Ajusta según tu diseño:
+      //  Ajustar diseño:
       // - Móvil: ~100 px por card
       // - Web: ~100 px por fila de DataTable
       final offset = idxSel * 115.0;

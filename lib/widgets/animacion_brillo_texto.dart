@@ -1,0 +1,81 @@
+import 'package:flutter/material.dart';
+
+/// Widget que muestra un texto con un efecto de brillo animado
+class AnimacionBrilloTexto extends StatefulWidget {
+  final String text;
+  final TextStyle? style;
+  final Duration duration;
+  final Color shineColor;
+
+  const AnimacionBrilloTexto({
+    super.key,
+    required this.text,
+    this.style,
+    this.duration = const Duration(seconds: 4),
+    this.shineColor = Colors.blueAccent,
+  });
+
+  @override
+  State<AnimacionBrilloTexto> createState() => _AnimacionBrilloTextoState();
+}
+
+class _AnimacionBrilloTextoState extends State<AnimacionBrilloTexto>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _maskAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: widget.duration,
+    )..repeat(reverse: true);
+
+    _maskAnimation = Tween<double>(begin: -1.5, end: 1.5).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Text(widget.text, style: widget.style),
+        AnimatedBuilder(
+          animation: _maskAnimation,
+          builder: (context, child) {
+            return ShaderMask(
+              blendMode: BlendMode.srcATop,
+              shaderCallback: (bounds) {
+                return LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    Colors.transparent,
+                    widget.shineColor.withOpacity(0.8),
+                    widget.shineColor.withOpacity(0.8),
+                    Colors.transparent,
+                  ],
+                  stops: [
+                    _maskAnimation.value * 0.5 + 0.2,
+                    _maskAnimation.value * 0.5 + 0.5,
+                    _maskAnimation.value * 0.5 + 0.6,
+                    _maskAnimation.value * 0.5 + 0.8,
+                  ],
+                ).createShader(bounds);
+              },
+              child: Text(widget.text, style: widget.style),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}

@@ -1,11 +1,15 @@
 import 'package:conectask_v2/controllers/colegio_controller.dart';
+import 'package:conectask_v2/controllers/home_assistant_controller.dart';
 import 'package:conectask_v2/controllers/usuario_controller.dart';
+import 'package:conectask_v2/models/home_assistant_model.dart';
 import 'package:conectask_v2/models/user_model.dart';
+import 'package:conectask_v2/services/home_assistant_service.dart';
 import 'package:conectask_v2/views/aula_view.dart';
 import 'package:conectask_v2/views/calendar_view.dart';
 import 'package:conectask_v2/views/colegio_view.dart';
 import 'package:conectask_v2/views/configuracion_view.dart';
 import 'package:conectask_v2/views/debug_view.dart';
+import 'package:conectask_v2/views/home_assistant_view.dart';
 import 'package:conectask_v2/views/login_view.dart';
 import 'package:conectask_v2/views/menu_semanal_view.dart';
 import 'package:conectask_v2/controllers/menu_semanal_controller.dart';
@@ -225,7 +229,8 @@ class _HomeViewState extends State<HomeView> {
                                     AulaView(user: widget.user),
                               ),
                             );
-                          } else {
+                          }
+                           else {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -236,7 +241,33 @@ class _HomeViewState extends State<HomeView> {
                               ),
                             );
                           }
-                        } else if (modulo['titulo'] == 'Calendario') {
+                        } else if (modulo['titulo'] == 'Casa') {
+                       // 1. Crear el modelo con tu URL y token
+                       final homeModel = HomeAssistantModel(
+                         baseUrl:  "https://demo.home-assistant.io",   // tu instancia HA
+                         accessToken: "TOKEN_DEMO",    // tu long-lived token
+                           panel: "default",                       // panel lovelace
+                         soloAdmin: true,                        // solo admin puede acceder
+                        );
+
+                           // 2. Crear el servicio
+                      final homeService = HomeAssistantService(homeModel);
+
+                  // 3. Crear el controlador
+                              final homeController = HomeAssistantController(homeService);
+
+  // 4. Navegar a la vista pasando el controlador y el rol del usuario
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => HomeAssistantView(
+        controller: homeController,
+        rolUsuario: widget.user.rol, //"admin" o "niño"
+      ),
+    ),
+  );
+}
+                        else if (modulo['titulo'] == 'Calendario') {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
