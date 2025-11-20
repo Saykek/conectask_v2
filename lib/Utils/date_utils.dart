@@ -1,3 +1,5 @@
+import 'package:conectask_v2/models/menu_dia_model.dart';
+
 class DateUtils {
   /// Devuelve la lista de días de la semana en español (lunes a domingo).
   static List<String> diasSemana() {
@@ -66,6 +68,13 @@ static List<Map<String, dynamic>> proximosDias(DateTime desde, int cantidad) {
       'fecha': dia,
     };
   });
+}
+
+/// Busca el índice de un día dentro de una lista de MenuDiaModel.
+/// Devuelve -1 si no se encuentra.
+static int buscarIndiceDia(List<MenuDiaModel> menu, DateTime dia) {
+  final selStr = formatearFecha(dia);
+  return menu.indexWhere((d) => d.fecha == selStr);
 }
 
 }

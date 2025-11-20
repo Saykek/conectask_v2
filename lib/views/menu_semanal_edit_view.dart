@@ -113,8 +113,24 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
                     setState(() {
                       diaSeleccionado = nuevoDia;
                     });
-                  },
-                ),
+                  final idxSel = miFecha.DateUtils.buscarIndiceDia(menu, nuevoDia);
+
+    if (idxSel >= 0) {
+      // Estimación de altura de cada fila/card
+      // 👉 Ajusta según tu diseño:
+      // - Móvil: ~100 px por card
+      // - Web: ~100 px por fila de DataTable
+      final offset = idxSel * 115.0;
+
+      _scrollController.animateTo(
+        offset,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    }
+  },
+),
+
 
                 // Encabezado con el día seleccionado (solo informativo, no filtra el listado)
                 Padding(
@@ -357,7 +373,7 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
   );
 }
 
-  /// Vista web: DataTable limitada a 10 filas
+  /// Vista web:
   Widget _buildWebView() {
   // Formatear fechas
   final hoyStr = miFecha.DateUtils.formatearFecha(DateTime.now());

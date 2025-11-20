@@ -96,6 +96,8 @@ Resumen de la app de gestion familiar:
 - poner calendario en español y de lunes a domingo ✅
 - Cambiar que salga el boton validar cuando sea adulto y no niño. ✅
 - Q en validad por salga el nombre de quien valida.✅
+- en menu semanal guardo receta pero no se actualiza en la pantalla edit, sino que tengo que salir y volver a entrar.
+- en menu semanal detalle ingredientes, receta, notas no se guardan, no tiene funcionalidad.
 - Añadir para enlace PDF 30-45 min
 - Añadir para repetir las tareas X dias 1.5-2 horas
 - Que no se puedan crear tareas en fechas anteriores 15-20 min
@@ -175,9 +177,11 @@ Recomendación de orden para implementar
         imagino...(POR AHORA ESTO LO VOY A DEJAR PARA LINEAS FUTURAS), 
         - ya se cogen los usuarios reales de la base de datos de realtime.
         - Scroll en tareas y usuaarios.
-        - Modulo menu bastante avanzado ya tengo la comida y cena en card (widget), muestra foto si la hay, puedo acceder a receta online..
+        - Modulo menu bastante avanzado ya tengo la comida y cena en card (widget) con dos platos., muestra foto si la hay, puedo acceder a receta online..
+        pantalla de edit con dos platos y sus iconos, falta que la tira de calendario al pulsar el dia se vaya a ese exactamente.
+        - 
 
-        Fijate en los ✅ y asi sabras lo que llevo hecho.
+        Muy Importante ** Fijate en los ✅ y asi sabras lo que llevo hecho.
     Necesito que me digas en que clase y lugar va cada parte de codigo que me proporciones. Paso por
     paso, y hasta que no te de el ok no me pongas nada.
    
