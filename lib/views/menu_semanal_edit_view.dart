@@ -4,6 +4,7 @@ import 'package:conectask_v2/services/receta_service.dart';
 import 'package:conectask_v2/widgets/autocompletar.dart';
 import 'package:conectask_v2/widgets/tira_dias.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../controllers/menu_semanal_controller.dart';
 import '../models/menu_dia_model.dart';
 
@@ -15,7 +16,8 @@ class MenuSemanalEditView extends StatefulWidget {
   State<MenuSemanalEditView> createState() => _MenuSemanalEditViewState();
 }
 
-class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
+class _MenuSemanalEditViewState extends State<MenuSemanalEditView> with RouteAware {
+
   final MenuSemanalController controller = MenuSemanalController();
   final RecetaService recetaService = RecetaService();
   final ScrollController _scrollController = ScrollController();
@@ -29,16 +31,26 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
   late List<DateTime> fechasMes;
   DateTime diaSeleccionado = DateTime.now();
 
-  @override
-  void initState() {
-    super.initState();
+   @override
+  void didPopNext() {
+    // 👇 Se llama cuando vuelves a esta pantalla
     cargarDatos();
-
-    // Genera todos los días del mes actual (tira superior)
-    fechasMes = miFecha.DateUtils.diasDelMes(DateTime.now())
-        .map((d) => d['fecha'] as DateTime)
-        .toList();
   }
+
+
+  @override
+void initState() {
+  super.initState();
+  // Genera todos los días del mes actual
+  fechasMes = miFecha.DateUtils.diasDelMes(DateTime.now())
+      .map((d) => d['fecha'] as DateTime)
+      .toList();
+  // Selección inicial: el día actual
+  diaSeleccionado = DateTime.now();
+
+  // 👇 Cargar datos al iniciar
+  cargarDatos();
+}
 
   Future<void> cargarDatos() async {
     final datos = await controller.cargarMenuMensual(DateTime.now());
@@ -62,43 +74,54 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
 
 
   }
-
-
+  
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 600;
+
+    
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Editar Menú Semanal'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.save),
-            tooltip: 'Guardar menú',
-            onPressed: () async {
-  await controller.guardarMenu(menu);
+  icon: const Icon(Icons.save),
+  tooltip: 'Guardar menú',
+  onPressed: () async {
+    try {
+      // Guardar todo el menú del mes
+      await controller.guardarMenu(menu);
 
-  for (final dia in menu) {
-    for (final plato in dia.comidas) {
-      if (plato.nombre.isNotEmpty) {
-        await recetaService.guardarReceta(plato);
+      // Guardar recetas nuevas
+      for (final dia in menu) {
+        for (final plato in dia.comidas) {
+          if (plato.nombre.isNotEmpty) {
+            await recetaService.guardarReceta(plato);
+          }
+        }
+        for (final plato in dia.cenas) {
+          if (plato.nombre.isNotEmpty) {
+            await recetaService.guardarReceta(plato);
+          }
+        }
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Menú guardado correctamente')),
+        );
+        Navigator.pop(context, true);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al guardar menú: $e')),
+        );
       }
     }
-    for (final plato in dia.cenas) {
-      if (plato.nombre.isNotEmpty) {
-        await recetaService.guardarReceta(plato);
-      }
-    }
-  }
-
-  if (mounted) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Menú guardado correctamente')),
-    );
-    Navigator.pop(context);
-  }
-}
-          ),
+  },
+),
         ],
       ),
       body: cargando
@@ -141,7 +164,7 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
                   ),
                 ),
 
-                // Debajo: listado de edición con autocompletado, limitado a ~10 días
+                // Debajo: listado de edición con autocompletado
                 Expanded(
                   child: isMobile ? _buildMobileView() : _buildWebView(),
                 ),
@@ -403,7 +426,7 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
       rows: visibles.asMap().entries.map((entry) {
         final index = entry.key;
         final dia = entry.value;
-        final realIdx = safeStart + index;
+        final realIdx = index;
         final fechaObj = DateTime.parse(dia.fecha);
         final nombreDia = miFecha.DateUtils.diasSemana()[fechaObj.weekday - 1];
 
@@ -429,13 +452,18 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
                       initial: dia.comidas[0].nombre,
                       recetasDisponibles: recetasDisponibles,
                       onChanged: (value) {
-                        setState(() {
-                          menu[realIdx] = menu[realIdx].copyWith(
-                            comidas: List.from(menu[realIdx].comidas)
-                              ..[0] = menu[realIdx].comidas[0].copyWith(nombre: value),
-                          );
-                        });
-                      },
+  if (realIdx >= menu.length) {
+    debugPrint("⚠️ Índice fuera de rango: $realIdx (menu.length=${menu.length})");
+    return;
+  }
+
+  setState(() {
+    final comidas = List<ComidaModel>.from(menu[realIdx].comidas);
+    comidas[0] = comidas[0].copyWith(nombre: value);
+
+    menu[realIdx] = menu[realIdx].copyWith(comidas: comidas);
+  });
+},
                       onSelected: (comida) {
                         setState(() {
                           menu[realIdx] = menu[realIdx].copyWith(
@@ -639,6 +667,7 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
                     icon: const Icon(Icons.link),
                     tooltip: "Editar enlace receta",
                     onPressed: () async {
+                      
                       final controlador = TextEditingController(text: dia.cenas[0].url ?? '');
                       final nuevaUrl = await showDialog<String>(
                         context: context,
@@ -657,6 +686,7 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView> {
                       );
                       if (nuevaUrl != null) {
                         setState(() {
+                          
                           menu[realIdx] = menu[realIdx].copyWith(
                             cenas: List.from(menu[realIdx].cenas)
                               ..[0] = menu[realIdx].cenas[0].copyWith(url: nuevaUrl),

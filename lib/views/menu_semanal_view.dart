@@ -1,3 +1,4 @@
+import 'package:conectask_v2/controllers/menu_semanal_controller.dart';
 import 'package:conectask_v2/models/menu_dia_model.dart';
 import 'package:conectask_v2/views/menu_semanal_detalle_view.dart';
 import 'package:conectask_v2/views/menu_semanal_edit_view.dart';
@@ -18,6 +19,9 @@ class MenuSemanalView extends StatefulWidget {
 }
 
 class _MenuSemanalViewState extends State<MenuSemanalView> {
+  final MenuSemanalController controller = MenuSemanalController();
+  List<MenuDiaModel> menu = [];
+  bool cargando = true;
   late List<DateTime> fechasMes;
   late DateTime diaSeleccionado;
 
@@ -36,6 +40,15 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
     return "${fecha.year}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}";
   }
 
+   Future<void> cargarDatos() async {
+    final datos = await controller.cargarMenuMensual(DateTime.now());
+    setState(() {
+      menu = datos;
+      cargando = false;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     // Fecha seleccionada en formato yyyy-MM-dd
@@ -45,11 +58,11 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
     final nombreDia =
         miFecha.DateUtils.diasSemana()[diaSeleccionado.weekday - 1];
 
-    // Modelo del día (usando la fecha como clave en widget.menu)
-    final MenuDiaModel diaModel = MenuDiaModel.fromMap(
-      fechaStr,
-      widget.menu[fechaStr],
-    );
+    // Buscar el día en la lista actualizada (menu), NO en widget.menu
+final diaModel = menu.firstWhere(
+  (d) => d.fecha == fechaStr,
+  orElse: () => MenuDiaModel(fecha: fechaStr),
+);
 
     return Scaffold(
       appBar: AppBar(
@@ -57,17 +70,21 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
         actions: [
           if (widget.user.rol == 'admin')
             IconButton(
-              icon: const Icon(Icons.add),
-              tooltip: 'Editar menú semanal',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const MenuSemanalEditView(),
-                  ),
-                );
-              },
-            ),
+            icon: const Icon(Icons.add),
+            tooltip: 'Editar menú semanal',
+            onPressed: () async {
+              final actualizado = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const MenuSemanalEditView()),
+              );
+
+              if (actualizado == true) {
+                // 👇 recarga los datos al volver
+                await cargarDatos();
+              }
+            },
+          ),
+
         ],
       ),
       body: Column(

@@ -20,9 +20,8 @@ class MenuDiaModel {
   }
 
   static MenuDiaModel fromMap(String fecha, Map<String, dynamic>? data) {
-  // Normaliza la fecha al formato yyyy-MM-dd
   final fechaFormateada = fecha.length > 10
-      ? fecha.substring(0, 10) // si viene como ISO completo
+      ? fecha.substring(0, 10)
       : fecha;
 
   if (data == null) {
@@ -30,20 +29,31 @@ class MenuDiaModel {
   }
 
   final comidasData = data['comidas'] as List?;
-  final cenasData = data['cenas'] as List?;
+final List<ComidaModel> comidasList = comidasData != null
+    ? comidasData
+        .map((c) => ComidaModel.fromMap(Map<String, dynamic>.from(c)))
+        .toList()
+    : [];
+
+while (comidasList.length < 2) {
+  comidasList.add(ComidaModel(nombre: ""));
+}
+
+final cenasData = data['cenas'] as List?;
+final List<ComidaModel> cenasList = cenasData != null
+    ? cenasData
+        .map((c) => ComidaModel.fromMap(Map<String, dynamic>.from(c)))
+        .toList()
+    : [];
+
+while (cenasList.length < 2) {
+  cenasList.add(ComidaModel(nombre: ""));
+}
 
   return MenuDiaModel(
     fecha: fechaFormateada,
-    comidas: comidasData != null && comidasData.isNotEmpty
-        ? comidasData
-            .map((c) => ComidaModel.fromMap(Map<String, dynamic>.from(c)))
-            .toList()
-        : [ComidaModel(nombre: ""), ComidaModel(nombre: "")],
-    cenas: cenasData != null && cenasData.isNotEmpty
-        ? cenasData
-            .map((c) => ComidaModel.fromMap(Map<String, dynamic>.from(c)))
-            .toList()
-        : [ComidaModel(nombre: ""), ComidaModel(nombre: "")],
+    comidas: comidasList,
+    cenas: cenasList,
   );
 }
 
