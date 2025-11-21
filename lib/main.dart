@@ -1,6 +1,7 @@
 import 'package:conectask_v2/controllers/colegio_controller.dart';
 import 'package:conectask_v2/controllers/tarea_controller.dart';
 import 'package:conectask_v2/controllers/usuario_controller.dart';
+import 'package:conectask_v2/theme/app_theme.dart';
 import 'package:conectask_v2/views/login_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Conectask',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: AppTheme.light,          // tema claro
+      darkTheme: AppTheme.dark,       //tema oscuro (si lo defines)
+      themeMode: ThemeMode.system,    // o ThemeMode.light / ThemeMode.dark
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

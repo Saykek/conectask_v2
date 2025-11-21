@@ -113,6 +113,7 @@ Resumen de la app de gestion familiar:
 - al validar una tarea los puntos se suman en un sitio pero en otro no
 - Una vez que validas la tarea si luego la dejas como no hecha al volver a darla ya sale validad, no pasa por el paso
 intermedio, y los puntos siguen sumandos.
+- Boton de claro oscurso se vuelve, hace animacion.
 
 
 🧠 Inteligencia y personalización

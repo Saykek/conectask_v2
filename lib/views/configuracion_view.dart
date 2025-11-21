@@ -1,5 +1,6 @@
 import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/views/crear_nino_view.dart';
+import 'package:conectask_v2/widgets/animacion_toogle.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class _ConfiguracionViewState extends State<ConfiguracionView> {
   final ConfiguracionController _controller = ConfiguracionController();
   bool cargando = true;
   late TextEditingController _urlController;
+  
   List<UserModel> _ninos = [];
 
   @override
@@ -61,18 +63,13 @@ class _ConfiguracionViewState extends State<ConfiguracionView> {
         children: [
           const Text('⚙️ General', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           ListTile(
-            title: const Text('Tema'),
-            trailing: DropdownButton<String>(
-              value: config.tema,
-              items: ['claro', 'oscuro']
-                  .map((t) => DropdownMenuItem(value: t, child: Text(t)))
-                  .toList(),
-              onChanged: (value) {
-                setState(() => _controller.actualizarCampo('tema', value));
-                _controller.guardarConfiguracion(widget.user.id);
-              },
+            title: const Text("Tema"),
+            trailing: AnimacionToggle(
+              configController: _controller,
+              user: widget.user,
             ),
           ),
+
           ListTile(
             title: const Text('Idioma'),
             trailing: DropdownButton<String>(
