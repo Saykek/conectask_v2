@@ -3,7 +3,7 @@ import 'package:conectask_v2/models/comida_model.dart';
 import 'package:conectask_v2/utils/date_utils.dart' as miFecha;
 
 class MenuSemanalDetalleView extends StatelessWidget {
-  final String fecha;              // clave yyyy-MM-dd
+  final String fecha; // clave yyyy-MM-dd
   final ComidaModel? comida;
 
   const MenuSemanalDetalleView({
@@ -44,112 +44,129 @@ class MenuSemanalDetalleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Foto grande
-        if (comida?.foto != null && comida!.foto!.isNotEmpty)
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.network(
-              comida!.foto!,
-              width: double.infinity,
-              height: 200,
-              fit: BoxFit.cover,
-            ),
-          )
-        else
-          Container(
-            width: double.infinity,
-            height: 200,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Icon(Icons.fastfood, size: 80, color: Colors.grey),
-          ),
+    final textTheme = Theme.of(context).textTheme;
 
-        const SizedBox(height: 16),
-
-        // Nombre del plato
-        Text(
-          comida?.nombre ?? 'Sin asignar',
-          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-
-        const SizedBox(height: 24),
-
-        // Ingredientes con botón +
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text("Ingredientes",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            IconButton(
-              icon: const Icon(Icons.add_circle_outline),
-              tooltip: "Añadir ingredientes",
-              onPressed: () => _abrirDialogo(context, "ingredientes", "ingredientes"),
-            ),
-          ],
-        ),
-        Text(comida?.ingredientes ?? 'No especificados'),
-
-        const SizedBox(height: 24),
-
-        // Receta con botón +
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text("Receta",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            IconButton(
-              icon: const Icon(Icons.add_circle_outline),
-              tooltip: "Añadir receta",
-              onPressed: () => _abrirDialogo(context, "receta", "receta"),
-            ),
-          ],
-        ),
-        Text(comida?.receta ?? 'No disponible'),
-
-        const SizedBox(height: 24),
-
-        // Notas con botón +
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text("Notas",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            IconButton(
-              icon: const Icon(Icons.add_circle_outline),
-              tooltip: "Añadir notas",
-              onPressed: () => _abrirDialogo(context, "notas", "notas"),
-            ),
-          ],
-        ),
-        Text(comida?.notas ?? 'Sin notas'),
-
-        const SizedBox(height: 24),
-
-        // URL de receta (al final, discreta)
-        if (comida?.url != null && comida!.url!.isNotEmpty)
-          Row(
+    return Scaffold(
+      appBar: AppBar(title: Text('Detalle del menú')),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.link, size: 16, color: Colors.grey),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  comida!.url!,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Colors.blueGrey,
-                    decoration: TextDecoration.underline,
+              // Foto grande
+              if (comida?.foto != null && comida!.foto!.isNotEmpty)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(
+                    comida!.foto!,
+                    width: double.infinity,
+                    height: 200,
+                    fit: BoxFit.cover,
                   ),
-                  overflow: TextOverflow.ellipsis,
+                )
+              else
+                Container(
+                  width: double.infinity,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Icon(
+                    Icons.fastfood,
+                    size: 80,
+                    color: Colors.grey,
+                  ),
                 ),
+
+              const SizedBox(height: 16),
+
+              // Nombre del plato
+              Text(
+                comida?.nombre ?? 'Sin asignar',
+                style: textTheme.titleMedium?.copyWith(fontSize: 22),
               ),
+
+              const SizedBox(height: 24),
+
+              // Ingredientes con botón +
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Ingredientes", style: textTheme.titleMedium),
+                  IconButton(
+                    icon: const Icon(Icons.add_circle_outline),
+                    tooltip: "Añadir ingredientes",
+                    onPressed: () =>
+                        _abrirDialogo(context, "ingredientes", "ingredientes"),
+                  ),
+                ],
+              ),
+              Text(
+                comida?.ingredientes ?? 'No especificados',
+                style: textTheme.bodyMedium,
+              ),
+
+              const SizedBox(height: 24),
+
+              // Receta con botón +
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Receta", style: textTheme.titleMedium),
+                  IconButton(
+                    icon: const Icon(Icons.add_circle_outline),
+                    tooltip: "Añadir receta",
+                    onPressed: () => _abrirDialogo(context, "receta", "receta"),
+                  ),
+                ],
+              ),
+              Text(
+                comida?.receta ?? 'No disponible',
+                style: textTheme.bodyMedium,
+              ),
+
+              const SizedBox(height: 24),
+
+              // Notas con botón +
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Notas", style: textTheme.titleMedium),
+                  IconButton(
+                    icon: const Icon(Icons.add_circle_outline),
+                    tooltip: "Añadir notas",
+                    onPressed: () => _abrirDialogo(context, "notas", "notas"),
+                  ),
+                ],
+              ),
+              Text(comida?.notas ?? 'Sin notas', style: textTheme.bodyMedium),
+
+              const SizedBox(height: 24),
+
+              // URL de receta (al final, discreta)
+              if (comida?.url != null && comida!.url!.isNotEmpty)
+                Row(
+                  children: [
+                    const Icon(Icons.link, size: 16, color: Colors.grey),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        comida!.url!,
+                        style: textTheme.bodySmall?.copyWith(
+                          color: Colors.blueGrey,
+                          decoration: TextDecoration.underline,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
-      ],
+        ),
+      ),
     );
   }
 }
