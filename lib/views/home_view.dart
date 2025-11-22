@@ -197,10 +197,11 @@ class _HomeViewState extends State<HomeView> {
                           );
                         } else if (modulo['titulo'] == 'Menú semanal') {
                           final controller = MenuSemanalController();
-                          final menuList = await controller.cargarMenuMensual(DateTime.now());
+                          final datos = await controller
+                              .leerMenu(); // 👈 ya no accedes a _service
 
-                          final Map<String, Map<String, dynamic>> menuMap = {
-                            for (var dia in menuList) dia.fecha: dia.toMap(),
+                          final Map<String, dynamic> menuMap = {
+                            for (var dia in datos) dia.fecha: dia.toMap(),
                           };
 
                           Navigator.push(
@@ -229,8 +230,7 @@ class _HomeViewState extends State<HomeView> {
                                     AulaView(user: widget.user),
                               ),
                             );
-                          }
-                           else {
+                          } else {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -242,32 +242,34 @@ class _HomeViewState extends State<HomeView> {
                             );
                           }
                         } else if (modulo['titulo'] == 'Casa') {
-                       // 1. Crear el modelo con tu URL y token
-                       final homeModel = HomeAssistantModel(
-                         baseUrl:  "https://demo.home-assistant.io",   // tu instancia HA
-                         accessToken: "TOKEN_DEMO",    // tu long-lived token
-                           panel: "default",                       // panel lovelace
-                         soloAdmin: true,                        // solo admin puede acceder
-                        );
+                          // 1. Crear el modelo con tu URL y token
+                          final homeModel = HomeAssistantModel(
+                            baseUrl:
+                                "https://demo.home-assistant.io", // tu instancia HA
+                            accessToken: "TOKEN_DEMO", // tu long-lived token
+                            panel: "default", // panel lovelace
+                            soloAdmin: true, // solo admin puede acceder
+                          );
 
-                           // 2. Crear el servicio
-                      final homeService = HomeAssistantService(homeModel);
+                          // 2. Crear el servicio
+                          final homeService = HomeAssistantService(homeModel);
 
-                  // 3. Crear el controlador
-                              final homeController = HomeAssistantController(homeService);
+                          // 3. Crear el controlador
+                          final homeController = HomeAssistantController(
+                            homeService,
+                          );
 
-  // 4. Navegar a la vista pasando el controlador y el rol del usuario
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => HomeAssistantView(
-        controller: homeController,
-        rolUsuario: widget.user.rol, //"admin" o "niño"
-      ),
-    ),
-  );
-}
-                        else if (modulo['titulo'] == 'Calendario') {
+                          // 4. Navegar a la vista pasando el controlador y el rol del usuario
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomeAssistantView(
+                                controller: homeController,
+                                rolUsuario: widget.user.rol, //"admin" o "niño"
+                              ),
+                            ),
+                          );
+                        } else if (modulo['titulo'] == 'Calendario') {
                           Navigator.push(
                             context,
                             MaterialPageRoute(

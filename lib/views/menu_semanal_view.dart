@@ -7,7 +7,6 @@ import 'package:conectask_v2/widgets/tira_dias.dart';
 import 'package:flutter/material.dart';
 import 'package:conectask_v2/utils/date_utils.dart' as miFecha;
 
-
 class MenuSemanalView extends StatefulWidget {
   final Map<String, dynamic> menu;
   final dynamic user;
@@ -29,25 +28,26 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
   void initState() {
     super.initState();
     // Genera todos los días del mes actual
-    fechasMes = miFecha.DateUtils.diasDelMes(DateTime.now())
-        .map((d) => d['fecha'] as DateTime)
-        .toList();
+    fechasMes = miFecha.DateUtils.diasDelMes(
+      DateTime.now(),
+    ).map((d) => d['fecha'] as DateTime).toList();
     // Selección inicial: el día actual
     diaSeleccionado = DateTime.now();
+
+    cargarDatos();
   }
 
   String _formatearFecha(DateTime fecha) {
     return "${fecha.year}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}";
   }
 
-   Future<void> cargarDatos() async {
+  Future<void> cargarDatos() async {
     final datos = await controller.cargarMenuMensual(DateTime.now());
     setState(() {
       menu = datos;
       cargando = false;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -59,10 +59,10 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
         miFecha.DateUtils.diasSemana()[diaSeleccionado.weekday - 1];
 
     // Buscar el día en la lista actualizada (menu), NO en widget.menu
-final diaModel = menu.firstWhere(
-  (d) => d.fecha == fechaStr,
-  orElse: () => MenuDiaModel(fecha: fechaStr),
-);
+    final diaModel = menu.firstWhere(
+      (d) => d.fecha == fechaStr,
+      orElse: () => MenuDiaModel(fecha: fechaStr),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -70,21 +70,22 @@ final diaModel = menu.firstWhere(
         actions: [
           if (widget.user.rol == 'admin')
             IconButton(
-            icon: const Icon(Icons.add),
-            tooltip: 'Editar menú semanal',
-            onPressed: () async {
-              final actualizado = await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const MenuSemanalEditView()),
-              );
+              icon: const Icon(Icons.add),
+              tooltip: 'Editar menú semanal',
+              onPressed: () async {
+                final actualizado = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const MenuSemanalEditView(),
+                  ),
+                );
 
-              if (actualizado == true) {
-                // 👇 recarga los datos al volver
-                await cargarDatos();
-              }
-            },
-          ),
-
+                if (actualizado == true) {
+                  // 👇 recarga los datos al volver
+                  await cargarDatos();
+                }
+              },
+            ),
         ],
       ),
       body: Column(
@@ -119,8 +120,10 @@ final diaModel = menu.firstWhere(
                 children: [
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                    child: Text("Comida",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    child: Text(
+                      "Comida",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   // Primer plato de comida
                   MenuCard(
@@ -155,8 +158,10 @@ final diaModel = menu.firstWhere(
 
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                    child: Text("Cena",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    child: Text(
+                      "Cena",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   // Primer plato de cena
                   MenuCard(

@@ -4,9 +4,15 @@ import 'package:conectask_v2/services/menu_semanal_service.dart';
 class MenuSemanalController {
   final MenuSemanalService _service = MenuSemanalService();
 
+  /// Leer todos los menús directamente desde Firebase
+  Future<List<MenuDiaModel>> leerMenu() async {
+    return await _service.leerMenu();
+  }
+
   /// Cargar el menú de un mes completo
   Future<List<MenuDiaModel>> cargarMenuMensual(DateTime mes) async {
     final datos = await _service.leerMenu();
+    print("📊 Datos recibidos del service: ${datos.length}");
 
     // Generar todas las fechas del mes actual
     final primerDia = DateTime(mes.year, mes.month, 1);

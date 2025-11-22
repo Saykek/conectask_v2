@@ -64,6 +64,9 @@ Resumen de la app de gestion familiar:
 - temporizador estudio
 - autocompletar
 - menu card
+- animacion brillo texto
+- animacion toogle
+
 
 **************** theme
 - app theme
@@ -96,7 +99,7 @@ Resumen de la app de gestion familiar:
 - poner calendario en español y de lunes a domingo ✅
 - Cambiar que salga el boton validar cuando sea adulto y no niño. ✅
 - Q en validad por salga el nombre de quien valida.✅
-- en menu semanal guardo receta pero no se actualiza en la pantalla edit, sino que tengo que salir y volver a entrar.
+- en menu semanal guardo receta pero no se actualiza en la pantalla edit, sino que tengo que salir y volver a entrar. ✅
 - en menu semanal detalle ingredientes, receta, notas no se guardan, no tiene funcionalidad.
 - Añadir para enlace PDF 30-45 min
 - Añadir para repetir las tareas X dias 1.5-2 horas
