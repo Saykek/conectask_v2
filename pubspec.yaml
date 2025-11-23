@@ -63,6 +63,9 @@ flutter:
         - asset: assets/fonts/Poppins-Regular.ttf
         - asset: assets/fonts/Poppins-Bold.ttf
           weight: 700
+    - family: GabanOutline
+      fonts:
+        - asset: assets/fonts/gaban-outline-regular-FFP.ttf
 
  
   uses-material-design: true

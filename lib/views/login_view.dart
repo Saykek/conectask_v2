@@ -1,6 +1,7 @@
 import 'package:conectask_v2/views/register_view.dart';
 import 'package:conectask_v2/widgets/animacion_brillo_texto.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import '../controllers/login_controller.dart';
 import 'home_view.dart';
 import '../models/user_model.dart';
@@ -66,19 +67,38 @@ class _LoginViewState extends State<LoginView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AnimacionBrilloTexto(
-  text: "Conectask",
-  style: const TextStyle(
-    fontFamily: "BungeeSpice", // 👈 debe coincidir con el "family" del pubspec.yaml
-    fontSize: 40,
-    fontWeight: FontWeight.bold,
-    letterSpacing: 2,
+                // 🔑 Animación Lottie arriba
+                SizedBox(
+                  width: 200,
+                  height: 200,
+                  child: Lottie.asset(
+                    'assets/animaciones/connecting.json',
+                    fit: BoxFit.contain,
+                    repeat: true, // se repite indefinidamente
+                  ),
+                ),
+                const SizedBox(height: 32),
 
-  ),
-  duration: const Duration(seconds: 3),
-  shineColor: const Color.fromARGB(255, 125, 228, 189), // color del brillo
-),
-const SizedBox(height: 32),
+                // 🔑 Tu texto con animación de brillo debajo
+                AnimacionBrilloTexto(
+                  text: "Conectask",
+                  style: const TextStyle(
+                    fontFamily:
+                        'gaban-outline-regular-FFP.ttf', // debe coincidir con pubspec.yaml
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                  ),
+                  duration: const Duration(seconds: 3),
+                  shineColor: const Color.fromARGB(
+                    255,
+                    125,
+                    228,
+                    189,
+                  ), // color del brillo
+                ),
+
+                const SizedBox(height: 32),
                 Text(
                   _modoNino ? 'Acceso para niños' : 'Iniciar sesión',
                   style: const TextStyle(
