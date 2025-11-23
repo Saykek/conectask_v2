@@ -7,42 +7,41 @@ class AppTheme {
     return base.copyWith(
       brightness: Brightness.light,
       colorScheme: base.colorScheme.copyWith(
-        primary: const Color(0xFF4A3AFF), // azul intenso
-        secondary: const Color(0xFF6F1EFA), // morado vibrante
+        primary: const Color(0xFF2E7D75), // verde azulado profundo
+        secondary: const Color(0xFF80CBC4), // teal claro
         surface: Colors.white,
-        surfaceContainerHighest: Colors.grey.shade100,
       ),
-      scaffoldBackgroundColor: Colors.white,
+      scaffoldBackgroundColor: const Color(0xFFE0F7FA), // fondo menta suave
       textTheme: base.textTheme.copyWith(
         titleMedium: base.textTheme.titleMedium?.copyWith(
           fontFamily: 'Poppins',
-          fontSize: 18,
+          fontSize: 14,
           fontWeight: FontWeight.w600,
-          color: Colors.black,
+          color: const Color(0xFF263238), // gris oscuro
         ),
         bodyMedium: base.textTheme.bodyMedium?.copyWith(
-          fontFamily: 'Poppins',
-          fontSize: 14,
-          color: Colors.black87,
+          fontFamily: 'Nunito',
+          fontSize: 15,
+          color: const Color(0xFF37474F), // gris medio
         ),
       ),
-      iconTheme: const IconThemeData(color: Color(0xFF6F1EFA)),
+      iconTheme: const IconThemeData(color: Color(0xFF2E7D75)),
       cardTheme: const CardThemeData(
-        color: Colors.white,
-        elevation: 4,
-        margin: EdgeInsets.all(12),
+        color: Color(0xFFB2DFDB), // verde agua claro
+        elevation: 3,
+        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(16)),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xFF4A3AFF),
+        backgroundColor: Color(0xFF2E7D75),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF4A3AFF),
+          backgroundColor: const Color(0xFF2E7D75),
           foregroundColor: Colors.white,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -50,7 +49,6 @@ class AppTheme {
           textStyle: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            inherit: true,
             fontFamily: 'Poppins',
           ),
         ),
@@ -64,50 +62,48 @@ class AppTheme {
     return base.copyWith(
       brightness: Brightness.dark,
       colorScheme: base.colorScheme.copyWith(
-        primary: const Color(0xFF6F1EFA), // morado vibrante
-        secondary: const Color(0xFF4A3AFF), // azul intenso
-        surface: const Color(0xFF0D0D0D),
-        surfaceContainerHighest: const Color(0xFF1A1A1A),
+        primary: const Color(0xFF81C784), // verde más suave en oscuro
+        secondary: const Color(0xFFFF8A65), // coral más claro
+        surface: const Color(0xFF121212),
       ),
-      scaffoldBackgroundColor: const Color(0xFF0D0D0D),
+      scaffoldBackgroundColor: const Color(0xFF121212),
       textTheme: base.textTheme.copyWith(
         titleMedium: base.textTheme.titleMedium?.copyWith(
           fontFamily: 'Poppins',
-          fontSize: 18,
+          fontSize: 12,
           fontWeight: FontWeight.w600,
           color: Colors.white,
         ),
         bodyMedium: base.textTheme.bodyMedium?.copyWith(
-          fontFamily: 'Poppins',
+          fontFamily: 'Nunito',
           fontSize: 14,
           color: Colors.white70,
         ),
       ),
-      iconTheme: const IconThemeData(color: Color(0xFF4A3AFF)),
+      iconTheme: const IconThemeData(color: Color(0xFF81C784)),
       cardTheme: const CardThemeData(
-        color: Color(0xFF1A1A1A),
-        elevation: 4,
+        color: Color(0xFF1E1E1E),
+        elevation: 2,
         margin: EdgeInsets.all(12),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xFF6F1EFA),
-        foregroundColor: Colors.white,
+        backgroundColor: Color(0xFF1E1E1E),
+        foregroundColor: Color(0xFF81C784),
         elevation: 0,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF6F1EFA),
-          foregroundColor: Colors.white,
-          shape: const RoundedRectangleBorder(
+          backgroundColor: const Color(0xFF81C784),
+          foregroundColor: Colors.black,
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
           textStyle: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            inherit: true,
             fontFamily: 'Poppins',
           ),
         ),

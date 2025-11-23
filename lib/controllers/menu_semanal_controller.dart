@@ -12,7 +12,6 @@ class MenuSemanalController {
   /// Cargar el menú de un mes completo
   Future<List<MenuDiaModel>> cargarMenuMensual(DateTime mes) async {
     final datos = await _service.leerMenu();
-    print("📊 Datos recibidos del service: ${datos.length}");
 
     // Generar todas las fechas del mes actual
     final primerDia = DateTime(mes.year, mes.month, 1);

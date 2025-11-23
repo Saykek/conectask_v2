@@ -23,7 +23,6 @@ class MenuDiaModel {
 
   static MenuDiaModel fromMap(String fecha, Map<String, dynamic>? data) {
     final fechaFormateada = fecha.length > 10 ? fecha.substring(0, 10) : fecha;
-    print("🗓️ fromMap: $fecha -> $data");
 
     if (data == null) {
       return MenuDiaModel(fecha: fechaFormateada);
@@ -64,8 +63,6 @@ class MenuDiaModel {
     while (cenasList.length < 2) {
       cenasList.add(ComidaModel(nombre: ""));
     }
-    print("🍽️ Comidas parseadas: $comidasList");
-    print("🌙 Cenas parseadas: $cenasList");
 
     return MenuDiaModel(
       fecha: fechaFormateada,

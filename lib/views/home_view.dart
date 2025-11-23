@@ -16,6 +16,7 @@ import 'package:conectask_v2/controllers/menu_semanal_controller.dart';
 import 'package:conectask_v2/views/prueba_imagen_view.dart';
 import 'package:conectask_v2/views/recompensas_view.dart';
 import 'package:conectask_v2/views/task_view.dart';
+import 'package:conectask_v2/widgets/receta_modulo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,13 +34,55 @@ class _HomeViewState extends State<HomeView> {
   bool mostrarFotos = false; // Estado del interruptor
 
   final List<Map<String, dynamic>> modulos = [
-    {'titulo': 'Tareas', 'icono': Icons.cleaning_services},
-    {'titulo': 'Menú semanal', 'icono': Icons.restaurant_menu},
-    {'titulo': 'Colegio', 'icono': Icons.school},
-    {'titulo': 'Casa', 'icono': Icons.home},
-    {'titulo': 'Recompensas', 'icono': Icons.emoji_events},
-    {'titulo': 'Calendario', 'icono': Icons.calendar_today},
-    {'titulo': 'Configuración', 'icono': Icons.settings},
+    {
+      'titulo': 'Tareas',
+      'icono': RecetaModulo(
+        assetPath: 'assets/animaciones/tarea.json',
+        factor: 1,
+      ),
+    },
+    {
+      'titulo': 'Menú semanal',
+      'icono': RecetaModulo(
+        assetPath: 'assets/animaciones/receta_ani.json',
+        factor: 1,
+      ),
+    },
+    {
+      'titulo': 'Colegio',
+      'icono': RecetaModulo(
+        assetPath: 'assets/animaciones/colegio.json',
+        factor: 1,
+      ),
+    },
+    {
+      'titulo': 'Casa',
+      'icono': RecetaModulo(
+        assetPath: 'assets/animaciones/home_conection.json',
+        factor: 1.2,
+      ),
+    },
+    {
+      'titulo': 'Recompensas',
+      'icono': RecetaModulo(
+        assetPath: 'assets/animaciones/regalo.json',
+        factor: 1,
+      ),
+    },
+    {
+      'titulo': 'Calendario',
+      'icono': RecetaModulo(
+        assetPath: 'assets/animaciones/calendario.json',
+        factor: 1,
+      ),
+    },
+    {
+      'titulo': 'Configuración',
+      'icono': RecetaModulo(
+        assetPath: 'assets/animaciones/configuracion.json',
+        factor: 1,
+      ),
+    },
   ];
 
   void cargarDatosIniciales() async {
@@ -197,8 +240,7 @@ class _HomeViewState extends State<HomeView> {
                           );
                         } else if (modulo['titulo'] == 'Menú semanal') {
                           final controller = MenuSemanalController();
-                          final datos = await controller
-                              .leerMenu(); // 👈 ya no accedes a _service
+                          final datos = await controller.leerMenu();
 
                           final Map<String, dynamic> menuMap = {
                             for (var dia in datos) dia.fecha: dia.toMap(),
@@ -293,12 +335,15 @@ class _HomeViewState extends State<HomeView> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(modulo['icono'], size: 32),
+                          Expanded(
+                            // 🔑 esto da espacio vertical a la animación
+                            child: Center(child: modulo['icono'] as Widget),
+                          ),
                           const SizedBox(height: 8),
                           Text(
                             modulo['titulo'],
+                            style: Theme.of(context).textTheme.titleMedium,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 14),
                           ),
                         ],
                       ),

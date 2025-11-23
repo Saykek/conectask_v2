@@ -125,36 +125,23 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  // Primer plato de comida
-                  MenuCard(
-                    comida: diaModel.comidas[0],
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => MenuSemanalDetalleView(
-                            fecha: fechaStr,
-                            comida: diaModel.comidas[0],
+                  ...diaModel.comidas.asMap().entries.map((entry) {
+                    final comida = entry.value;
+                    return MenuCard(
+                      comida: comida,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => MenuSemanalDetalleView(
+                              fecha: fechaStr,
+                              comida: comida,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                  // Segundo plato de comida
-                  MenuCard(
-                    comida: diaModel.comidas[1],
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => MenuSemanalDetalleView(
-                            fecha: fechaStr,
-                            comida: diaModel.comidas[1],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                        );
+                      },
+                    );
+                  }).toList(),
 
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -163,36 +150,23 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  // Primer plato de cena
-                  MenuCard(
-                    comida: diaModel.cenas[0],
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => MenuSemanalDetalleView(
-                            fecha: fechaStr,
-                            comida: diaModel.cenas[0],
+                  ...diaModel.cenas.asMap().entries.map((entry) {
+                    final cena = entry.value;
+                    return MenuCard(
+                      comida: cena,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => MenuSemanalDetalleView(
+                              fecha: fechaStr,
+                              comida: cena,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                  // Segundo plato de cena
-                  MenuCard(
-                    comida: diaModel.cenas[1],
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => MenuSemanalDetalleView(
-                            fecha: fechaStr,
-                            comida: diaModel.cenas[1],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                        );
+                      },
+                    );
+                  }).toList(),
                 ],
               ),
             ),
