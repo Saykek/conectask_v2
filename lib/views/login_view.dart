@@ -1,5 +1,6 @@
 import 'package:conectask_v2/views/register_view.dart';
 import 'package:conectask_v2/widgets/animacion_brillo_texto.dart';
+import 'package:conectask_v2/widgets/receta_modulo.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import '../controllers/login_controller.dart';
@@ -83,18 +84,18 @@ class _LoginViewState extends State<LoginView> {
                 AnimacionBrilloTexto(
                   text: "Conectask",
                   style: const TextStyle(
-                    fontFamily:
-                        'gaban-outline-regular-FFP.ttf', // debe coincidir con pubspec.yaml
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Hillgates',
+                    //color: ,
+                    fontSize: 100,
+                    //fontWeight: FontWeight.bold,
                     letterSpacing: 2,
                   ),
                   duration: const Duration(seconds: 3),
                   shineColor: const Color.fromARGB(
                     255,
-                    125,
-                    228,
-                    189,
+                    9,
+                    99,
+                    84,
                   ), // color del brillo
                 ),
 
@@ -126,9 +127,7 @@ class _LoginViewState extends State<LoginView> {
                       final usuario = _usuarioController.text.trim();
                       final pin = _pinController.text.trim();
 
-                      print(
-                        'Buscando usuario con nombre: $usuario',
-                      ); // 👈 Paso 2
+                      print('Buscando usuario con nombre: $usuario'); // Paso 2
 
                       if (usuario.isEmpty || pin.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -146,7 +145,7 @@ class _LoginViewState extends State<LoginView> {
 
                       print(
                         'Resultado: ${user?.nombre}, PIN: ${user?.pin}, Rol: ${user?.rol}',
-                      ); // 👈 Verificación
+                      ); //  Verificación
 
                       if (!mounted) return;
 
@@ -210,10 +209,13 @@ class _LoginViewState extends State<LoginView> {
                   const SizedBox(height: 16),
                   TextButton.icon(
                     onPressed: () => setState(() => _modoNino = true),
-                    icon: const Icon(
-                      Icons.child_care,
-                      size: 36,
-                      color: Colors.blue,
+                    icon: SizedBox(
+                      width: 70,
+                      height: 70,
+                      child: RecetaModulo(
+                        assetPath: 'assets/animaciones/katapum.json',
+                        factor: 1.0, // ocupa todo el SizedBox
+                      ),
                     ),
                     label: const Text('Acceso para niños'),
                   ),

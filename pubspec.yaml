@@ -66,6 +66,20 @@ flutter:
     - family: GabanOutline
       fonts:
         - asset: assets/fonts/gaban-outline-regular-FFP.ttf
+    - family: DreamShine
+      fonts:
+        - asset: assets/fonts/Dream_Shine.otf
+    - family: AdventureScript
+      fonts:
+        - asset: assets/fonts/AdventureScript.otf
+    - family: Hillgates
+      fonts:
+        - asset: assets/fonts/Hillgates.ttf
+
+
+    
+
+
 
  
   uses-material-design: true
