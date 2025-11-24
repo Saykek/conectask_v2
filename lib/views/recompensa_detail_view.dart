@@ -1,3 +1,5 @@
+import 'package:conectask_v2/controllers/recompensa_controller.dart';
+import 'package:conectask_v2/services/user_service.dart';
 import 'package:conectask_v2/views/recompensa_add_view.dart';
 import 'package:flutter/material.dart';
 import '../models/recompensa_model.dart';
@@ -20,6 +22,9 @@ class RecompensaDetailView extends StatefulWidget {
 
 class _RecompensaDetailViewState extends State<RecompensaDetailView> {
   final RecompensaService _recompensaService = RecompensaService();
+  final RecompensaController _controller = RecompensaController();
+  final RecompensaService _service = RecompensaService();
+  final UserService _userService = UserService();
   late RecompensaModel recompensa;
 
   @override
@@ -50,7 +55,10 @@ class _RecompensaDetailViewState extends State<RecompensaDetailView> {
         title: const Text('Eliminar recompensa'),
         content: const Text('¿Seguro que quieres eliminar esta recompensa?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             child: const Text('Eliminar', style: TextStyle(color: Colors.red)),
@@ -70,13 +78,18 @@ class _RecompensaDetailViewState extends State<RecompensaDetailView> {
     }
   }
 
-  void _canjearRecompensa() {
-    if ((widget.user.puntos ?? 0) >= recompensa.coste) {
-      // Aquí iría la lógica de canjeo y actualización de puntos
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('¡Has canjeado "${recompensa.nombre}"!')),
-      );
-    } else {
+  /// Canjea una recompensa: resta puntos activos y registra el canjeo
+  Future<void> _canjearRecompensa() async {
+    try {
+      // 👉 Llamada al controller, que orquesta la lógica con los services
+      await _controller.canjear(widget.user, recompensa);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('¡Has canjeado "${recompensa.nombre}"!')),
+        );
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('No tienes suficientes puntos')),
       );
@@ -92,15 +105,23 @@ class _RecompensaDetailViewState extends State<RecompensaDetailView> {
         title: Text(recompensa.nombre),
         actions: esAdmin
             ? [
-                IconButton(icon: const Icon(Icons.edit), onPressed: _editarRecompensa),
-                IconButton(icon: const Icon(Icons.delete), onPressed: _eliminarRecompensa),
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: _editarRecompensa,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: _eliminarRecompensa,
+                ),
               ]
             : null,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           elevation: 4,
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -108,17 +129,30 @@ class _RecompensaDetailViewState extends State<RecompensaDetailView> {
               children: [
                 Text(
                   recompensa.nombre,
-                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 10),
-                Text('💰 Coste: ${recompensa.coste} puntos', style: const TextStyle(fontSize: 16)),
+                Text(
+                  '💰 Coste: ${recompensa.coste} puntos',
+                  style: const TextStyle(fontSize: 16),
+                ),
                 const SizedBox(height: 8),
                 Text(
                   '📝 Descripción:',
-                  style: TextStyle(fontSize: 18, color: Colors.grey.shade700, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.grey.shade700,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 6),
-                Text(recompensa.descripcion ?? 'Sin descripción', style: const TextStyle(fontSize: 16)),
+                Text(
+                  recompensa.descripcion ?? 'Sin descripción',
+                  style: const TextStyle(fontSize: 16),
+                ),
                 const SizedBox(height: 16),
                 if (!esAdmin)
                   ElevatedButton(
