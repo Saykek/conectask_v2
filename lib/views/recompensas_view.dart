@@ -198,45 +198,54 @@ class _RecompensasViewState extends State<RecompensasView> {
   }
 
   Widget _botonSelector(String nombre) {
-    final bool activo = seleccion == nombre;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: activo ? Colors.blueAccent : Colors.grey[300],
-          foregroundColor: activo ? Colors.white : Colors.black,
-        ),
-        onPressed: () {
-          setState(() {
-            seleccion = nombre;
-            mostrarListaGeneral = false;
-          });
-        },
-        child: Text(nombre),
+  final bool activo = seleccion == nombre;
+
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 8),
+    child: ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        // Usamos los colores del tema en vez de fijos
+        backgroundColor: activo
+            ? Theme.of(context).colorScheme.primary
+            : Theme.of(context).colorScheme.surface,
+        foregroundColor: activo
+            ? Theme.of(context).colorScheme.onPrimary
+            : Theme.of(context).colorScheme.onSurface,
       ),
-    );
-  }
+      onPressed: () {
+        setState(() {
+          seleccion = nombre;
+          mostrarListaGeneral = false;
+        });
+      },
+      child: Text(nombre),
+    ),
+  );
+}
 
   Widget _botonRecompensas() {
-    final bool activo = mostrarListaGeneral;
-    return ElevatedButton.icon(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: activo
-            ? Colors.greenAccent
-            : const Color.fromARGB(255, 175, 248, 208),
-        foregroundColor: Colors.black,
-      ),
-      onPressed: () async {
-        if (!mostrarListaGeneral) {
-          await _cargarListaGeneral();
-        } else {
-          setState(() {
-            mostrarListaGeneral = false;
-          });
-        }
-      },
-      icon: const Icon(Icons.card_giftcard),
-      label: const Text('Recompensas'),
-    );
-  }
-}
+  final bool activo = mostrarListaGeneral;
+
+  return ElevatedButton.icon(
+    style: ElevatedButton.styleFrom(
+      shape: const StadiumBorder(),
+      backgroundColor: activo
+          ? Theme.of(context).colorScheme.secondary
+          : Theme.of(context).colorScheme.surface,
+      foregroundColor: activo
+          ? Theme.of(context).colorScheme.onSecondary
+          : Theme.of(context).colorScheme.onSurface,
+    ),
+    onPressed: () async {
+      if (!mostrarListaGeneral) {
+        await _cargarListaGeneral();
+      } else {
+        setState(() {
+          mostrarListaGeneral = false;
+        });
+      }
+    },
+    icon: const Icon(Icons.card_giftcard),
+    label: const Text('Recompensas'),
+  );
+}}

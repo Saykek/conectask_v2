@@ -5,7 +5,7 @@ class RecetaModulo extends StatelessWidget {
   final String assetPath; // ruta del JSON de la animación
   final double factor; // proporción del ancho del card (0.7 = 70%)
 
-  const RecetaModulo({super.key, required this.assetPath, this.factor = 0.8});
+  const RecetaModulo({super.key, required this.assetPath, this.factor = 1});
 
   @override
   Widget build(BuildContext context) {

@@ -66,6 +66,7 @@ Resumen de la app de gestion familiar:
 - menu card
 - animacion brillo texto
 - animacion toogle
+- receta_modulo -> clase comun para mostrar animacion en cards y demáss
 
 
 **************** theme
@@ -117,6 +118,7 @@ Resumen de la app de gestion familiar:
 - Una vez que validas la tarea si luego la dejas como no hecha al volver a darla ya sale validad, no pasa por el paso
 intermedio, y los puntos siguen sumandos.
 - Boton de claro oscurso se vuelve, hace animacion.
+- acceso niños muy abajo IMPORTANTE!!!
 
 
 🧠 Inteligencia y personalización

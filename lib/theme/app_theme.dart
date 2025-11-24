@@ -53,6 +53,35 @@ class AppTheme {
           ),
         ),
       ),
+      switchTheme: SwitchThemeData(
+        // circulo
+  thumbColor: WidgetStateProperty.resolveWith<Color>(
+  (states) {
+    if (states.contains(WidgetState.selected)) {
+      return const Color(0xFF2E7D75); // activo
+    }
+    return Color.fromARGB(255, 249, 252, 251); // apagado
+  },
+), 
+// pista
+trackColor: WidgetStateProperty.resolveWith<Color>(
+  (states) {
+    if (states.contains(WidgetState.selected)) {
+      return const Color(0xFF80CBC4); // pista activa
+    }
+    return const Color(0xFF80CBC4); // pista apagada
+  },
+),
+trackOutlineColor: WidgetStateProperty.resolveWith<Color>(
+    (states) {
+      if (states.contains(WidgetState.selected)) {
+        return Colors.transparent; // sin borde cuando está activo
+      }
+      return Colors.transparent; // sin borde cuando está apagado
+    },
+  ),
+  trackOutlineWidth: WidgetStateProperty.all(0), // elimina grosor de la línea
+),
     );
   }
 

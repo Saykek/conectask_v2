@@ -64,8 +64,8 @@ class _HomeViewState extends State<HomeView> {
     {
       'titulo': 'Recompensas',
       'icono': RecetaModulo(
-        assetPath: 'assets/animaciones/regalo.json',
-        factor: 1,
+        assetPath: 'assets/animaciones/regalo_home.json',
+        factor: 2.1,
       ),
     },
     {
@@ -171,8 +171,16 @@ class _HomeViewState extends State<HomeView> {
                 mostrarFotos = valor;
               });
             },
-            secondary: const Icon(Icons.photo),
-          ),
+            secondary: SizedBox(
+    width: 80, // ajusta según lo que quieras
+    height: 80,
+    child: RecetaModulo(
+      assetPath: 'assets/animaciones/camara.json',
+      factor: 1,
+    ),
+  ),
+),
+
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16),

@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Conectask',
       theme: AppTheme.light,          // tema claro
-      darkTheme: AppTheme.dark,       //tema oscuro (si lo defines)
+      darkTheme: AppTheme.dark,       //tema oscuro 
       themeMode: ThemeMode.system,    // o ThemeMode.light / ThemeMode.dark
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
