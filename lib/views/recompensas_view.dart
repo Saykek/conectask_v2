@@ -1,4 +1,5 @@
 import 'package:conectask_v2/controllers/usuario_controller.dart';
+import 'package:conectask_v2/views/recompensa_detail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/user_model.dart';
@@ -29,12 +30,13 @@ class _RecompensasViewState extends State<RecompensasView> {
   @override
   void initState() {
     super.initState();
-    _cargarRecompensas();
-
-    if (widget.user.rol != 'admin') {
-      _cargarListaGeneral();
-    }
-  }
+    _cargarRecompensas().then((_) {
+      setState(() {
+        listaGeneral = recompensasPorNino[widget.user.id] ?? [];
+        mostrarListaGeneral = true;
+      });
+    });
+  } // 👈 a
 
   Future<void> _cargarRecompensas() async {
     final usuarioController = Provider.of<UsuarioController>(
@@ -51,20 +53,35 @@ class _RecompensasViewState extends State<RecompensasView> {
       mapa[nino.id] = lista;
     }
 
-    final propias = await _controller.getRecompensasPara(widget.user);
-    mapa[widget.user.id] = propias;
+    // Para el propio usuario
+    if (widget.user.rol == 'admin') {
+      mapa[widget.user.id] = await _controller.getTodasLasRecompensas();
+    } else {
+      mapa[widget.user.id] = await _controller.getRecompensasPara(widget.user);
+    }
 
     setState(() {
       recompensasPorNino = mapa;
       cargando = false;
     });
+
+    print(
+      'DEBUG: recompensasPorNino[${widget.user.id}] -> ${recompensasPorNino[widget.user.id]?.map((r) => "${r.nombre}:${r.usada}")}',
+    );
   }
 
   Future<void> _cargarListaGeneral() async {
-    final lista = await _controller.getTodasLasRecompensas();
+    if (widget.user.rol == 'admin') {
+      listaGeneral = await _controller.getTodasLasRecompensas();
+    } else {
+      listaGeneral = recompensasPorNino[widget.user.id] ?? [];
+    }
     setState(() {
-      listaGeneral = lista;
       mostrarListaGeneral = true;
+
+      print(
+        'DEBUG: listaGeneral -> ${listaGeneral.map((r) => "${r.nombre}:${r.usada}")}',
+      );
     });
   }
 
@@ -128,9 +145,26 @@ class _RecompensasViewState extends State<RecompensasView> {
                     ),
                     child: ListaRecompensas(
                       recompensas: listaGeneral,
-                      modoAdmin: true,
-                      onTap: (r) {
-                        // Acción al tocar recompensa (editar, ver detalle, etc.)
+                      modoAdmin: false,
+                      onTap: (r) async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => RecompensaDetailView(
+                              recompensa: r,
+                              user: widget.user,
+                            ),
+                          ),
+                        );
+                        if (result == true) {
+                          await _cargarRecompensas();
+                          if (mounted) {
+                            setState(() {
+                              listaGeneral =
+                                  recompensasPorNino[widget.user.id] ?? [];
+                            });
+                          }
+                        }
                       },
                     ),
                   ),
@@ -198,54 +232,55 @@ class _RecompensasViewState extends State<RecompensasView> {
   }
 
   Widget _botonSelector(String nombre) {
-  final bool activo = seleccion == nombre;
+    final bool activo = seleccion == nombre;
 
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 8),
-    child: ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        // Usamos los colores del tema en vez de fijos
-        backgroundColor: activo
-            ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).colorScheme.surface,
-        foregroundColor: activo
-            ? Theme.of(context).colorScheme.onPrimary
-            : Theme.of(context).colorScheme.onSurface,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          // Usamos los colores del tema en vez de fijos
+          backgroundColor: activo
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.surface,
+          foregroundColor: activo
+              ? Theme.of(context).colorScheme.onPrimary
+              : Theme.of(context).colorScheme.onSurface,
+        ),
+        onPressed: () {
+          setState(() {
+            seleccion = nombre;
+            mostrarListaGeneral = false;
+          });
+        },
+        child: Text(nombre),
       ),
-      onPressed: () {
-        setState(() {
-          seleccion = nombre;
-          mostrarListaGeneral = false;
-        });
-      },
-      child: Text(nombre),
-    ),
-  );
-}
+    );
+  }
 
   Widget _botonRecompensas() {
-  final bool activo = mostrarListaGeneral;
+    final bool activo = mostrarListaGeneral;
 
-  return ElevatedButton.icon(
-    style: ElevatedButton.styleFrom(
-      shape: const StadiumBorder(),
-      backgroundColor: activo
-          ? Theme.of(context).colorScheme.secondary
-          : Theme.of(context).colorScheme.surface,
-      foregroundColor: activo
-          ? Theme.of(context).colorScheme.onSecondary
-          : Theme.of(context).colorScheme.onSurface,
-    ),
-    onPressed: () async {
-      if (!mostrarListaGeneral) {
-        await _cargarListaGeneral();
-      } else {
-        setState(() {
-          mostrarListaGeneral = false;
-        });
-      }
-    },
-    icon: const Icon(Icons.card_giftcard),
-    label: const Text('Recompensas'),
-  );
-}}
+    return ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+        shape: const StadiumBorder(),
+        backgroundColor: activo
+            ? Theme.of(context).colorScheme.secondary
+            : Theme.of(context).colorScheme.surface,
+        foregroundColor: activo
+            ? Theme.of(context).colorScheme.onSecondary
+            : Theme.of(context).colorScheme.onSurface,
+      ),
+      onPressed: () async {
+        if (!mostrarListaGeneral) {
+          await _cargarListaGeneral();
+        } else {
+          setState(() {
+            mostrarListaGeneral = false;
+          });
+        }
+      },
+      icon: const Icon(Icons.card_giftcard),
+      label: const Text('Recompensas'),
+    );
+  }
+}

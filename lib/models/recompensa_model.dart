@@ -4,6 +4,7 @@ class RecompensaModel {
   final int coste;
   final String? descripcion;
   final bool visible;
+  final bool usada;
 
   RecompensaModel({
     required this.id,
@@ -11,7 +12,25 @@ class RecompensaModel {
     required this.coste,
     this.descripcion,
     required this.visible,
+    this.usada = false,
   });
+  RecompensaModel copyWith({
+    String? id,
+    String? nombre,
+    int? coste,
+    String? descripcion,
+    bool? visible,
+    bool? usada,
+  }) {
+    return RecompensaModel(
+      id: id ?? this.id,
+      nombre: nombre ?? this.nombre,
+      coste: coste ?? this.coste,
+      descripcion: descripcion ?? this.descripcion,
+      visible: visible ?? this.visible,
+      usada: usada ?? this.usada,
+    );
+  }
 
   factory RecompensaModel.fromMap(String id, Map<String, dynamic> map) {
     return RecompensaModel(
@@ -20,6 +39,7 @@ class RecompensaModel {
       coste: map['coste'] ?? 0,
       descripcion: map['descripcion'],
       visible: map['disponible'] ?? true,
+      usada: map['usada'] ?? false,
     );
   }
 
@@ -29,6 +49,7 @@ class RecompensaModel {
       'coste': coste,
       if (descripcion != null) 'descripcion': descripcion,
       'disponible': visible,
+      'usada': usada,
     };
   }
 }

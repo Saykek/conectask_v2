@@ -1,5 +1,4 @@
 import 'package:conectask_v2/controllers/recompensa_controller.dart';
-import 'package:conectask_v2/services/user_service.dart';
 import 'package:conectask_v2/views/recompensa_add_view.dart';
 import 'package:flutter/material.dart';
 import '../models/recompensa_model.dart';
@@ -23,8 +22,6 @@ class RecompensaDetailView extends StatefulWidget {
 class _RecompensaDetailViewState extends State<RecompensaDetailView> {
   final RecompensaService _recompensaService = RecompensaService();
   final RecompensaController _controller = RecompensaController();
-  final RecompensaService _service = RecompensaService();
-  final UserService _userService = UserService();
   late RecompensaModel recompensa;
 
   @override
@@ -81,15 +78,29 @@ class _RecompensaDetailViewState extends State<RecompensaDetailView> {
   /// Canjea una recompensa: resta puntos activos y registra el canjeo
   Future<void> _canjearRecompensa() async {
     try {
-      // 👉 Llamada al controller, que orquesta la lógica con los services
+      //  Llamada al controller, que orquesta la lógica con los services
       await _controller.canjear(widget.user, recompensa);
 
+      //  Forzamos actualización inmediata en memoria
+      setState(() {
+        recompensa = recompensa.copyWith(usada: true);
+      });
+
       if (mounted) {
+        print(
+          'DEBUG: Canjeo realizado, recompensa marcada como usada en memoria',
+        );
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('¡Has canjeado "${recompensa.nombre}"!')),
         );
+        Navigator.pop(context, recompensa);
+
+        print('DEBUG: Navigator.pop(context, true) ejecutado');
       }
     } catch (e) {
+      print('DEBUG: Error al canjear -> $e');
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('No tienes suficientes puntos')),
       );
@@ -156,7 +167,9 @@ class _RecompensaDetailViewState extends State<RecompensaDetailView> {
                 const SizedBox(height: 16),
                 if (!esAdmin)
                   ElevatedButton(
-                    onPressed: recompensa.visible ? _canjearRecompensa : null,
+                    onPressed: (recompensa.visible && !recompensa.usada)
+                        ? _canjearRecompensa
+                        : null,
                     child: const Text('Canjear recompensa'),
                   ),
               ],

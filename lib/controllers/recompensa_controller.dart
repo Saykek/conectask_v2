@@ -8,11 +8,16 @@ class RecompensaController {
   final RecompensaService _service = RecompensaService();
   final UserService _userService = UserService();
 
+  /// Recompensas filtradas para un usuario (oculta las usadas)
   Future<List<RecompensaModel>> getRecompensasPara(UserModel user) async {
     final todas = await _service.obtenerRecompensas();
-    return user.rol == 'admin'
-        ? todas
-        : todas.where((r) => r.visible).toList();
+    return todas.where((r) => r.usada != true).toList();
+  }
+
+  /// Devuelve todas las recompensas sin filtrar
+  Future<List<RecompensaModel>> getTodasLasRecompensas() async {
+    final todas = await _service.obtenerRecompensas();
+    return todas;
   }
 
   /// Canjea una recompensa: resta puntos activos y registra el canjeo
@@ -21,13 +26,16 @@ class RecompensaController {
     if (puntos >= recompensa.coste) {
       final nuevosPuntos = puntos - recompensa.coste;
 
-      // ✅ Resta puntos activos en Firebase
+      //  Resta puntos activos en Firebase
       await _userService.restarPuntos(user.id, recompensa.coste);
 
-      // ✅ Registra el canjeo
+      //  Registra el canjeo
       await _service.registrarCanjeo(user.id, recompensa);
 
-      // ✅ Actualiza el objeto en memoria
+      // marcar recompensa como usada
+      await _service.marcarComoUsada(recompensa.id);
+
+      //  Actualiza el objeto en memoria
       final usuarioActualizado = user.copyWith(puntos: nuevosPuntos);
 
       return usuarioActualizado;
@@ -63,11 +71,5 @@ class RecompensaController {
     } else {
       return [];
     }
-  }
-
-  /// Devuelve todas las recompensas sin filtrar
-  Future<List<RecompensaModel>> getTodasLasRecompensas() async {
-    final todas = await _service.obtenerRecompensas();
-    return todas;
   }
 }
