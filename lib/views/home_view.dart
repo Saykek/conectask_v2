@@ -8,7 +8,6 @@ import 'package:conectask_v2/views/aula_view.dart';
 import 'package:conectask_v2/views/calendar_view.dart';
 import 'package:conectask_v2/views/colegio_view.dart';
 import 'package:conectask_v2/views/configuracion_view.dart';
-import 'package:conectask_v2/views/debug_view.dart';
 import 'package:conectask_v2/views/home_assistant_view.dart';
 import 'package:conectask_v2/views/login_view.dart';
 import 'package:conectask_v2/views/menu_semanal_view.dart';
@@ -174,22 +173,6 @@ class _HomeViewState extends State<HomeView> {
             },
             secondary: const Icon(Icons.photo),
           ),
-          if (widget.user.rol == 'admin') ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const DebugView()),
-                  );
-                },
-                icon: const Icon(Icons.bug_report),
-                label: const Text('Debug: Crear niño de prueba'),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16),
