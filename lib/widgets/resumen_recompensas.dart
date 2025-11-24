@@ -1,4 +1,5 @@
 import 'package:conectask_v2/models/recompensa_model.dart';
+import 'package:conectask_v2/views/recompensa_detail_view.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
@@ -74,7 +75,10 @@ class ResumenRecompensas extends StatelessWidget {
             // Puntos y nivel
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [Text('⭐ Puntos: $puntos'), Text('🔢 Nivel: $nivel')],
+              children: [
+                Text('⭐ Puntos: $puntos'),
+                Text('🔢 Nivel: $nivel'),
+              ],
             ),
             const SizedBox(height: 8),
 
@@ -103,7 +107,7 @@ class ResumenRecompensas extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            // Recompensas disponibles (simuladas)
+            // Recompensas disponibles (REEMPLAZADO: ahora reales)
             const Text(
               '🎁 Recompensas disponibles:',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -111,18 +115,29 @@ class ResumenRecompensas extends StatelessWidget {
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.tv),
-                  label: const Text('Ver TV - 50 pts'),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.videogame_asset),
-                  label: const Text('Jugar tablet - 100 pts'),
-                ),
-              ],
+              children: recompensas.map((r) {
+                return ElevatedButton.icon(
+  style: ElevatedButton.styleFrom(
+    shape: const StadiumBorder(), 
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+    backgroundColor: Theme.of(context).colorScheme.secondary,
+    foregroundColor: const Color.fromARGB(255, 7, 73, 51),
+  ),
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => RecompensaDetailView(
+          recompensa: r,
+          user: user,
+        ),
+      ),
+    );
+  },
+  icon: const Icon(Icons.card_giftcard),
+  label: Text('${r.nombre} - ${r.coste} pts'),
+);
+              }).toList(),
             ),
           ],
         ),

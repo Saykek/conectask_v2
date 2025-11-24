@@ -119,6 +119,7 @@ Resumen de la app de gestion familiar:
 intermedio, y los puntos siguen sumandos.
 - Boton de claro oscurso se vuelve, hace animacion.
 - acceso niños muy abajo IMPORTANTE!!!
+- editar y eliminar recompensas no se puede
 
 
 🧠 Inteligencia y personalización
