@@ -89,20 +89,36 @@ class UserService {
     }
   }
 
-  Future<void> sumarPuntos(String userId, int puntos) async {
-    try {
-      final ref = usersRef.child(userId).child('puntos');
-      final snapshot = await ref.get();
+   // SUMAR PUNTOS (activos + acumulados)
+Future<void> sumarPuntos(String userId, int puntos) async {
+  final refPuntos = usersRef.child(userId).child('puntos');              // disponibles
+  final refAcumulados = usersRef.child(userId).child('puntos_acumulados'); // histórico
 
-      int puntosActuales = 0;
-      if (snapshot.exists && snapshot.value != null) {
-        puntosActuales = int.tryParse(snapshot.value.toString()) ?? 0;
-      }
+  final snapshotPuntos = await refPuntos.get();
+  final snapshotAcumulados = await refAcumulados.get();
 
-      await ref.set(puntosActuales + puntos);
-    } catch (e) {
-      print('Error al sumar puntos: $e');
-      rethrow;
-    }
-  }
+  final puntosActuales = snapshotPuntos.exists
+      ? int.tryParse(snapshotPuntos.value.toString()) ?? 0
+      : 0;
+  final acumuladosActuales = snapshotAcumulados.exists
+      ? int.tryParse(snapshotAcumulados.value.toString()) ?? 0
+      : 0;
+
+  // ✅ puntos = disponibles, acumulados = histórico
+  await refPuntos.set(puntosActuales + puntos);          // suben los disponibles
+  await refAcumulados.set(acumuladosActuales + puntos);  // sube el histórico
+}
+
+  // RESTAR PUNTOS (solo activos)
+Future<void> restarPuntos(String userId, int puntos) async {
+  final refPuntos = usersRef.child(userId).child('puntos');
+  final snapshot = await refPuntos.get();
+
+  final puntosActuales = snapshot.exists
+      ? int.tryParse(snapshot.value.toString()) ?? 0
+      : 0;
+
+  final nuevosPuntos = (puntosActuales - puntos).clamp(0, puntosActuales);
+  await refPuntos.set(nuevosPuntos);
+}
 }

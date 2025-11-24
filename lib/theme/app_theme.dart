@@ -82,8 +82,14 @@ trackOutlineColor: WidgetStateProperty.resolveWith<Color>(
   ),
   trackOutlineWidth: WidgetStateProperty.all(0), // elimina grosor de la línea
 ),
+     //  Barra de progreso integrada
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: Color(0xFF2E7D75), // color principal de la barra
+        linearTrackColor: Color.fromARGB(255, 239, 247, 246), // color de fondo de la barra
+      ),
     );
   }
+
 
   // Tema oscuro
   static ThemeData get dark {

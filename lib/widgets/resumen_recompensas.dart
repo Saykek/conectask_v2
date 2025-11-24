@@ -16,9 +16,6 @@ class ResumenRecompensas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nivel = user.nivel ?? 0;
-    final puntos = user.puntos ?? 0;
-
     return Card(
       margin: const EdgeInsets.all(16),
       elevation: 4,
@@ -46,49 +43,72 @@ class ResumenRecompensas extends StatelessWidget {
               ],
             ),
 
-            StreamBuilder<DatabaseEvent>(
-              stream: FirebaseDatabase.instance
-                  .ref('usuarios/${user.id}')
-                  .onValue,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData ||
-                    snapshot.data!.snapshot.value == null) {
-                  return const Text('Cargando puntos...');
-                }
+            // Datos en tiempo real desde Firebase
+           StreamBuilder<DatabaseEvent>(
+  stream: FirebaseDatabase.instance.ref('usuarios/${user.id}').onValue,
+  builder: (context, snapshot) {
+    if (!snapshot.hasData || snapshot.data!.snapshot.value == null) {
+      return const Text('Cargando puntos...');
+    }
 
-                final data = Map<String, dynamic>.from(
-                  snapshot.data!.snapshot.value as Map,
-                );
-                final puntos = data['puntos'] ?? 0;
+    final data = Map<String, dynamic>.from(
+      snapshot.data!.snapshot.value as Map,
+    );
 
-                return Text(
-                  '⭐ Puntos acumulados: $puntos',
+    final puntos = data['puntos'] ?? 0;                // activos
+    final totales = data['puntos_acumulados'] ?? 0;    // históricos
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                '⭐ Puntos: $puntos',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: Text(
+                  '🎯 puntos Totales: $totales',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
-                );
-              },
+                ),
+              ),
             ),
-            const SizedBox(height: 16),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  'Nivel ${totales ~/ 100}',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        LinearProgressIndicator(
+          value: ((totales % 100) / 100).clamp(0.0, 0.999),
+          minHeight: 12,
+          color: Theme.of(context).colorScheme.primary,
+          backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+        ),
+      ],
+    );
+  },
+),
 
-            // Puntos y nivel
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('⭐ Puntos: $puntos'),
-                Text('🔢 Nivel: $nivel'),
-              ],
-            ),
-            const SizedBox(height: 8),
-
-            // Barra de progreso (simulada)
-            LinearProgressIndicator(
-              value: (puntos % 100) / 100,
-              minHeight: 8,
-              backgroundColor: Colors.grey[300],
-              color: Colors.blueAccent,
-            ),
             const SizedBox(height: 16),
 
             // Insignias (simuladas)
@@ -98,16 +118,24 @@ class ResumenRecompensas extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Wrap(
-              spacing: 8,
-              children: [
-                Chip(label: Text('Responsable')),
-                Chip(label: Text('Ayudante')),
-              ],
-            ),
+  spacing: 8,
+  children: const [
+    Chip(
+      label: Text('Responsable'),
+      backgroundColor: Color.fromARGB(255, 215, 238, 231), 
+      labelStyle: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+    ),
+    Chip(
+      label: Text('Ayudante'),
+      backgroundColor: Color.fromARGB(255, 215, 238, 231), 
+      labelStyle: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+    ),
+  ],
+),
 
             const SizedBox(height: 16),
 
-            // Recompensas disponibles (REEMPLAZADO: ahora reales)
+            // Recompensas disponibles
             const Text(
               '🎁 Recompensas disponibles:',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -117,26 +145,26 @@ class ResumenRecompensas extends StatelessWidget {
               spacing: 8,
               children: recompensas.map((r) {
                 return ElevatedButton.icon(
-  style: ElevatedButton.styleFrom(
-    shape: const StadiumBorder(), 
-    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-    backgroundColor: Theme.of(context).colorScheme.secondary,
-    foregroundColor: const Color.fromARGB(255, 7, 73, 51),
-  ),
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => RecompensaDetailView(
-          recompensa: r,
-          user: user,
-        ),
-      ),
-    );
-  },
-  icon: const Icon(Icons.card_giftcard),
-  label: Text('${r.nombre} - ${r.coste} pts'),
-);
+                  style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    foregroundColor: const Color.fromARGB(255, 7, 73, 51),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => RecompensaDetailView(
+                          recompensa: r,
+                          user: user,
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.card_giftcard),
+                  label: Text('${r.nombre} - ${r.coste} pts'),
+                );
               }).toList(),
             ),
           ],
