@@ -183,10 +183,10 @@ Recomendación de orden para implementar
         al pulsar en el globo terraqueo se abrira otra cosa.. pero en el movil no podra verse asi
         imagino...(POR AHORA ESTO LO VOY A DEJAR PARA LINEAS FUTURAS), 
         - ya se cogen los usuarios reales de la base de datos de realtime.
-        - Scroll en tareas y usuaarios.
+        - Scroll en tareas y usuarios.
         - Modulo menu bastante avanzado ya tengo la comida y cena en card (widget) con dos platos., muestra foto si la hay, puedo acceder a receta online..
         pantalla de edit con dos platos y sus iconos, falta que la tira de calendario al pulsar el dia se vaya a ese exactamente.
-        - 
+        - En pantalla recompensas se pueden canjear recomenpensas reales, ya resta puntos, pero no desaparecen al momento de la lista, tienes que salir y entrar. 
 
         Muy Importante ** Fijate en los ✅ y asi sabras lo que llevo hecho.
     Necesito que me digas en que clase y lugar va cada parte de codigo que me proporciones. Paso por

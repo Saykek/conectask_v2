@@ -1,6 +1,5 @@
 import 'package:conectask_v2/views/register_view.dart';
 import 'package:conectask_v2/widgets/animacion_brillo_texto.dart';
-import 'package:conectask_v2/widgets/receta_modulo.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import '../controllers/login_controller.dart';
@@ -78,7 +77,7 @@ class _LoginViewState extends State<LoginView> {
                     repeat: true, // se repite indefinidamente
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 20),
 
                 // 🔑 Tu texto con animación de brillo debajo
                 AnimacionBrilloTexto(
@@ -86,20 +85,15 @@ class _LoginViewState extends State<LoginView> {
                   style: const TextStyle(
                     fontFamily: 'Hillgates',
                     //color: ,
-                    fontSize: 100,
+                    fontSize: 130,
                     //fontWeight: FontWeight.bold,
                     letterSpacing: 2,
                   ),
                   duration: const Duration(seconds: 3),
-                  shineColor: const Color.fromARGB(
-                    255,
-                    9,
-                    99,
-                    84,
-                  ), // color del brillo
+                  shineColor: const Color.fromARGB(255, 10, 206, 196), 
                 ),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: 20),
                 Text(
                   _modoNino ? 'Acceso para niños' : 'Iniciar sesión',
                   style: const TextStyle(
@@ -107,7 +101,7 @@ class _LoginViewState extends State<LoginView> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 10),
 
                 if (_modoNino) ...[
                   TextField(
@@ -121,7 +115,7 @@ class _LoginViewState extends State<LoginView> {
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(labelText: 'PIN'),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 12),
                   ElevatedButton(
                     onPressed: () async {
                       final usuario = _usuarioController.text.trim();
@@ -171,9 +165,13 @@ class _LoginViewState extends State<LoginView> {
                     child: const Text('Entrar'),
                   ),
                   const SizedBox(height: 16),
-                  TextButton(
+                  TextButton.icon(
                     onPressed: () => setState(() => _modoNino = false),
-                    child: const Text('🔙 Volver al login de admin'),
+                    icon: Image.asset('assets/iconos/volver_flecha.png',
+                    width: 40,
+                    height: 40,),
+                    label: const Text(
+                    ' Volver a sesión de adulto'),
                   ),
                 ] else ...[
                   TextField(
@@ -207,18 +205,24 @@ class _LoginViewState extends State<LoginView> {
                     child: const Text('¿No tienes cuenta? Regístrate'),
                   ),
                   const SizedBox(height: 16),
-                  TextButton.icon(
-                    onPressed: () => setState(() => _modoNino = true),
-                    icon: SizedBox(
-                      width: 70,
-                      height: 70,
-                      child: RecetaModulo(
-                        assetPath: 'assets/animaciones/katapum.json',
-                        factor: 1.0, // ocupa todo el SizedBox
-                      ),
-                    ),
-                    label: const Text('Acceso para niños'),
-                  ),
+                  // 🔑 Botón de acceso para niños (modificado)
+TextButton.icon(
+  style: TextButton.styleFrom(
+    minimumSize: const Size(240, 60), // botón más compacto
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+  ),
+  onPressed: () => setState(() => _modoNino = true),
+  icon: Image.asset(
+    'assets/iconos/monstruo.png', 
+    width: 60,
+    height: 60,
+  ),
+  label: const Text(
+    'Acceso para niños',
+    textAlign: TextAlign.left,
+    style: TextStyle(fontSize: 16),
+  ),
+)
                 ],
               ],
             ),

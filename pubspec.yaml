@@ -53,6 +53,7 @@ flutter:
   assets:
     - assets/images/fondo_aula.png
     - assets/animaciones/
+    - assets/iconos/
 
   fonts:
     - family: BungeeSpice
