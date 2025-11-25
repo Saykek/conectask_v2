@@ -45,35 +45,31 @@ class _RecompensaDetailViewState extends State<RecompensaDetailView> {
     }
   }
 
-  Future<void> _eliminarRecompensa() async {
-    final confirmar = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Eliminar recompensa'),
-        content: const Text('¿Seguro que quieres eliminar esta recompensa?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Eliminar', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
+  Future<void> _eliminarRecompensa(BuildContext context, String id) async {
+  final confirm = await showDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: const Text('Eliminar recompensa'),
+      content: const Text('¿Estás seguro de que quieres eliminar esta recompensa?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx, false),
+          child: const Text('Cancelar'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(ctx, true),
+          child: const Text('Eliminar'),
+        ),
+      ],
+    ),
+  );
 
-    if (confirmar == true) {
-      await _recompensaService.eliminarRecompensa(recompensa.id);
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Recompensa eliminada correctamente')),
-        );
-        Navigator.pop(context);
-      }
-    }
+  if (confirm == true) {
+    final controller = RecompensaController();
+    await controller.eliminarRecompensa(id);
+    Navigator.pop(context, true); // avisar al padre para refrescar
   }
+}
 
   /// Canjea una recompensa: resta puntos activos y registra el canjeo
   Future<void> _canjearRecompensa() async {
@@ -122,33 +118,7 @@ class _RecompensaDetailViewState extends State<RecompensaDetailView> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete),
-                   onPressed: () async {
-            final confirm = await showDialog<bool>(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                title: const Text('Eliminar recompensa'),
-                content: const Text(
-                  '¿Estás seguro de que quieres eliminar esta recompensa?',
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(ctx, false),
-                    child: const Text('Cancelar'),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.pop(ctx, true),
-                    child: const Text('Eliminar'),
-                  ),
-                ],
-              ),
-            );
-
-            if (confirm == true) {
-              final controller = RecompensaController();
-              await controller.eliminarRecompensa(recompensa.id);
-              Navigator.pop(context, true); // avisar al padre para refrescar
-            }
-          },
+                   onPressed: () => _eliminarRecompensa(context, recompensa.id),
                 ),
               ]
             : null,
