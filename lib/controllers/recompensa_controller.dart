@@ -20,6 +20,12 @@ class RecompensaController {
     return todas;
   }
 
+  // Eliminar recompensas 
+
+  Future<void> eliminarRecompensa(String id) async {
+  await _service.eliminarRecompensa(id);
+}
+
   /// Canjea una recompensa: resta puntos activos y registra el canjeo
   Future<UserModel> canjear(UserModel user, RecompensaModel recompensa) async {
     final puntos = user.puntos ?? 0;

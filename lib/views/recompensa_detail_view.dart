@@ -122,7 +122,33 @@ class _RecompensaDetailViewState extends State<RecompensaDetailView> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete),
-                  onPressed: _eliminarRecompensa,
+                   onPressed: () async {
+            final confirm = await showDialog<bool>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text('Eliminar recompensa'),
+                content: const Text(
+                  '¿Estás seguro de que quieres eliminar esta recompensa?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx, false),
+                    child: const Text('Cancelar'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx, true),
+                    child: const Text('Eliminar'),
+                  ),
+                ],
+              ),
+            );
+
+            if (confirm == true) {
+              final controller = RecompensaController();
+              await controller.eliminarRecompensa(recompensa.id);
+              Navigator.pop(context, true); // avisar al padre para refrescar
+            }
+          },
                 ),
               ]
             : null,

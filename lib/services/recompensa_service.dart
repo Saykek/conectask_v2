@@ -21,9 +21,7 @@ class RecompensaService {
   }
 
   Future<List<RecompensaModel>> obtenerRecompensas() async {
-    final ref = FirebaseDatabase.instance.ref('recompensas');
-    final snapshot = await ref.get();
-
+    final snapshot = await _dbRef.get();
     if (!snapshot.exists) return [];
 
     final raw = snapshot.value as Map<dynamic, dynamic>;

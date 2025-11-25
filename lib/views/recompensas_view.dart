@@ -65,9 +65,6 @@ class _RecompensasViewState extends State<RecompensasView> {
       cargando = false;
     });
 
-    print(
-      'DEBUG: recompensasPorNino[${widget.user.id}] -> ${recompensasPorNino[widget.user.id]?.map((r) => "${r.nombre}:${r.usada}")}',
-    );
   }
 
   Future<void> _cargarListaGeneral() async {
@@ -79,18 +76,14 @@ class _RecompensasViewState extends State<RecompensasView> {
     setState(() {
       mostrarListaGeneral = true;
 
-      print(
-        'DEBUG: listaGeneral -> ${listaGeneral.map((r) => "${r.nombre}:${r.usada}")}',
-      );
     });
   }
 
-  @override
+    @override
   Widget build(BuildContext context) {
     final usuarioController = Provider.of<UsuarioController>(context);
-    final List<UserModel> listaNinos = usuarioController.usuarios
-        .where((u) => u.rol == 'niño')
-        .toList();
+    final List<UserModel> listaNinos =
+        usuarioController.usuarios.where((u) => u.rol == 'niño').toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -113,121 +106,112 @@ class _RecompensasViewState extends State<RecompensasView> {
       body: cargando
           ? const Center(child: CircularProgressIndicator())
           : widget.user.rol == 'admin'
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    '👥 Selecciona un niño:',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-                SizedBox(
-                  height: 50,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      _botonSelector('Todos'),
-                      ...listaNinos
-                          .map((nino) => _botonSelector(nino.nombre))
-                          .toList(),
-                      const SizedBox(width: 8),
-                      _botonRecompensas(),
-                    ],
-                  ),
-                ),
-                if (mostrarListaGeneral)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 50,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          _botonSelector('Todos'),
+                          ...listaNinos.map((nino) => _botonSelector(nino.nombre)),
+                          const SizedBox(width: 8),
+                          _botonRecompensas(),
+                        ],
+                      ),
                     ),
-                    child: ListaRecompensas(
-                      recompensas: listaGeneral,
-                      modoAdmin: false,
-                      onTap: (r) async {
-                        final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => RecompensaDetailView(
-                              recompensa: r,
-                              user: widget.user,
+                    const SizedBox(height: 8),
+                    if (mostrarListaGeneral)
+                      Expanded(
+                        child: ListView(
+                          padding: const EdgeInsets.all(16),
+                          children: [
+                            ListaRecompensas(
+                              recompensas: listaGeneral,
+                              modoAdmin: true, // aquí puedes editar
+                              onTap: (r) async {
+                                final result = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => RecompensaDetailView(
+                                      recompensa: r,
+                                      user: widget.user,
+                                    ),
+                                  ),
+                                );
+                                if (result == true) {
+                                  await _cargarRecompensas();
+                                  if (mounted) {
+                                    setState(() {
+                                      listaGeneral =
+                                          recompensasPorNino[widget.user.id] ?? [];
+                                    });
+                                  }
+                                }
+                              },
                             ),
-                          ),
-                        );
-                        if (result == true) {
-                          await _cargarRecompensas();
-                          if (mounted) {
-                            setState(() {
-                              listaGeneral =
-                                  recompensasPorNino[widget.user.id] ?? [];
-                            });
-                          }
-                        }
-                      },
-                    ),
-                  ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: seleccion == 'Todos'
-                        ? Column(
-                            children: listaNinos
-                                .map(
-                                  (nino) => Padding(
+                          ],
+                        ),
+                      )
+                    else
+                      Expanded(
+                        child: seleccion == 'Todos'
+                            ? ListView(
+                                children: listaNinos.map((nino) {
+                                  return Padding(
                                     padding: const EdgeInsets.only(bottom: 16),
                                     child: ResumenRecompensas(
                                       user: nino,
-                                      recompensas:
-                                          recompensasPorNino[nino.id] ?? [],
+                                      recompensas: recompensasPorNino[nino.id] ?? [],
                                     ),
-                                  ),
-                                )
-                                .toList(),
-                          )
-                        : ResumenRecompensas(
-                            user: listaNinos.firstWhere(
-                              (nino) => nino.nombre == seleccion,
-                              orElse: () => listaNinos.first,
-                            ),
-                            recompensas:
-                                recompensasPorNino[listaNinos
-                                    .firstWhere(
-                                      (nino) => nino.nombre == seleccion,
-                                    )
-                                    .id] ??
-                                [],
+                                  );
+                                }).toList(),
+                              )
+                            : ResumenRecompensas(
+                                user: listaNinos.firstWhere(
+                                  (nino) => nino.nombre == seleccion,
+                                  orElse: () => listaNinos.first,
+                                ),
+                                recompensas: recompensasPorNino[
+                                        listaNinos.firstWhere(
+                                          (nino) => nino.nombre == seleccion,
+                                        ).id] ??
+                                    [],
+                              ),
+                      ),
+                  ],
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: ListView(
+                        padding: const EdgeInsets.all(16),
+                        children: [
+                          ResumenRecompensas(
+                            user: widget.user,
+                            recompensas: recompensasPorNino[widget.user.id] ?? [],
                           ),
-                  ),
-                ),
-              ],
-            )
-          : SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ResumenRecompensas(
-                    user: widget.user,
-                    recompensas: recompensasPorNino[widget.user.id] ?? [],
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Text(
-                      '🎁 Recompensas disponibles:',
-                      style: TextStyle(fontSize: 16),
+                          const Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Text(
+                              '🎁 Recompensas disponibles:',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          ListaRecompensas(
+                            recompensas: listaGeneral,
+                            modoAdmin: false,
+                            onTap: (r) {
+                              // acción al tocar recompensa
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  ListaRecompensas(
-                    recompensas: listaGeneral,
-                    modoAdmin: false,
-                    onTap: (r) {
-                      // Aquí puedes mostrar detalle o permitir canje si tiene puntos suficientes
-                    },
-                  ),
-                ],
-              ),
-            ),
+                  ],
+                ),
     );
   }
 
@@ -238,7 +222,6 @@ class _RecompensasViewState extends State<RecompensasView> {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          // Usamos los colores del tema en vez de fijos
           backgroundColor: activo
               ? Theme.of(context).colorScheme.primary
               : Theme.of(context).colorScheme.surface,
