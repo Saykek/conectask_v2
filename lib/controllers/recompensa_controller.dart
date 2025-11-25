@@ -26,29 +26,35 @@ class RecompensaController {
   await _service.eliminarRecompensa(id);
 }
 
-  /// Canjea una recompensa: resta puntos activos y registra el canjeo
-  Future<UserModel> canjear(UserModel user, RecompensaModel recompensa) async {
-    final puntos = user.puntos ?? 0;
-    if (puntos >= recompensa.coste) {
-      final nuevosPuntos = puntos - recompensa.coste;
+  ///// Canjea una recompensa: resta puntos activos y registra el canjeo
+Future<UserModel> canjear(UserModel user, RecompensaModel recompensa) async {
+  print('DEBUG CONTROLLER: usuario=${user.nombre}, puntos=${user.puntos}, coste=${recompensa.coste}');
 
-      //  Resta puntos activos en Firebase
-      await _userService.restarPuntos(user.id, recompensa.coste);
+  // leer usuario actualizado desde Firebase
+  final usuarioActual = await _userService.obtenerUsuario(user.id);
+  print('DEBUG CONTROLLER: usuarioActual Firebase=${usuarioActual?.nombre}, puntos=${usuarioActual?.puntos}');
 
-      //  Registra el canjeo
-      await _service.registrarCanjeo(user.id, recompensa);
+  final puntos = usuarioActual?.puntos ?? 0;
+  if (puntos >= recompensa.coste) {
+    final nuevosPuntos = puntos - recompensa.coste;
 
-      // marcar recompensa como usada
-      await _service.marcarComoUsada(recompensa.id);
+    // Resta puntos activos en Firebase
+    await _userService.restarPuntos(user.id, recompensa.coste);
 
-      //  Actualiza el objeto en memoria
-      final usuarioActualizado = user.copyWith(puntos: nuevosPuntos);
+    // Registra el canjeo
+    await _service.registrarCanjeo(user.id, recompensa);
 
-      return usuarioActualizado;
-    } else {
-      throw Exception('No tienes suficientes puntos');
-    }
+    // marcar recompensa como usada
+    await _service.marcarComoUsada(recompensa.id);
+
+    // Actualiza el objeto en memoria
+    final usuarioActualizado = usuarioActual!.copyWith(puntos: nuevosPuntos);
+
+    return usuarioActualizado;
+  } else {
+    throw Exception('No tienes suficientes puntos');
   }
+}
 
   /// Suma puntos (activos + acumulados)
   Future<void> sumarPuntos(UserModel user, int puntos) async {

@@ -51,6 +51,8 @@ class _RecompensasViewState extends State<RecompensasView> {
     for (final nino in ninos) {
       final lista = await _controller.getRecompensasPara(nino);
       mapa[nino.id] = lista;
+      print('DEBUG: Niño=${nino.nombre}, puntos=${nino.puntos}, recompensas=${lista.length}');
+
     }
 
     // Para el propio usuario
@@ -59,6 +61,9 @@ class _RecompensasViewState extends State<RecompensasView> {
     } else {
       mapa[widget.user.id] = await _controller.getRecompensasPara(widget.user);
     }
+ print('DEBUG: Usuario actual=${widget.user.nombre}, puntos=${widget.user.puntos}');
+
+
 
     setState(() {
       recompensasPorNino = mapa;
