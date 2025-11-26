@@ -85,7 +85,7 @@ class _LoginViewState extends State<LoginView> {
                   style: const TextStyle(
                     fontFamily: 'Hillgates',
                     //color: ,
-                    fontSize: 130,
+                    fontSize: 100,
                     //fontWeight: FontWeight.bold,
                     letterSpacing: 2,
                   ),

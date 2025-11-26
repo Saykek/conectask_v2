@@ -216,15 +216,13 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView>
                           initial: dia.comidas[i].nombre,
                           recetasDisponibles: recetasDisponibles,
                           onChanged: (value) {
-                            setState(() {
-                              visibles[index] = visibles[index].copyWith(
-                                comidas: List.from(visibles[index].comidas)
-                                  ..[i] = visibles[index].comidas[i].copyWith(
-                                    nombre: value,
-                                  ),
-                              );
-                            });
-                          },
+  setState(() {
+    menu[safeStart + index] = menu[safeStart + index].copyWith(
+      comidas: List.from(menu[safeStart + index].comidas)
+        ..[i] = menu[safeStart + index].comidas[i].copyWith(nombre: value),
+    );
+  });
+},
                           onSelected: (comida) {
                             setState(() {
                               visibles[index] = visibles[index].copyWith(
@@ -340,23 +338,21 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView>
                           initial: dia.cenas[i].nombre,
                           recetasDisponibles: recetasDisponibles,
                           onChanged: (value) {
-                            setState(() {
-                              visibles[index] = visibles[index].copyWith(
-                                cenas: List.from(visibles[index].cenas)
-                                  ..[i] = visibles[index].cenas[i].copyWith(
-                                    nombre: value,
-                                  ),
-                              );
-                            });
-                          },
-                          onSelected: (comida) {
-                            setState(() {
-                              visibles[index] = visibles[index].copyWith(
-                                cenas: List.from(visibles[index].cenas)
-                                  ..[i] = comida,
-                              );
-                            });
-                          },
+  setState(() {
+    menu[safeStart + index] = menu[safeStart + index].copyWith(
+      cenas: List.from(menu[safeStart + index].cenas)
+        ..[i] = menu[safeStart + index].cenas[i].copyWith(nombre: value),
+    );
+  });
+},
+onSelected: (cena) {
+  setState(() {
+    menu[safeStart + index] = menu[safeStart + index].copyWith(
+      cenas: List.from(menu[safeStart + index].cenas)
+        ..[i] = cena,
+    );
+  });
+}
                         ),
                       ),
                       IconButton(
