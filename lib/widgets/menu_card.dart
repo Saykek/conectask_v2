@@ -27,7 +27,8 @@ class MenuCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+
+   return InkWell(
       onTap: onTap,
       child: Card(
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),

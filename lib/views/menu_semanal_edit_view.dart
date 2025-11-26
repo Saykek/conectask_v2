@@ -43,31 +43,63 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView>
     ).map((d) => d['fecha'] as DateTime).toList();
     // Selección inicial: el día actual
     diaSeleccionado = DateTime.now();
-
+  
     // 👇 Cargar datos al iniciar
     cargarDatos();
-  }
+
+}
+
 
   Future<void> cargarDatos() async {
-    final datos = await controller.cargarMenuMensual(DateTime.now());
-    final recetas = await recetaService.leerRecetas();
+  final datos = await controller.cargarMenuMensual(DateTime.now());
+  final recetas = await recetaService.leerRecetas();
 
-    setState(() {
-      menu = datos; // lista completa del mes
-      recetasDisponibles = recetas; // recetas para autocompletar
-      cargando = false;
-    });
-    // Mover scroll al día actual después de que se construya la vista
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final hoyStr = miFecha.DateUtils.formatearFecha(DateTime.now());
-      final idxHoy = menu.indexWhere((d) => d.fecha == hoyStr);
-      if (idxHoy >= 0) {
-        // Ajusta el factor según la altura aproximada de cada fila
-        final offset = idxHoy * 100.0;
-        _scrollController.jumpTo(offset);
-      }
-    });
-  }
+  setState(() {
+    menu = datos;
+    recetasDisponibles = recetas;
+    cargando = false;
+  });
+
+  _scrollAlDiaActual();
+}
+
+void _scrollAlDiaActual() {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+
+    FocusScope.of(context).unfocus();
+    
+      final isMobile = MediaQuery.of(context).size.width < 600;
+      final altura = isMobile ? 340.0 : 115.0;
+
+final ahora = DateTime.now();
+    print("⏱️ [_scrollAlDiaActual] inicio: $ahora");
+
+
+
+      miFecha.DateUtils.scrollToHoy(
+        menu: menu,
+        controller: _scrollController,
+        alturaCard: altura,
+      );
+    
+ final despues = DateTime.now();
+    print("⏱️ [_scrollAlDiaActual] fin: $despues, diff=${despues.difference(ahora).inMilliseconds}ms");
+  });
+}
+
+
+void _scrollAlDia(DateTime dia) {
+   FocusScope.of(context).unfocus(); 
+  final isMobile = MediaQuery.of(context).size.width < 600;
+  final altura = isMobile ? 340.0 : 115.0;
+
+  miFecha.DateUtils.scrollToDia(
+    menu: menu,
+    dia: dia,
+    controller: _scrollController,
+    alturaCard: altura,
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -122,34 +154,22 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView>
           ? const Center(child: CircularProgressIndicator())
           : Column(
               children: [
-                // Tira superior: mes completo (si cabe, verás el siguiente al hacer scroll)
+
+                // Tira superior: mes completo 
+
                 TiraDiasWidget(
-                  fechas: fechasMes,
-                  diaSeleccionado: diaSeleccionado,
-                  onSelectDia: (nuevoDia) {
-                    setState(() {
-                      diaSeleccionado = nuevoDia;
-                    });
-                    final idxSel = miFecha.DateUtils.buscarIndiceDia(
-                      menu,
-                      nuevoDia,
-                    );
+  fechas: fechasMes,
+  diaSeleccionado: diaSeleccionado,
+  onSelectDia: (nuevoDia) {
+    setState(() => diaSeleccionado = nuevoDia);
 
-                    if (idxSel >= 0) {
-                      // Estimación de altura de cada fila/card
-                      //  Ajustar diseño:
-                      // - Móvil: ~100 px por card
-                      // - Web: ~100 px por fila de DataTable
-                      final offset = idxSel * 115.0;
+    print("👉 Día pulsado: $nuevoDia");
 
-                      _scrollController.animateTo(
-                        offset,
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut,
-                      );
-                    }
-                  },
-                ),
+
+     _scrollAlDia(nuevoDia); // 👈 llamada centralizada
+  },
+),
+
 
                 // Encabezado con el día seleccionado (solo informativo, no filtra el listado)
                 Padding(
@@ -173,24 +193,20 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView>
   }
 
   /// Vista móvil: lista vertical limitada a 10 días
-  Widget _buildMobileView() {
-    // Buscar índice del día actual
-    final hoyStr = miFecha.DateUtils.formatearFecha(DateTime.now());
-    final startIndex = menu.indexWhere((d) => d.fecha == hoyStr);
-    final safeStart = startIndex >= 0 ? startIndex : 0;
+ Widget _buildMobileView() {
+  // Mostrar todo el mes (
+  final visibles = menu;
 
-    // Lista visible: 10 días desde hoy
-    final visibles = menu.skip(safeStart).take(10).toList();
+  return ListView.builder(
+    controller: _scrollController, //  para que el scroll funcione
+    padding: const EdgeInsets.all(16),
+    itemCount: visibles.length,
+    itemBuilder: (context, index) {
+      final dia = visibles[index];
+      final fechaObj = DateTime.parse(dia.fecha);
+      final nombreDia = miFecha.DateUtils.diasSemana()[fechaObj.weekday - 1];
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: visibles.length,
-      itemBuilder: (context, index) {
-        final dia = visibles[index];
-        final fechaObj = DateTime.parse(dia.fecha);
-        final nombreDia = miFecha.DateUtils.diasSemana()[fechaObj.weekday - 1];
-
-        return Card(
+             return Card( 
           margin: const EdgeInsets.only(bottom: 12),
           child: Padding(
             padding: const EdgeInsets.all(12),
@@ -217,20 +233,20 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView>
                           recetasDisponibles: recetasDisponibles,
                           onChanged: (value) {
   setState(() {
-    menu[safeStart + index] = menu[safeStart + index].copyWith(
-      comidas: List.from(menu[safeStart + index].comidas)
-        ..[i] = menu[safeStart + index].comidas[i].copyWith(nombre: value),
+    menu[index] = menu[index].copyWith(
+      comidas: List.from(menu[index].comidas)
+        ..[i] = menu[index].comidas[i].copyWith(nombre: value),
     );
   });
 },
-                          onSelected: (comida) {
-                            setState(() {
-                              visibles[index] = visibles[index].copyWith(
-                                comidas: List.from(visibles[index].comidas)
-                                  ..[i] = comida,
-                              );
-                            });
-                          },
+onSelected: (comida) {
+  setState(() {
+    menu[index] = menu[index].copyWith(
+      comidas: List.from(menu[index].comidas)
+        ..[i] = comida,
+    );
+  });
+},
                         ),
                       ),
                       IconButton(
@@ -339,20 +355,20 @@ class _MenuSemanalEditViewState extends State<MenuSemanalEditView>
                           recetasDisponibles: recetasDisponibles,
                           onChanged: (value) {
   setState(() {
-    menu[safeStart + index] = menu[safeStart + index].copyWith(
-      cenas: List.from(menu[safeStart + index].cenas)
-        ..[i] = menu[safeStart + index].cenas[i].copyWith(nombre: value),
+    menu[index] = menu[index].copyWith(
+      cenas: List.from(menu[index].cenas)
+        ..[i] = menu[index].cenas[i].copyWith(nombre: value),
     );
   });
 },
 onSelected: (cena) {
   setState(() {
-    menu[safeStart + index] = menu[safeStart + index].copyWith(
-      cenas: List.from(menu[safeStart + index].cenas)
+    menu[index] = menu[index].copyWith(
+      cenas: List.from(menu[index].cenas)
         ..[i] = cena,
     );
   });
-}
+},
                         ),
                       ),
                       IconButton(
@@ -459,16 +475,6 @@ onSelected: (cena) {
 
   /// Vista web:
   Widget _buildWebView() {
-    // Formatear fechas
-    final hoyStr = miFecha.DateUtils.formatearFecha(DateTime.now());
-    final selStr = miFecha.DateUtils.formatearFecha(diaSeleccionado);
-
-    // Buscar índices en el menú
-    final idxHoy = menu.indexWhere((d) => d.fecha == hoyStr);
-    final idxSel = menu.indexWhere((d) => d.fecha == selStr);
-
-    // Elegir inicio: hoy -> seleccionado -> 0
-    final safeStart = idxHoy >= 0 ? idxHoy : (idxSel >= 0 ? idxSel : 0);
 
     // Mostrar todo el mes
     final visibles = menu;

@@ -1,4 +1,6 @@
 import 'package:conectask_v2/models/menu_dia_model.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class DateUtils {
   /// Devuelve la lista de días de la semana en español (lunes a domingo).
@@ -77,4 +79,51 @@ static int buscarIndiceDia(List<MenuDiaModel> menu, DateTime dia) {
   return menu.indexWhere((d) => d.fecha == selStr);
 }
 
+// Scroll al día seleccionado (con animación)
+static void scrollToDia({
+  required List<MenuDiaModel> menu,
+  required DateTime dia,
+  required ScrollController controller,
+  double alturaCard = 115.0,
+}) {
+  final idxSel = buscarIndiceDia(menu, dia);
+  print("📌 scrollToDia -> dia: $dia, idxSel: $idxSel");
+
+  if (idxSel >= 0) {
+    final offset = idxSel * alturaCard;
+    print("📌 offset calculado: $offset");
+    controller.animateTo(
+      offset,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+    );
+  } else {
+    print("❌ No se encontró índice para $dia");
+  }
+}
+
+// Scroll al día actual (sin animación, directo)
+static void scrollToHoy({
+  required List<MenuDiaModel> menu,
+  required ScrollController controller,
+  double alturaCard = 115.0,
+}) {
+  final hoy = DateTime.now();
+  final idxHoy = menu.indexWhere((d) {
+    final fechaObj = DateTime.parse(d.fecha);
+    return fechaObj.year == hoy.year &&
+           fechaObj.month == hoy.month &&
+           fechaObj.day == hoy.day;
+  });
+
+  print("📌 scrollToHoy -> idxHoy: $idxHoy, llamada=${DateTime.now()}");
+
+
+  if (idxHoy >= 0) {
+    final offset = idxHoy * alturaCard;
+    controller.jumpTo(offset); // 👈 directo, sin animación
+  } else {
+    print("❌ No se encontró índice para hoy");
+  }
+}
 }
