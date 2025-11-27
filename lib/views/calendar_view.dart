@@ -122,9 +122,6 @@ class _CalendarViewState extends State<CalendarView> {
                             ? obtenerColorUsuario(usuario)
                             : Colors.grey;
 
-                        final estadoColor = tarea != null
-                            ? obtenerColorTarea(tarea)
-                            : Colors.grey;
 
                         return Card(
                           margin: const EdgeInsets.symmetric(vertical: 8),

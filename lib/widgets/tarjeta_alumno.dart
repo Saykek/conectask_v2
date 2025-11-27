@@ -4,9 +4,19 @@ import 'package:flutter/material.dart';
 
 class TarjetaAlumno extends StatelessWidget {
   final UserModel usuario;
+  final String proximoExamen;
+  final String ultimaNota;
+  final String mediaNotas;
   final VoidCallback onTap;
 
-  const TarjetaAlumno({required this.usuario, required this.onTap, super.key});
+  const TarjetaAlumno({
+    required this.usuario,
+    required this.proximoExamen,
+    required this.ultimaNota,
+    required this.mediaNotas,
+    required this.onTap,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +28,7 @@ class TarjetaAlumno extends StatelessWidget {
         margin: const EdgeInsets.all(8),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color:colorUsuario.withOpacity(0.4),
+          color: colorUsuario.withOpacity(0.4),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: colorUsuario),
           boxShadow: [
@@ -42,9 +52,9 @@ class TarjetaAlumno extends StatelessWidget {
                   child: Text(
                     usuario.nombre,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-      fontSize: 22,             
-      fontWeight: FontWeight.bold,
-                    ),
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                 ),
                 const Icon(Icons.arrow_forward_ios, size: 16),
@@ -52,42 +62,42 @@ class TarjetaAlumno extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    Row(
-      children: [
-        Image.asset('assets/iconos/examen.png', width: 40, height: 40),
-        const SizedBox(width: 12),
-        Text(
-          'Próximo examen: —',
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-      ],
-    ),
-    const SizedBox(height: 12), // 👈 separación vertical entre filas
-    Row(
-      children: [
-        Image.asset('assets/iconos/nota.png', width: 40, height: 40),
-        const SizedBox(width: 12),
-        Text(
-          'Última nota: —',
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-      ],
-    ),
-    const SizedBox(height: 12), // 👈 separación vertical entre filas
-    Row(
-      children: [
-        Image.asset('assets/iconos/media_notas.png', width: 40, height: 40),
-        const SizedBox(width: 12),
-        Text(
-          'Media general: —',
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-      ],
-    ),
-  ],
-)
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Image.asset('assets/iconos/examen.png', width: 40, height: 40),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Próximo examen: $proximoExamen',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Image.asset('assets/iconos/nota.png', width: 40, height: 40),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Última nota: $ultimaNota',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Image.asset('assets/iconos/media_notas.png', width: 40, height: 40),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Media general: $mediaNotas',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+              ],
+            )
           ],
         ),
       ),

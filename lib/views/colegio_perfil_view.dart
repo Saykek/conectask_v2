@@ -1,9 +1,11 @@
 import 'package:conectask_v2/models/user_model.dart';
-import 'package:conectask_v2/utils/colegio_utils.dart'; // 👈 nueva clase para lógica escolar
+import 'package:conectask_v2/utils/colegio_utils.dart'; // 👈 lógica escolar global
 import 'package:conectask_v2/widgets/tarjeta_asignatura.dart';
 import 'package:flutter/material.dart';
 import '../services/asignatura_service_mock.dart';
 import 'colegio_asignatura_view.dart';
+
+
 
 class ColegioPerfilView extends StatelessWidget {
   final UserModel usuario;
@@ -29,7 +31,6 @@ class ColegioPerfilView extends StatelessWidget {
           itemBuilder: (context, index) {
             final asignatura = asignaturas[index];
 
-            // ✅ ahora usamos ColegioUtils
             final proximoExamen = ColegioUtils.proximoExamen(asignatura.examenes);
             final ultimaNota = ColegioUtils.ultimaNota(asignatura.notas);
             final mediaNotas = ColegioUtils.mediaNotas(asignatura.notas);

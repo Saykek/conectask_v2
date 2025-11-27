@@ -1,10 +1,11 @@
 import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/models/user_model.dart';
-import 'package:conectask_v2/theme/colegio_theme.dart';
 import 'package:conectask_v2/views/colegio_perfil_view.dart';
 import 'package:conectask_v2/widgets/tarjeta_alumno.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../services/asignatura_service_mock.dart';
+import 'package:conectask_v2/utils/colegio_utils.dart';
 
 class ColegioView extends StatelessWidget {
   final UserModel user;
@@ -20,7 +21,7 @@ class ColegioView extends StatelessWidget {
         ? usuarioController.usuarios.where((u) => u.rol == 'niño').toList()
         : [user];
 
-      return Scaffold(
+    return Scaffold(
       appBar: AppBar(title: const Text('Colegio')),
       body: Padding(
         padding: const EdgeInsets.all(12),
@@ -32,24 +33,40 @@ class ColegioView extends StatelessWidget {
             mainAxisSpacing: 12,
             childAspectRatio: 1.1,
           ),
+          itemBuilder: (context, index) {
+            final usuario = usuarios[index];
 
-            itemBuilder: (context, index) {
-              final usuario = usuarios[index];
-              return TarjetaAlumno(
-                usuario: usuario,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ColegioPerfilView(usuario: usuario),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
+            // ✅ obtenemos asignaturas del usuario (mock)
+            final asignaturas = AsignaturaServiceMock.obtenerAsignaturas();
+
+            // ✅ cálculos globales del alumno
+            final proximoExamenGlobal = ColegioUtils.proximoExamen(
+              asignaturas.expand((a) => a.examenes).toList(),
+            );
+            final ultimaNotaGlobal = ColegioUtils.ultimaNota(
+              asignaturas.expand((a) => a.notas).toList(),
+            );
+            final mediaNotasGlobal = ColegioUtils.mediaNotas(
+              asignaturas.expand((a) => a.notas).toList(),
+            );
+
+            return TarjetaAlumno(
+              usuario: usuario,
+              proximoExamen: proximoExamenGlobal,
+              ultimaNota: ultimaNotaGlobal,
+              mediaNotas: mediaNotasGlobal,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ColegioPerfilView(usuario: usuario),
+                  ),
+                );
+              },
+            );
+          },
         ),
-      );
-    
+      ),
+    );
   }
 }
