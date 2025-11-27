@@ -25,6 +25,7 @@ class TarjetaAsignatura extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
+      
       child: Card(
         color: colorFondo,
         shape: Theme.of(context).cardTheme.shape,

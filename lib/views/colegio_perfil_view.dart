@@ -1,4 +1,5 @@
 import 'package:conectask_v2/models/user_model.dart';
+import 'package:conectask_v2/views/colegio_asignatura_view.dart';
 import 'package:conectask_v2/widgets/tarjeta_asignatura.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +42,16 @@ class ColegioPerfilView extends StatelessWidget {
               mediaNotas: '—',
               ultimaNota: '—',
               onTap: () {
-                // Aquí puedes navegar al detalle de la asignatura si lo deseas
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ColegioAsignaturaView(
+                      nombreAsignatura: asignatura,
+                      icono: _iconoPorAsignatura(asignatura),
+                    ),
+                  ),
+                );
+
               },
             );
           },
