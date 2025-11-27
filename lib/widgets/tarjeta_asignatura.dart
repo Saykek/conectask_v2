@@ -50,10 +50,49 @@ class TarjetaAsignatura extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 12),
-              Text('📅 Próximo examen: $proximoExamen'),
-              Text('📊 Media de notas: $mediaNotas'),
-              Text('📈 Última nota: $ultimaNota'),
+              const SizedBox(height: 20),
+              
+              Center(
+  child: Row(
+     mainAxisSize: MainAxisSize.min,
+    children: [
+      Image.asset('assets/iconos/examen.png', width: 30, height: 30),
+      const SizedBox(width: 12),
+      Text(
+        'Próximo examen: —',
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
+    ],
+  ),
+),
+const SizedBox(height: 12), // separación vertical entre filas
+Center(
+  child: Row(
+     mainAxisSize: MainAxisSize.min,
+    children: [
+      Image.asset('assets/iconos/nota.png', width: 30, height: 30),
+      const SizedBox(width: 12),
+      Text(
+        'Última nota: —',
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
+    ],
+  ),
+),
+const SizedBox(height: 12), // separación vertical entre filas
+Center(
+  child: Row(
+     mainAxisSize: MainAxisSize.min,
+    children: [
+      Image.asset('assets/iconos/media_notas.png', width: 30, height: 30),
+      const SizedBox(width: 12),
+      Text(
+        'Media general: —',
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
+    ],
+  ),
+),
             ],
           ),
         ),
