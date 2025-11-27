@@ -13,7 +13,6 @@ class NavegacionFecha extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fechaTexto = DateFormat('EEEE, d MMMM', 'es_ES').format(fechaActual);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

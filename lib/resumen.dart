@@ -120,6 +120,7 @@ intermedio, y los puntos siguen sumandos.
 - Boton de claro oscurso se vuelve, hace animacion.
 - acceso niños muy abajo IMPORTANTE!!!
 - editar y eliminar recompensas no se puede
+- navegacion.dart poner colores de theme
 
 
 🧠 Inteligencia y personalización

@@ -137,7 +137,7 @@ class _TasksViewState extends State<TasksView> {
                       margin: const EdgeInsets.all(8),
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: color.withOpacity(0.2),
+                        color: color.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: color),
                       ),

@@ -5,8 +5,8 @@ class Autocompletar extends StatelessWidget {
   final String label;
   final String? initial;
   final List<ComidaModel> recetasDisponibles;
-  final ValueChanged<String> onChanged;        // 👈 más claro que Function(String)
-  final ValueChanged<ComidaModel> onSelected;  // 👈 más claro que Function(ComidaModel)
+  final ValueChanged<String> onChanged;        
+  final ValueChanged<ComidaModel> onSelected;  
 
   const Autocompletar({
     super.key,

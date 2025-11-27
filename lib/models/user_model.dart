@@ -21,7 +21,7 @@ class UserModel {
     this.colorHex,
   });
 
-  /// ✅ Método para crear una copia modificada del objeto
+  /// Método para crear una copia modificada del objeto
   UserModel copyWith({
     String? id,
     String? nombre,
@@ -46,7 +46,7 @@ class UserModel {
     );
   }
 
-  /// ✅ Convertir a Map para Firebase
+  /// Convertir a Map para Firebase
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{
       'id': id,
@@ -64,7 +64,7 @@ class UserModel {
     return map;
   }
 
-  /// ✅ Crear objeto desde Map de Firebase
+  /// Crear objeto desde Map de Firebase
   factory UserModel.fromMap(String id, Map<String, dynamic> map) {
     return UserModel(
       id: id,

@@ -3,7 +3,6 @@ import 'package:conectask_v2/views/recompensa_add_view.dart';
 import 'package:flutter/material.dart';
 import '../models/recompensa_model.dart';
 import '../models/user_model.dart';
-import '../services/recompensa_service.dart';
 
 class RecompensaDetailView extends StatefulWidget {
   final RecompensaModel recompensa;
@@ -20,7 +19,6 @@ class RecompensaDetailView extends StatefulWidget {
 }
 
 class _RecompensaDetailViewState extends State<RecompensaDetailView> {
-  final RecompensaService _recompensaService = RecompensaService();
   final RecompensaController _controller = RecompensaController();
   late RecompensaModel recompensa;
 

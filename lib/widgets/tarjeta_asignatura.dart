@@ -22,7 +22,6 @@ class TarjetaAsignatura extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorFondo = ColegioTheme.colorPorAsignatura(nombre);
-    final colorIcono = ColegioTheme.colorIconoPorAsignatura(nombre);
 
     return GestureDetector(
       onTap: onTap,

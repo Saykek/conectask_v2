@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:conectask_v2/models/comida_model.dart';
-import 'package:conectask_v2/utils/date_utils.dart' as miFecha;
 
 class MenuSemanalDetalleView extends StatelessWidget {
   final String fecha; // clave yyyy-MM-dd
