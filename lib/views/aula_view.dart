@@ -1,4 +1,5 @@
 import 'package:conectask_v2/models/user_model.dart';
+import 'package:conectask_v2/widgets/temporizador_lectura.dart';
 import 'package:flutter/material.dart';
 
 class AulaView extends StatelessWidget {
@@ -57,8 +58,13 @@ class AulaView extends StatelessWidget {
           // abrir calendario
         }),
         _buildBoton(context, Icons.timer, 'Temporizador', () {
-          // abrir temporizador
-        }),
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const TemporizadorLectura(),
+    ),
+  );
+}),
         _buildBoton(context, Icons.star, 'Recompensas', () {
           // abrir recompensas
         }),
