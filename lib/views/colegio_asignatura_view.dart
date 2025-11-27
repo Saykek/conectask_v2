@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/asignatura_model_mock.dart';
 
+
 class ColegioAsignaturaView extends StatelessWidget {
   final AsignaturaModelMock asignatura;
 
@@ -104,6 +105,21 @@ class ColegioAsignaturaView extends StatelessWidget {
                       title: Text(e['titulo'] ?? ''),
                       subtitle: Text('Fecha: ${e['fecha'] ?? '—'}'),
                     )),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // ✅ Nueva tarjeta: Tiempo de lectura
+          Card(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                ListTile(
+                  leading: Icon(Icons.timer),
+                  title: Text('Tiempo de lectura'),
+                  subtitle: Text('—'), // aquí luego podrás poner el temporizador real
+                ),
               ],
             ),
           ),
