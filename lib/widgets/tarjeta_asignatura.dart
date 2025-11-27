@@ -25,7 +25,6 @@ class TarjetaAsignatura extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      
       child: Card(
         color: colorFondo,
         shape: Theme.of(context).cardTheme.shape,
@@ -38,10 +37,7 @@ class TarjetaAsignatura extends StatelessWidget {
               LayoutBuilder(
                 builder: (context, constraints) {
                   final iconSize = constraints.maxWidth * 0.25;
-                  final iconColor = ColegioTheme.colorIconoPorAsignatura(
-                    nombre,
-                  );
-
+                  final iconColor = ColegioTheme.colorIconoPorAsignatura(nombre);
                   return Icon(icono, size: iconSize, color: iconColor);
                 },
               ),
@@ -52,48 +48,51 @@ class TarjetaAsignatura extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
-              
+
+              // 🔹 Ahora usamos los valores que recibimos en el constructor
               Center(
-  child: Row(
-     mainAxisSize: MainAxisSize.min,
-    children: [
-      Image.asset('assets/iconos/examen.png', width: 30, height: 30),
-      const SizedBox(width: 12),
-      Text(
-        'Próximo examen: —',
-        style: Theme.of(context).textTheme.bodyMedium,
-      ),
-    ],
-  ),
-),
-const SizedBox(height: 12), // separación vertical entre filas
-Center(
-  child: Row(
-     mainAxisSize: MainAxisSize.min,
-    children: [
-      Image.asset('assets/iconos/nota.png', width: 30, height: 30),
-      const SizedBox(width: 12),
-      Text(
-        'Última nota: —',
-        style: Theme.of(context).textTheme.bodyMedium,
-      ),
-    ],
-  ),
-),
-const SizedBox(height: 12), // separación vertical entre filas
-Center(
-  child: Row(
-     mainAxisSize: MainAxisSize.min,
-    children: [
-      Image.asset('assets/iconos/media_notas.png', width: 30, height: 30),
-      const SizedBox(width: 12),
-      Text(
-        'Media general: —',
-        style: Theme.of(context).textTheme.bodyMedium,
-      ),
-    ],
-  ),
-),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset('assets/iconos/examen.png', width: 30, height: 30),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Próximo examen: $proximoExamen',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset('assets/iconos/nota.png', width: 30, height: 30),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Última nota: $ultimaNota',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset('assets/iconos/media_notas.png', width: 30, height: 30),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Media general: $mediaNotas',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

@@ -1,89 +1,110 @@
 import 'package:flutter/material.dart';
+import '../models/asignatura_model_mock.dart';
 
 class ColegioAsignaturaView extends StatelessWidget {
-  final String nombreAsignatura;
-  final IconData icono;
+  final AsignaturaModelMock asignatura;
 
-  const ColegioAsignaturaView({
-    super.key,
-    required this.nombreAsignatura,
-    required this.icono,
-  });
+  const ColegioAsignaturaView({super.key, required this.asignatura});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(nombreAsignatura),
-        centerTitle: true,
+        title: Text(asignatura.nombre),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: Icon(asignatura.icono, size: 28),
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Icono grande de la asignatura
-          Center(
-            child: Column(
-              children: [
-                Icon(icono, size: 80, color: Colors.blueGrey),
-                const SizedBox(height: 12),
-                Text(
-                  nombreAsignatura,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                  textAlign: TextAlign.center,
+          // Resumen superior
+          Row(
+            children: [
+              Expanded(
+                child: Card(
+                  child: ListTile(
+                    leading: Image.asset('assets/iconos/examen.png', width: 32, height: 32),
+                    title: const Text('Próximo examen'),
+                    subtitle: Text(
+                      asignatura.examenes.isNotEmpty
+                          ? '${asignatura.examenes.first['titulo']} • ${asignatura.examenes.first['fecha']}'
+                          : '—',
+                    ),
+                  ),
                 ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Card(
+                  child: ListTile(
+                    leading: Image.asset('assets/iconos/nota.png', width: 32, height: 32),
+                    title: const Text('Última nota'),
+                    subtitle: Text(
+                      asignatura.notas.isNotEmpty
+                          ? '${asignatura.notas.last['titulo']} • ${asignatura.notas.last['nota']}'
+                          : '—',
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Lista de exámenes
+          Card(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const ListTile(
+                  leading: Icon(Icons.event_note),
+                  title: Text('Exámenes'),
+                ),
+                ...asignatura.examenes.map((ex) => ListTile(
+                      title: Text(ex['titulo'] ?? ''),
+                      subtitle: Text('Fecha: ${ex['fecha'] ?? '—'}'),
+                    )),
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
 
-          // Bloque de Exámenes
+          // Lista de notas
           Card(
-            child: ListTile(
-              leading: Image.asset('assets/iconos/examen.png', width: 32, height: 32),
-              title: const Text('Próximos exámenes'),
-              subtitle: const Text('Aquí se listarán los exámenes con fecha'),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const ListTile(
+                  leading: Icon(Icons.grade),
+                  title: Text('Notas'),
+                ),
+                ...asignatura.notas.map((n) => ListTile(
+                      title: Text(n['titulo'] ?? ''),
+                      subtitle: Text('Nota: ${n['nota'] ?? '—'}'),
+                    )),
+              ],
             ),
           ),
           const SizedBox(height: 16),
 
-          // Bloque de Notas
+          // Lista de excursiones
           Card(
-            child: ListTile(
-              leading: Image.asset('assets/iconos/nota.png', width: 32, height: 32),
-              title: const Text('Notas de los exámenes'),
-              subtitle: const Text('Aquí se mostrarán las notas registradas'),
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // Bloque de Gráficas
-          Card(
-            child: ListTile(
-              leading: Image.asset('assets/iconos/media_notas.png', width: 32, height: 32),
-              title: const Text('Gráficas de medias'),
-              subtitle: const Text('Placeholder para gráficas de rendimiento'),
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // Bloque de Excursiones
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.hiking, size: 32, color: Colors.green),
-              title: const Text('Excursiones'),
-              subtitle: const Text('Aquí se mostrarán excursiones con fecha'),
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // Bloque de Tiempo de estudio
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.timer, size: 32, color: Colors.deepOrange),
-              title: const Text('Tiempo de estudio'),
-              subtitle: const Text('Placeholder para registrar tiempo de estudio'),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const ListTile(
+                  leading: Icon(Icons.hiking),
+                  title: Text('Excursiones'),
+                ),
+                ...asignatura.excursiones.map((e) => ListTile(
+                      title: Text(e['titulo'] ?? ''),
+                      subtitle: Text('Fecha: ${e['fecha'] ?? '—'}'),
+                    )),
+              ],
             ),
           ),
         ],

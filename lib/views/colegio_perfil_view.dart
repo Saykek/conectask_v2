@@ -1,7 +1,9 @@
 import 'package:conectask_v2/models/user_model.dart';
-import 'package:conectask_v2/views/colegio_asignatura_view.dart';
+import 'package:conectask_v2/utils/colegio_utils.dart'; // 👈 nueva clase para lógica escolar
 import 'package:conectask_v2/widgets/tarjeta_asignatura.dart';
 import 'package:flutter/material.dart';
+import '../services/asignatura_service_mock.dart';
+import 'colegio_asignatura_view.dart';
 
 class ColegioPerfilView extends StatelessWidget {
   final UserModel usuario;
@@ -10,16 +12,7 @@ class ColegioPerfilView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final asignaturas = [
-      'Matemáticas',
-      'Lengua',
-      'Ciencias',
-      'Inglés',
-      'Sociales',
-      'Arte',
-      'Educación Física',
-      'Música',
-    ];
+    final asignaturas = AsignaturaServiceMock.obtenerAsignaturas();
 
     return Scaffold(
       appBar: AppBar(title: Text('Perfil escolar de ${usuario.nombre}')),
@@ -35,52 +28,31 @@ class ColegioPerfilView extends StatelessWidget {
           ),
           itemBuilder: (context, index) {
             final asignatura = asignaturas[index];
+
+            // ✅ ahora usamos ColegioUtils
+            final proximoExamen = ColegioUtils.proximoExamen(asignatura.examenes);
+            final ultimaNota = ColegioUtils.ultimaNota(asignatura.notas);
+            final mediaNotas = ColegioUtils.mediaNotas(asignatura.notas);
+
             return TarjetaAsignatura(
-              nombre: asignatura,
-              icono: _iconoPorAsignatura(asignatura),
-              proximoExamen: '—',
-              mediaNotas: '—',
-              ultimaNota: '—',
+              nombre: asignatura.nombre,
+              icono: asignatura.icono,
+              proximoExamen: proximoExamen,
+              ultimaNota: ultimaNota,
+              mediaNotas: mediaNotas,
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ColegioAsignaturaView(
-                      nombreAsignatura: asignatura,
-                      icono: _iconoPorAsignatura(asignatura),
-                    ),
+                    builder: (context) =>
+                        ColegioAsignaturaView(asignatura: asignatura),
                   ),
                 );
-
               },
             );
           },
         ),
       ),
     );
-  }
-
-  IconData _iconoPorAsignatura(String asignatura) {
-    switch (asignatura.toLowerCase()) {
-      case 'matemáticas':
-        return Icons.calculate;
-      case 'lengua':
-        return Icons.menu_book;
-      case 'ciencias':
-      case 'naturales':
-        return Icons.eco;
-      case 'inglés':
-        return Icons.language;
-      case 'sociales':
-        return Icons.public;
-      case 'arte':
-        return Icons.brush;
-      case 'educación física':
-        return Icons.sports_soccer;
-      case 'música':
-        return Icons.music_note;
-      default:
-        return Icons.school;
-    }
   }
 }
