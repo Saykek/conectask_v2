@@ -1,6 +1,9 @@
 import 'package:conectask_v2/controllers/colegio_controller.dart';
+import 'package:conectask_v2/controllers/home_assistant_controller.dart';
 import 'package:conectask_v2/controllers/tarea_controller.dart';
 import 'package:conectask_v2/controllers/usuario_controller.dart';
+import 'package:conectask_v2/models/home_assistant_model.dart';
+import 'package:conectask_v2/services/home_assistant_service.dart';
 import 'package:conectask_v2/theme/app_theme.dart';
 import 'package:conectask_v2/views/login_view.dart';
 import 'package:flutter/foundation.dart';
@@ -8,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
+
 import 'firebase_options.dart';
 
 void main() async {
@@ -26,9 +30,23 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TareaController()),
-        ChangeNotifierProvider(create: (_) => UsuarioController()), 
-        ChangeNotifierProvider(create: (_) => ColegioController(),), 
-       
+        ChangeNotifierProvider(create: (_) => UsuarioController()),
+        ChangeNotifierProvider(create: (_) => ColegioController()),
+
+        // 👉 Añadimos HomeAssistantController como Provider
+        Provider(
+          create: (_) {
+            final model = HomeAssistantModel(
+              baseUrl: "http://192.168.1.42:8123", // tu instancia HA
+              accessToken:
+                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIwODI1OGEzN2ZlN2Y0ODgxOGNmYmI0OWU1NmJiM2RmNSIsImlhdCI6MTc2NDQ1NDM0OCwiZXhwIjoyMDc5ODE0MzQ4fQ.iItdBiON4nNhyN3uf8yJtCATGmk_U4NQaTRmXZHqsFw", // token de acceso
+              panel: "default", // panel Lovelace
+              soloAdmin: true, // restringir a admin
+            );
+            final service = HomeAssistantService(model);
+            return HomeAssistantController(service);
+          },
+        ),
       ],
       child: const MyApp(),
     ),
@@ -43,9 +61,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Conectask',
-      theme: AppTheme.light,          // tema claro
-      darkTheme: AppTheme.dark,       //tema oscuro 
-      themeMode: ThemeMode.system,    // o ThemeMode.light / ThemeMode.dark
+      theme: AppTheme.light, // tema claro
+      darkTheme: AppTheme.dark, //tema oscuro
+      themeMode: ThemeMode.system, // o ThemeMode.light / ThemeMode.dark
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

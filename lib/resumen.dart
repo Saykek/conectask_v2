@@ -121,6 +121,9 @@ intermedio, y los puntos siguen sumandos.
 - acceso niños muy abajo IMPORTANTE!!!
 - editar y eliminar recompensas no se puede
 - navegacion.dart poner colores de theme
+- HOME ASSISTANT : Versión mínima (solo formulario + carga de panel Lovelace): 4–6 días.
+• 	Versión completa (con roles, aparatos configurables y persistencia en Firebase): 10–15 días.
+- si añades puntos desde configuracion se borran los acumulados del usuario
 
 
 🧠 Inteligencia y personalización

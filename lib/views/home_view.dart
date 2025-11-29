@@ -1,9 +1,7 @@
 import 'package:conectask_v2/controllers/colegio_controller.dart';
 import 'package:conectask_v2/controllers/home_assistant_controller.dart';
 import 'package:conectask_v2/controllers/usuario_controller.dart';
-import 'package:conectask_v2/models/home_assistant_model.dart';
 import 'package:conectask_v2/models/user_model.dart';
-import 'package:conectask_v2/services/home_assistant_service.dart';
 import 'package:conectask_v2/views/aula_view.dart';
 import 'package:conectask_v2/views/calendar_view.dart';
 import 'package:conectask_v2/views/colegio_view.dart';
@@ -172,14 +170,14 @@ class _HomeViewState extends State<HomeView> {
               });
             },
             secondary: SizedBox(
-    width: 80, // ajusta según lo que quieras
-    height: 80,
-    child: RecetaModulo(
-      assetPath: 'assets/animaciones/camara.json',
-      factor: 1,
-    ),
-  ),
-),
+              width: 80, // ajusta según lo que quieras
+              height: 80,
+              child: RecetaModulo(
+                assetPath: 'assets/animaciones/camara.json',
+                factor: 1,
+              ),
+            ),
+          ),
 
           Expanded(
             child: Padding(
@@ -275,30 +273,20 @@ class _HomeViewState extends State<HomeView> {
                             );
                           }
                         } else if (modulo['titulo'] == 'Casa') {
-                          // 1. Crear el modelo con tu URL y token
-                          final homeModel = HomeAssistantModel(
-                            baseUrl:
-                                "https://demo.home-assistant.io", // tu instancia HA
-                            accessToken: "TOKEN_DEMO", // tu long-lived token
-                            panel: "default", // panel lovelace
-                            soloAdmin: true, // solo admin puede acceder
-                          );
+                          // Recuperar el controlador desde Provider (ya inicializado en main.dart)
+                          final homeController =
+                              Provider.of<HomeAssistantController>(
+                                context,
+                                listen: false,
+                              );
 
-                          // 2. Crear el servicio
-                          final homeService = HomeAssistantService(homeModel);
-
-                          // 3. Crear el controlador
-                          final homeController = HomeAssistantController(
-                            homeService,
-                          );
-
-                          // 4. Navegar a la vista pasando el controlador y el rol del usuario
+                          // Navegar a la vista pasando el controlador y el rol del usuario
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => HomeAssistantView(
                                 controller: homeController,
-                                rolUsuario: widget.user.rol, //"admin" o "niño"
+                                rolUsuario: widget.user.rol, // "admin" o "niño"
                               ),
                             ),
                           );

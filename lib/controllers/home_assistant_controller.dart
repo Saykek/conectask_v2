@@ -7,7 +7,7 @@ class HomeAssistantController {
 
   /// Devuelve la URL de Lovelace lista para abrir en WebView
   String obtenerUrlLovelace() {
-    return "https://demo.home-assistant.io/lovelace/default";
+    return service.getLovelaceUrl();
   }
 
   /// Comprueba si el usuario puede acceder al módulo
