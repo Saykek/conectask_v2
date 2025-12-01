@@ -114,7 +114,7 @@ Resumen de la app de gestion familiar:
 - Historial de tareas completadas: con filtros por fecha, tipo o responsable.1.5-2 horas
 - horario en tareas? 30-45 min
 - quitar insignias fijas de recompensas y que se puedan añadir nuevas desde firebase 2-4 horas
-- quitar modulo de configuracion del home del niño
+- quitar modulo de configuracion y casa del home del niño ✅
 - al validar una tarea los puntos se suman en un sitio pero en otro no
 - Una vez que validas la tarea si luego la dejas como no hecha al volver a darla ya sale validad, no pasa por el paso
 intermedio, y los puntos siguen sumandos.

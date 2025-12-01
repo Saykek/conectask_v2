@@ -10,7 +10,6 @@ import 'package:conectask_v2/views/home_assistant_view.dart';
 import 'package:conectask_v2/views/login_view.dart';
 import 'package:conectask_v2/views/menu_semanal_view.dart';
 import 'package:conectask_v2/controllers/menu_semanal_controller.dart';
-import 'package:conectask_v2/views/prueba_imagen_view.dart';
 import 'package:conectask_v2/views/recompensas_view.dart';
 import 'package:conectask_v2/views/task_view.dart';
 import 'package:conectask_v2/widgets/receta_modulo.dart';
@@ -30,65 +29,12 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   bool mostrarFotos = false; // Estado del interruptor
 
-  final List<Map<String, dynamic>> modulos = [
-    {
-      'titulo': 'Tareas',
-      'icono': RecetaModulo(
-        assetPath: 'assets/animaciones/tarea.json',
-        factor: 1,
-      ),
-    },
-    {
-      'titulo': 'Menú semanal',
-      'icono': RecetaModulo(
-        assetPath: 'assets/animaciones/receta_ani.json',
-        factor: 1,
-      ),
-    },
-    {
-      'titulo': 'Colegio',
-      'icono': RecetaModulo(
-        assetPath: 'assets/animaciones/colegio.json',
-        factor: 1,
-      ),
-    },
-    {
-      'titulo': 'Casa',
-      'icono': RecetaModulo(
-        assetPath: 'assets/animaciones/home_conection.json',
-        factor: 1.2,
-      ),
-    },
-    {
-      'titulo': 'Recompensas',
-      'icono': RecetaModulo(
-        assetPath: 'assets/animaciones/regalo_home.json',
-        factor: 2.1,
-      ),
-    },
-    {
-      'titulo': 'Calendario',
-      'icono': RecetaModulo(
-        assetPath: 'assets/animaciones/calendario.json',
-        factor: 1,
-      ),
-    },
-    {
-      'titulo': 'Configuración',
-      'icono': RecetaModulo(
-        assetPath: 'assets/animaciones/configuracion.json',
-        factor: 1,
-      ),
-    },
-  ];
-
   void cargarDatosIniciales() async {
     final usuarioController = Provider.of<UsuarioController>(
       context,
       listen: false,
     );
     await usuarioController.cargarUsuarios();
-
     print('✅ Usuarios cargados: ${usuarioController.usuarios.length}');
   }
 
@@ -101,24 +47,20 @@ class _HomeViewState extends State<HomeView> {
 
     cargarDatosIniciales();
 
-    //print('UID autenticado por Firebase: $uid');
-    //print('ID del modelo recibido: ${widget.user.id}');
-
     if (uid != null && uid == widget.user.id) {
       print('✅ UID coincide. Puedes acceder a Firebase.');
-      // Aquí podrías cargar configuración si lo deseas
-      // Por ejemplo:
-      // final configuracionController = ConfiguracionController();
-      // configuracionController.cargarConfiguracion(uid);
     } else {
       print('❌ UID no coincide o usuario no autenticado.');
-      // Puedes redirigir al login o mostrar un error
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    print('Rol del usuario: ${widget.user.rol}');
+    final usuarioController = Provider.of<UsuarioController>(context);
+
+    // Obtenemos los módulos visibles según el rol
+    final modulos = usuarioController.obtenerModulosPorRol(widget.user.rol);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Bienvenido, ${widget.user.nombre}'),
@@ -170,7 +112,7 @@ class _HomeViewState extends State<HomeView> {
               });
             },
             secondary: SizedBox(
-              width: 80, // ajusta según lo que quieras
+              width: 80,
               height: 80,
               child: RecetaModulo(
                 assetPath: 'assets/animaciones/camara.json',
@@ -178,7 +120,6 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
           ),
-
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -198,124 +139,113 @@ class _HomeViewState extends State<HomeView> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: InkWell(
-                      // Navegación a cada módulo
                       onTap: () async {
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const PruebaImagenView(),
-                              ),
-                            );
-                          },
-                          child: const Text('Ver imagen de fondo'),
-                        );
-                        if (modulo['titulo'] == 'Recompensas') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  RecompensasView(user: widget.user),
-                            ),
-                          );
-                        } else if (modulo['titulo'] == 'Configuración') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ConfiguracionView(user: widget.user),
-                            ),
-                          );
-                        } else if (modulo['titulo'] == 'Menú semanal') {
-                          final controller = MenuSemanalController();
-                          final datos = await controller.leerMenu();
-
-                          final Map<String, dynamic> menuMap = {
-                            for (var dia in datos) dia.fecha: dia.toMap(),
-                          };
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MenuSemanalView(
-                                menu: menuMap,
-                                user: widget.user,
-                              ),
-                            ),
-                          );
-                        } else if (modulo['titulo'] == 'Tareas') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  TasksView(user: widget.user),
-                            ),
-                          );
-                        } else if (modulo['titulo'] == 'Colegio') {
-                          if (widget.user.rol == 'niño') {
+                        switch (modulo['titulo']) {
+                          case 'Recompensas':
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    AulaView(user: widget.user),
+                                    RecompensasView(user: widget.user),
                               ),
                             );
-                          } else {
+                            break;
+                          case 'Configuración':
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ChangeNotifierProvider(
-                                  create: (_) => ColegioController(),
-                                  child: ColegioView(user: widget.user),
+                                builder: (context) =>
+                                    ConfiguracionView(user: widget.user),
+                              ),
+                            );
+                            break;
+                          case 'Menú semanal':
+                            final controller = MenuSemanalController();
+                            final datos = await controller.leerMenu();
+                            final Map<String, dynamic> menuMap = {
+                              for (var dia in datos) dia.fecha: dia.toMap(),
+                            };
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MenuSemanalView(
+                                  menu: menuMap,
+                                  user: widget.user,
                                 ),
                               ),
                             );
-                          }
-                        } else if (modulo['titulo'] == 'Casa') {
-                          // Recuperar el controlador desde Provider (ya inicializado en main.dart)
-                          final homeController =
-                              Provider.of<HomeAssistantController>(
+                            break;
+                          case 'Tareas':
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    TasksView(user: widget.user),
+                              ),
+                            );
+                            break;
+                          case 'Colegio':
+                            if (widget.user.rol == 'niño') {
+                              Navigator.push(
                                 context,
-                                listen: false,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      AulaView(user: widget.user),
+                                ),
                               );
-
-                          // Navegar a la vista pasando el controlador y el rol del usuario
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => HomeAssistantView(
-                                controller: homeController,
-                                rolUsuario: widget.user.rol, // "admin" o "niño"
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ChangeNotifierProvider(
+                                    create: (_) => ColegioController(),
+                                    child: ColegioView(user: widget.user),
+                                  ),
+                                ),
+                              );
+                            }
+                            break;
+                          case 'Casa':
+                            final homeController =
+                                Provider.of<HomeAssistantController>(
+                                  context,
+                                  listen: false,
+                                );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomeAssistantView(
+                                  controller: homeController,
+                                  rolUsuario: widget.user.rol,
+                                ),
                               ),
-                            ),
-                          );
-                        } else if (modulo['titulo'] == 'Calendario') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CalendarView(
-                                fechaInicial: DateTime.now(),
-                                user: widget.user,
+                            );
+                            break;
+                          case 'Calendario':
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CalendarView(
+                                  fechaInicial: DateTime.now(),
+                                  user: widget.user,
+                                ),
                               ),
-                            ),
-                          );
-                        } else {
-                          // Para otros módulos, mostrar un SnackBar temporalmente
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Módulo "${modulo['titulo']}" en desarrollo.',
+                            );
+                            break;
+                          default:
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Módulo "${modulo['titulo']}" en desarrollo.',
+                                ),
                               ),
-                            ),
-                          );
+                            );
                         }
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Expanded(
-                            // 🔑 esto da espacio vertical a la animación
                             child: Center(child: modulo['icono'] as Widget),
                           ),
                           const SizedBox(height: 8),

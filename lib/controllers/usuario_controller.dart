@@ -1,3 +1,4 @@
+import 'package:conectask_v2/widgets/receta_modulo.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../services/user_service.dart';
@@ -52,4 +53,70 @@ class UsuarioController extends ChangeNotifier {
     );
     return color.value.toRadixString(16);
   }
+  /// Devuelve los módulos visibles según el rol del usuario
+  
+  List<Map<String, dynamic>> obtenerModulosPorRol(String rol) {
+    final todosModulos = [
+      {
+        'titulo': 'Tareas',
+        'icono': RecetaModulo(
+          assetPath: 'assets/animaciones/tarea.json',
+          factor: 1,
+        ),
+      },
+      {
+        'titulo': 'Menú semanal',
+        'icono': RecetaModulo(
+          assetPath: 'assets/animaciones/receta_ani.json',
+          factor: 1,
+        ),
+      },
+      {
+        'titulo': 'Colegio',
+        'icono': RecetaModulo(
+          assetPath: 'assets/animaciones/colegio.json',
+          factor: 1,
+        ),
+      },
+      {
+        'titulo': 'Casa',
+        'icono': RecetaModulo(
+          assetPath: 'assets/animaciones/home_conection.json',
+          factor: 1.2,
+        ),
+      },
+      {
+        'titulo': 'Recompensas',
+        'icono': RecetaModulo(
+          assetPath: 'assets/animaciones/regalo_home.json',
+          factor: 2.1,
+        ),
+      },
+      {
+        'titulo': 'Calendario',
+        'icono': RecetaModulo(
+          assetPath: 'assets/animaciones/calendario.json',
+          factor: 1,
+        ),
+      },
+      {
+        'titulo': 'Configuración',
+        'icono': RecetaModulo(
+          assetPath: 'assets/animaciones/configuracion.json',
+          factor: 1,
+        ),
+      },
+    ];
+
+    // Filtrado según rol
+    if (rol.toLowerCase() == 'niño') {
+      return todosModulos
+          .where((modulo) =>
+              modulo['titulo'] != 'Casa' && modulo['titulo'] != 'Configuración')
+          .toList();
+    }
+
+    return todosModulos;
+  }
+
 }
