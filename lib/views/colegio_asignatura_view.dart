@@ -1,3 +1,4 @@
+import 'package:conectask_v2/widgets/tarjeta_base_colegio.dart';
 import 'package:flutter/material.dart';
 import '../models/asignatura_model_mock.dart';
 
@@ -9,6 +10,25 @@ class ColegioAsignaturaView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final spacing = (screenWidth * 0.02).clamp(8.0, 16.0);
+
+    // Ordenar exámenes por fecha ascendente (null al final)
+    final examenesOrdenados = List.from(asignatura.examenes)
+      ..sort((a, b) {
+        final fechaA = a['fecha'] ?? '';
+        final fechaB = b['fecha'] ?? '';
+        return fechaA.compareTo(fechaB);
+      });
+
+    // Ordenar notas por fecha descendente (null al final)
+    final notasOrdenadas = List.from(asignatura.notas)
+      ..sort((a, b) {
+        final fechaA = a['fecha'] ?? '';
+        final fechaB = b['fecha'] ?? '';
+        return fechaB.compareTo(fechaA);
+      });
+
     return Scaffold(
       appBar: AppBar(
         title: Text(asignatura.nombre),
@@ -20,105 +40,140 @@ class ColegioAsignaturaView extends StatelessWidget {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(spacing),
         children: [
-          // Resumen superior
-          Row(
+          // ✅ Card Exámenes
+          TarjetaBaseColegio(
+            color: Colors.blue.shade100,
+            onTap: () {},
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
+                  leading: Image.asset(
+                    'assets/iconos/examen.png',
+                    width: 32,
+                    height: 32,
+                  ),
+                  title: const Text(
+                    'Exámenes',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                ),
+                ...examenesOrdenados.map((ex) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      child: Text('${ex['titulo'] ?? ''} • Fecha: ${ex['fecha'] ?? '—'}'),
+                    )),
+              ],
+            ),
+          ),
+          SizedBox(height: spacing),
+
+    // ✅ Card Notas
+TarjetaBaseColegio(
+  color: Colors.green.shade100,
+  onTap: () {},
+  child: Column(
+    mainAxisSize: MainAxisSize.min,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      // Encabezado de la card con icono
+      ListTile(
+        leading: Image.asset(
+          'assets/iconos/nota.png', // icono solo aquí
+          width: 32,
+          height: 32,
+        ),
+        title: const Text(
+          'Notas',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+      ),
+      // Lista de notas
+      ...notasOrdenadas.map((n) {
+        final titulo = n['titulo'] ?? '';
+        final fecha = n['fecha'] ?? ''; // fecha real
+        final nota = n['nota'] ?? '—';
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Card(
-                  child: ListTile(
-                    leading: Image.asset('assets/iconos/examen.png', width: 32, height: 32),
-                    title: const Text('Próximo examen'),
-                    subtitle: Text(
-                      asignatura.examenes.isNotEmpty
-                          ? '${asignatura.examenes.first['titulo']} • ${asignatura.examenes.first['fecha']}'
-                          : '—',
+              // Fila con título y fecha
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      titulo,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Card(
-                  child: ListTile(
-                    leading: Image.asset('assets/iconos/nota.png', width: 32, height: 32),
-                    title: const Text('Última nota'),
-                    subtitle: Text(
-                      asignatura.notas.isNotEmpty
-                          ? '${asignatura.notas.last['titulo']} • ${asignatura.notas.last['nota']}'
-                          : '—',
-                    ),
+                  const SizedBox(width: 8),
+                  Text(
+                    fecha, // fecha real al lado del título
+                    style: const TextStyle(color: Colors.black54),
                   ),
-                ),
+                ],
               ),
+              const SizedBox(height: 4),
+              // Nota debajo
+              Text('Nota: $nota'),
             ],
           ),
-          const SizedBox(height: 16),
+        );
+      }),
+    ],
+  ),
+),
 
-          // Lista de exámenes
-          Card(
+
+
+
+          SizedBox(height: spacing),
+
+          // ✅ Card Excursiones
+          TarjetaBaseColegio(
+            color: Colors.orange.shade100,
+            onTap: () {},
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const ListTile(
-                  leading: Icon(Icons.event_note),
-                  title: Text('Exámenes'),
+                ListTile(
+                  leading: Icon(Icons.hiking, color: Colors.orange, size: 32),
+               
+                  
+                  title: const Text(
+                    'Excursiones',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
                 ),
-                ...asignatura.examenes.map((ex) => ListTile(
-                      title: Text(ex['titulo'] ?? ''),
-                      subtitle: Text('Fecha: ${ex['fecha'] ?? '—'}'),
+                ...asignatura.excursiones.map((e) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      child: Text('${e['titulo'] ?? ''} • Fecha: ${e['fecha'] ?? '—'}'),
                     )),
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: spacing),
 
-          // Lista de notas
-          Card(
+          // ✅ Card Tiempo de lectura
+          TarjetaBaseColegio(
+            color: Colors.purple.shade100,
+            onTap: () {},
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const ListTile(
-                  leading: Icon(Icons.grade),
-                  title: Text('Notas'),
-                ),
-                ...asignatura.notas.map((n) => ListTile(
-                      title: Text(n['titulo'] ?? ''),
-                      subtitle: Text('Nota: ${n['nota'] ?? '—'}'),
-                    )),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // Lista de excursiones
-          Card(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const ListTile(
-                  leading: Icon(Icons.hiking),
-                  title: Text('Excursiones'),
-                ),
-                ...asignatura.excursiones.map((e) => ListTile(
-                      title: Text(e['titulo'] ?? ''),
-                      subtitle: Text('Fecha: ${e['fecha'] ?? '—'}'),
-                    )),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // ✅ Nueva tarjeta: Tiempo de lectura
-          Card(
-            child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
                 ListTile(
-                  leading: Icon(Icons.timer),
-                  title: Text('Tiempo de lectura'),
-                  subtitle: Text('—'), // aquí luego podrás poner el temporizador real
+                  leading: Icon(Icons.timer, color: Colors.purple, size: 32),
+                  title: Text(
+                    'Tiempo de lectura',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  subtitle: Text('—'),
                 ),
               ],
             ),
@@ -128,3 +183,5 @@ class ColegioAsignaturaView extends StatelessWidget {
     );
   }
 }
+
+
