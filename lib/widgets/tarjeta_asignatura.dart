@@ -1,5 +1,7 @@
 import 'package:conectask_v2/theme/colegio_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:conectask_v2/widgets/tarjeta_base_colegio.dart';
+
 
 class TarjetaAsignatura extends StatelessWidget {
   final String nombre;
@@ -22,81 +24,66 @@ class TarjetaAsignatura extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorFondo = ColegioTheme.colorPorAsignatura(nombre);
+    final colorIcono = ColegioTheme.colorIconoPorAsignatura(nombre);
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        color: colorFondo,
-        shape: Theme.of(context).cardTheme.shape,
-        elevation: Theme.of(context).cardTheme.elevation,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final iconSize = constraints.maxWidth * 0.25;
-                  final iconColor = ColegioTheme.colorIconoPorAsignatura(nombre);
-                  return Icon(icono, size: iconSize, color: iconColor);
-                },
-              ),
-              const SizedBox(height: 8),
-              Text(
-                nombre,
-                style: Theme.of(context).textTheme.titleMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
+    // Tamaños fijos máximos
+    const double iconSizeMax = 50;
+    const double fontSizeTituloMax = 18;
+    const double fontSizeInfoMax = 14;
+    const double spacingMax = 12;
 
-              // 🔹 Ahora usamos los valores que recibimos en el constructor
-              Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset('assets/iconos/examen.png', width: 30, height: 30),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Próximo examen: $proximoExamen',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
+    return TarjetaBaseColegio(
+      color: colorFondo,
+      onTap: onTap ?? () {},
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icono, size: iconSizeMax, color: colorIcono),
+          const SizedBox(height: spacingMax / 2),
+          Text(
+            nombre,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: fontSizeTituloMax,
+              fontWeight: FontWeight.bold,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: spacingMax),
 
-              Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset('assets/iconos/nota.png', width: 30, height: 30),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Última nota: $ultimaNota',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
+          // PRÓXIMO EXAMEN
+          _filaIconoTexto('assets/iconos/examen.png', 'Próximo examen: $proximoExamen', fontSizeInfoMax, spacingMax),
+          const SizedBox(height: spacingMax / 2),
 
-              Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset('assets/iconos/media_notas.png', width: 30, height: 30),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Media general: $mediaNotas',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          // ÚLTIMA NOTA
+          _filaIconoTexto('assets/iconos/nota.png', 'Última nota: $ultimaNota', fontSizeInfoMax, spacingMax),
+          const SizedBox(height: spacingMax / 2),
+
+          // MEDIA GENERAL
+          _filaIconoTexto('assets/iconos/media_notas.png', 'Media general: $mediaNotas', fontSizeInfoMax, spacingMax),
+        ],
+      ),
+    );
+  }
+
+  Widget _filaIconoTexto(String iconPath, String texto, double fontSize, double spacing) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Image.asset(iconPath, width: fontSize + 6, height: fontSize + 6),
+        SizedBox(width: spacing / 2),
+        Flexible(
+          child: Text(
+            texto,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: fontSize),
+            overflow: TextOverflow.ellipsis,
           ),
         ),
-      ),
+      ],
     );
   }
 }
