@@ -21,25 +21,42 @@ class ColegioView extends StatelessWidget {
         ? usuarioController.usuarios.where((u) => u.rol == 'niño').toList()
         : [user];
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    final esMovil = screenWidth < 600;
+
+    // Número de columnas según ancho
+    final crossAxisCount = esMovil
+        ? 1
+        : screenWidth < 1200
+            ? 2
+            : 3;
+
+    // Altura máxima de las tarjetas según dispositivo
+    final alturaBase = esMovil ? 200.0 : 260.0;
+
+    // Proporción para GridView
+    final childAspectRatio =
+        (screenWidth / crossAxisCount) / alturaBase;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Colegio')),
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: GridView.builder(
           itemCount: usuarios.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // columnas
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
-            childAspectRatio: 1.1,
+            childAspectRatio: childAspectRatio,
           ),
           itemBuilder: (context, index) {
             final usuario = usuarios[index];
 
-            // ✅ obtenemos asignaturas del usuario (mock)
+            // obtenemos asignaturas del usuario (mock)
             final asignaturas = AsignaturaServiceMock.obtenerAsignaturas();
 
-            // ✅ cálculos globales del alumno
+            // cálculos globales del alumno
             final proximoExamenGlobal = ColegioUtils.proximoExamen(
               asignaturas.expand((a) => a.examenes).toList(),
             );

@@ -21,86 +21,131 @@ class TarjetaAlumno extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorUsuario = obtenerColorUsuario(usuario);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final esMovil = screenWidth < 600;
+
+    // Tamaños escalables pero limitados
+    final avatarRadius = (screenWidth * 0.04).clamp(20.0, 28.0);
+    final iconSize = (screenWidth * 0.05).clamp(24.0, 40.0);
+    final fontSizeTitulo =
+        ((screenWidth * 0.035).clamp(16.0, 22.0)) * (esMovil ? 1.0 : 0.9);
+    final fontSizeInfo =
+        ((screenWidth * 0.025).clamp(12.0, 18.0)) * (esMovil ? 1.0 : 0.9);
+    final spacing = (screenWidth * 0.02).clamp(8.0, 16.0);
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.all(8),
-        padding: const EdgeInsets.all(12),
+        margin: EdgeInsets.all(spacing / 2),
+        padding: EdgeInsets.all(spacing),
         decoration: BoxDecoration(
-          color: colorUsuario.withOpacity(0.4),
+          color: colorUsuario.withOpacity(0.4), // ✅ color del usuario
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: colorUsuario),
-          boxShadow: [
+          border: Border.all(color: colorUsuario), // ✅ borde color usuario
+          boxShadow: const [
             BoxShadow(
-              color: const Color.fromARGB(255, 224, 224, 224),
+              color: Color.fromARGB(255, 224, 224, 224),
               blurRadius: 6,
-              offset: const Offset(0, 3),
+              offset: Offset(0, 3),
             ),
           ],
         ),
-        width: double.infinity,
-        height: 160,
+        constraints: BoxConstraints(
+          minHeight: 140,
+          maxHeight: esMovil ? 220 : 260,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
+            // Nombre y avatar
             Row(
               children: [
-                CircleAvatar(radius: 24, child: Text(usuario.nombre[0])),
-                const SizedBox(width: 12),
+                CircleAvatar(
+                  radius: avatarRadius,
+                  backgroundColor: colorUsuario, // ✅ color del usuario
+                  child: Text(
+                    usuario.nombre[0],
+                    style: TextStyle(
+                      fontSize: avatarRadius,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                SizedBox(width: spacing),
                 Expanded(
                   child: Text(
                     usuario.nombre,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    style: TextStyle(
+                      fontSize: fontSizeTitulo,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Icon(Icons.arrow_forward_ios, size: 16),
+                Icon(Icons.arrow_forward_ios, size: iconSize * 0.4),
               ],
             ),
-            const SizedBox(height: 30),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Image.asset('assets/iconos/examen.png', width: 40, height: 40),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Próximo examen: $proximoExamen',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Image.asset('assets/iconos/nota.png', width: 40, height: 40),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Última nota: $ultimaNota',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Image.asset('assets/iconos/media_notas.png', width: 40, height: 40),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Media general: $mediaNotas',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ],
-                ),
-              ],
-            )
+            SizedBox(height: spacing * 1.5),
+
+            // Próximo examen
+            _filaIconoTexto(
+              iconPath: 'assets/iconos/examen.png',
+              texto: 'Próximo examen: $proximoExamen',
+              iconSize: iconSize,
+              fontSize: fontSizeInfo,
+              spacing: spacing,
+            ),
+            SizedBox(height: spacing / 1.5),
+
+            // Última nota
+            _filaIconoTexto(
+              iconPath: 'assets/iconos/nota.png',
+              texto: 'Última nota: $ultimaNota',
+              iconSize: iconSize,
+              fontSize: fontSizeInfo,
+              spacing: spacing,
+            ),
+            SizedBox(height: spacing / 1.5),
+
+            // Media general
+            _filaIconoTexto(
+              iconPath: 'assets/iconos/media_notas.png',
+              texto: 'Media general: $mediaNotas',
+              iconSize: iconSize,
+              fontSize: fontSizeInfo,
+              spacing: spacing,
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _filaIconoTexto({
+    required String iconPath,
+    required String texto,
+    required double iconSize,
+    required double fontSize,
+    required double spacing,
+  }) {
+    return Row(
+      children: [
+        Image.asset(
+          iconPath,
+          width: iconSize,
+          height: iconSize,
+        ),
+        SizedBox(width: spacing),
+        Expanded(
+          child: Text(
+            texto,
+            style: TextStyle(fontSize: fontSize),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 }

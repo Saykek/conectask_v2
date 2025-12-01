@@ -31,7 +31,16 @@ class _CrearNinoViewState extends State<CrearNinoView> {
       text: widget.nino?.puntos?.toString() ?? '0',
     );
     _nivel = widget.nino?.nivel ?? 1;
-    _colorSeleccionado = widget.nino?.colorHex;
+
+    // Solo asignar color si está dentro de coloresDisponibles
+    final colorHex = widget.nino?.colorHex;
+    if (colorHex != null &&
+        coloresDisponibles.values
+            .any((color) => color.value.toRadixString(16) == colorHex)) {
+      _colorSeleccionado = colorHex;
+    } else {
+      _colorSeleccionado = null; // evita que DropdownButtonFormField falle
+    }
   }
 
   @override
@@ -54,12 +63,14 @@ class _CrearNinoViewState extends State<CrearNinoView> {
           key: _formKey,
           child: ListView(
             children: [
+              // Nombre
               TextFormField(
                 controller: _nombreController,
                 decoration: const InputDecoration(labelText: 'Nombre'),
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Escribe un nombre' : null,
               ),
+              // PIN
               TextFormField(
                 controller: _pinController,
                 decoration: const InputDecoration(labelText: 'PIN'),
@@ -68,35 +79,33 @@ class _CrearNinoViewState extends State<CrearNinoView> {
                     ? 'PIN de 4 cifras'
                     : null,
               ),
+              // Nivel
               DropdownButtonFormField<int>(
                 value: _nivel,
                 decoration: const InputDecoration(labelText: 'Nivel'),
                 items: List.generate(5, (i) => i + 1)
                     .map(
-                      (n) =>
-                          DropdownMenuItem(value: n, child: Text('Nivel $n')),
+                      (n) => DropdownMenuItem(value: n, child: Text('Nivel $n')),
                     )
                     .toList(),
                 onChanged: (value) => setState(() => _nivel = value ?? 1),
               ),
+              // Puntos
               TextFormField(
                 controller: _puntosController,
                 decoration: const InputDecoration(labelText: 'Puntos'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
-                  if (value == null || value.isEmpty)
-                    return 'Introduce los puntos';
+                  if (value == null || value.isEmpty) return 'Introduce los puntos';
                   final puntos = int.tryParse(value);
-                  if (puntos == null || puntos < 0)
-                    return 'Debe ser un número válido';
+                  if (puntos == null || puntos < 0) return 'Debe ser un número válido';
                   return null;
                 },
               ),
+              // Color
               DropdownButtonFormField<String>(
                 value: _colorSeleccionado,
-                decoration: const InputDecoration(
-                  labelText: 'Color del perfil',
-                ),
+                decoration: const InputDecoration(labelText: 'Color del perfil'),
                 items: coloresDisponibles.entries
                     .map(
                       (entry) => DropdownMenuItem(
@@ -118,8 +127,7 @@ class _CrearNinoViewState extends State<CrearNinoView> {
                       ),
                     )
                     .toList(),
-                onChanged: (value) =>
-                    setState(() => _colorSeleccionado = value),
+                onChanged: (value) => setState(() => _colorSeleccionado = value),
               ),
               if (_colorSeleccionado != null)
                 Container(
@@ -137,18 +145,17 @@ class _CrearNinoViewState extends State<CrearNinoView> {
                   ),
                 ),
               const SizedBox(height: 20),
+              // Guardar
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    final colorHex =
-                        _colorSeleccionado ??
+                    final colorHex = _colorSeleccionado ??
                         usuarioController.generarColorHexDesdeNombre(
                           _nombreController.text,
                         );
 
                     final nuevoNino = UserModel(
-                      id:
-                          widget.nino?.id ??
+                      id: widget.nino?.id ??
                           'uid_${_nombreController.text}_${DateTime.now().millisecondsSinceEpoch}',
                       nombre: _nombreController.text,
                       rol: 'niño',
