@@ -100,6 +100,7 @@ Resumen de la app de gestion familiar:
 - poner calendario en español y de lunes a domingo ✅
 - Cambiar que salga el boton validar cuando sea adulto y no niño. ✅
 - Q en validad por salga el nombre de quien valida.✅
+- Desbordamiento en todas las vistas de colegio ✅
 - en menu semanal guardo receta pero no se actualiza en la pantalla edit, sino que tengo que salir y volver a entrar. ✅
 - en menu semanal detalle ingredientes, receta, notas no se guardan, no tiene funcionalidad.
 - Añadir para enlace PDF 30-45 min
@@ -124,6 +125,9 @@ intermedio, y los puntos siguen sumandos.
 - HOME ASSISTANT : Versión mínima (solo formulario + carga de panel Lovelace): 4–6 días.
 • 	Versión completa (con roles, aparatos configurables y persistencia en Firebase): 10–15 días.
 - si añades puntos desde configuracion se borran los acumulados del usuario
+
+** los colores de los usuarios no se pq 1-12-2025 se han modificado, ahora si no existe el color en configuracion no da error
+al entrar a editar el perfil del niño **
 
 
 🧠 Inteligencia y personalización

@@ -26,21 +26,20 @@ class TarjetaAlumno extends StatelessWidget {
     final esMovil = screenWidth < 600;
 
     final avatarRadius = (screenWidth * 0.04).clamp(20.0, 28.0);
-    final iconSize = (screenWidth * 0.05).clamp(24.0, 40.0);
+    final iconSize = (screenWidth * 0.045).clamp(24.0, 32.0); // más pequeño para web
     final fontSizeTitulo =
-        ((screenWidth * 0.035).clamp(16.0, 22.0)) * (esMovil ? 1.0 : 0.9);
+        ((screenWidth * 0.03).clamp(16.0, 20.0)) * (esMovil ? 1.0 : 0.95);
     final fontSizeInfo =
-        ((screenWidth * 0.025).clamp(12.0, 18.0)) * (esMovil ? 1.0 : 0.9);
-    final spacing = (screenWidth * 0.02).clamp(8.0, 16.0);
+        ((screenWidth * 0.025).clamp(12.0, 16.0)) * (esMovil ? 1.0 : 0.95);
+    final spacing = (screenWidth * 0.015).clamp(6.0, 12.0);
 
     return TarjetaBaseColegio(
       color: colorUsuario,
       onTap: onTap,
       child: Column(
-        mainAxisSize: MainAxisSize.min, // ✅ CLAVE anti-overflow
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Nombre y avatar
           Row(
             children: [
               CircleAvatar(
@@ -56,7 +55,8 @@ class TarjetaAlumno extends StatelessWidget {
                 ),
               ),
               SizedBox(width: spacing),
-              Expanded(
+              Flexible(
+                fit: FlexFit.loose,
                 child: Text(
                   usuario.nombre,
                   style: TextStyle(
@@ -78,7 +78,7 @@ class TarjetaAlumno extends StatelessWidget {
             fontSize: fontSizeInfo,
             spacing: spacing,
           ),
-          SizedBox(height: spacing / 1.5),
+          SizedBox(height: spacing / 2),
 
           _filaIconoTexto(
             iconPath: 'assets/iconos/nota.png',
@@ -87,7 +87,7 @@ class TarjetaAlumno extends StatelessWidget {
             fontSize: fontSizeInfo,
             spacing: spacing,
           ),
-          SizedBox(height: spacing / 1.5),
+          SizedBox(height: spacing / 2),
 
           _filaIconoTexto(
             iconPath: 'assets/iconos/media_notas.png',
@@ -109,6 +109,7 @@ class TarjetaAlumno extends StatelessWidget {
     required double spacing,
   }) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Image.asset(
           iconPath,
@@ -116,15 +117,21 @@ class TarjetaAlumno extends StatelessWidget {
           height: iconSize,
         ),
         SizedBox(width: spacing),
-        Expanded(
-          child: Text(
-            texto,
-            style: TextStyle(fontSize: fontSize),
-            overflow: TextOverflow.ellipsis,
+        Flexible(
+          fit: FlexFit.loose,
+          child: FittedBox(
+            fit: BoxFit.scaleDown, // 🔹 ajusta el texto si no cabe
+            alignment: Alignment.centerLeft,
+            child: Text(
+              texto,
+              style: TextStyle(fontSize: fontSize),
+            ),
           ),
         ),
       ],
     );
   }
 }
+
+
 
