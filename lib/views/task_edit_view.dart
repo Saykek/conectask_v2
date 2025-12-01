@@ -75,6 +75,22 @@ class _EditTaskViewState extends State<EditTaskView> {
         return;
       }
 
+      // ✅ Validación de fecha: no se puede poner anterior a hoy
+    final hoy = DateTime.now();
+    final fechaSinHora = DateTime(
+      _fechaSeleccionada.year,
+      _fechaSeleccionada.month,
+      _fechaSeleccionada.day,
+    );
+    final hoySinHora = DateTime(hoy.year, hoy.month, hoy.day);
+
+    if (fechaSinHora.isBefore(hoySinHora)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se puede asignar una fecha anterior a hoy')),
+      );
+      return;
+    }
+
       final tareaActualizada = Tarea(
         id: widget.tarea.id,
         titulo: _tituloController.text.trim(),

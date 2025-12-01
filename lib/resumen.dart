@@ -102,10 +102,11 @@ Resumen de la app de gestion familiar:
 - Q en validad por salga el nombre de quien valida.✅
 - Desbordamiento en todas las vistas de colegio ✅
 - en menu semanal guardo receta pero no se actualiza en la pantalla edit, sino que tengo que salir y volver a entrar. ✅
+- quitar modulo de configuracion y casa del home del niño ✅
 - en menu semanal detalle ingredientes, receta, notas no se guardan, no tiene funcionalidad.
 - Añadir para enlace PDF 30-45 min
 - Añadir para repetir las tareas X dias 1.5-2 horas
-- Que no se puedan crear tareas en fechas anteriores 15-20 min
+- Que no se puedan crear tareas en fechas anteriores 15-20 min con validacion por si lo ponen manual ✅
 - En el registro que no cuenten acentos 20-30 min
 - Mostrar requisitos de contraseña al registrarse 30-45 min
 - Misiones especiales: tareas con recompensas extra si se completan en grupo o en tiempo récord.2-3 horas
@@ -114,7 +115,6 @@ Resumen de la app de gestion familiar:
 - Historial de tareas completadas: con filtros por fecha, tipo o responsable.1.5-2 horas
 - horario en tareas? 30-45 min
 - quitar insignias fijas de recompensas y que se puedan añadir nuevas desde firebase 2-4 horas
-- quitar modulo de configuracion y casa del home del niño ✅
 - al validar una tarea los puntos se suman en un sitio pero en otro no
 - Una vez que validas la tarea si luego la dejas como no hecha al volver a darla ya sale validad, no pasa por el paso
 intermedio, y los puntos siguen sumandos.
@@ -125,6 +125,7 @@ intermedio, y los puntos siguen sumandos.
 - HOME ASSISTANT : Versión mínima (solo formulario + carga de panel Lovelace): 4–6 días.
 • 	Versión completa (con roles, aparatos configurables y persistencia en Firebase): 10–15 días.
 - si añades puntos desde configuracion se borran los acumulados del usuario
+- los nombres de usuarios en tareas no se diferencian bien 
 
 ** los colores de los usuarios no se pq 1-12-2025 se han modificado, ahora si no existe el color en configuracion no da error
 al entrar a editar el perfil del niño **

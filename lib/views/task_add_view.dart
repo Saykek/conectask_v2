@@ -61,10 +61,11 @@ class _TaskAddViewState extends State<TaskAddView> {
   }
 
   Future<void> _seleccionarFecha(BuildContext context) async {
+    final hoy = DateTime.now();
     final DateTime? seleccionada = await showDatePicker(
       context: context,
       initialDate: _fechaSeleccionada,
-      firstDate: DateTime(2020),
+      firstDate: hoy,
       lastDate: DateTime(2100),
       locale: const Locale('es', 'ES'),
     );
@@ -79,6 +80,19 @@ class _TaskAddViewState extends State<TaskAddView> {
   }
 
   void _guardarTarea() async {
+    // validar fecha antes de guardar 
+
+    final hoy = DateTime.now();
+
+  if (_fechaSeleccionada.isBefore(DateTime(hoy.year, hoy.month, hoy.day))) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('No se puede asignar una tarea a una fecha pasada'),
+      ),
+    );
+    return; // ❌ detiene el guardado
+  }
+
     if (_formKey.currentState!.validate()) {
       if (_responsableSeleccionado == null || _prioridadSeleccionada == null) {
         ScaffoldMessenger.of(context).showSnackBar(
