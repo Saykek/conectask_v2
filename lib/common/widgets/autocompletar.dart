@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/comida_model.dart';
+import '../../models/comida_model.dart';
 
 class Autocompletar extends StatelessWidget {
   final String label;

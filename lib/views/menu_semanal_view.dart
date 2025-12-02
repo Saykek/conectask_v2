@@ -2,10 +2,10 @@ import 'package:conectask_v2/controllers/menu_semanal_controller.dart';
 import 'package:conectask_v2/models/menu_dia_model.dart';
 import 'package:conectask_v2/views/menu_semanal_detalle_view.dart';
 import 'package:conectask_v2/views/menu_semanal_edit_view.dart';
-import 'package:conectask_v2/widgets/menu_card.dart';
-import 'package:conectask_v2/widgets/tira_dias.dart';
+import 'package:conectask_v2/common/widgets/menu_card.dart';
+import 'package:conectask_v2/common/widgets/tira_dias.dart';
 import 'package:flutter/material.dart';
-import 'package:conectask_v2/utils/date_utils.dart' as miFecha;
+import 'package:conectask_v2/common/utils/date_utils.dart' as miFecha;
 
 class MenuSemanalView extends StatefulWidget {
   final Map<String, dynamic> menu;

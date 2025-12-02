@@ -2,7 +2,7 @@ import 'package:conectask_v2/models/recompensa_model.dart';
 import 'package:conectask_v2/views/recompensa_detail_view.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import '../models/user_model.dart';
+import '../../models/user_model.dart';
 
 class ResumenRecompensas extends StatelessWidget {
   final UserModel user;

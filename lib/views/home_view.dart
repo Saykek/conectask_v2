@@ -12,7 +12,7 @@ import 'package:conectask_v2/views/menu_semanal_view.dart';
 import 'package:conectask_v2/controllers/menu_semanal_controller.dart';
 import 'package:conectask_v2/views/recompensas_view.dart';
 import 'package:conectask_v2/views/task_view.dart';
-import 'package:conectask_v2/widgets/receta_modulo.dart';
+import 'package:conectask_v2/common/widgets/receta_modulo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

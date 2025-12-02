@@ -1,5 +1,5 @@
 import 'package:conectask_v2/models/user_model.dart';
-import 'package:conectask_v2/widgets/temporizador_lectura.dart';
+import 'package:conectask_v2/common/widgets/temporizador_lectura.dart';
 import 'package:flutter/material.dart';
 
 class AulaView extends StatelessWidget {

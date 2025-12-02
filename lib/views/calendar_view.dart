@@ -1,4 +1,4 @@
-import 'package:conectask_v2/utils/color_utils.dart';
+import 'package:conectask_v2/common/utils/color_utils.dart';
 import 'package:conectask_v2/controllers/tarea_controller.dart';
 import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/models/user_model.dart';

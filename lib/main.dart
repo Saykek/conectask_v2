@@ -4,7 +4,7 @@ import 'package:conectask_v2/controllers/tarea_controller.dart';
 import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/models/home_assistant_model.dart';
 import 'package:conectask_v2/services/home_assistant_service.dart';
-import 'package:conectask_v2/theme/app_theme.dart';
+import 'package:conectask_v2/common/theme/app_theme.dart';
 import 'package:conectask_v2/views/login_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

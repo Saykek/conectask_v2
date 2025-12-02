@@ -1,5 +1,5 @@
 import 'package:conectask_v2/views/register_view.dart';
-import 'package:conectask_v2/widgets/animacion_brillo_texto.dart';
+import 'package:conectask_v2/common/widgets/animacion_brillo_texto.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import '../controllers/login_controller.dart';

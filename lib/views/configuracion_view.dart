@@ -1,6 +1,6 @@
 import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/views/crear_nino_view.dart';
-import 'package:conectask_v2/widgets/animacion_toogle.dart';
+import 'package:conectask_v2/common/widgets/animacion_toogle.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';

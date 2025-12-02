@@ -1,11 +1,11 @@
 import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/views/colegio_perfil_view.dart';
-import 'package:conectask_v2/widgets/tarjeta_alumno.dart';
+import 'package:conectask_v2/common/widgets/tarjeta_alumno.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/asignatura_service_mock.dart';
-import 'package:conectask_v2/utils/colegio_utils.dart';
+import 'package:conectask_v2/common/utils/colegio_utils.dart';
 
 class ColegioView extends StatelessWidget {
   final UserModel user;

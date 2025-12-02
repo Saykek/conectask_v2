@@ -1,8 +1,8 @@
-import 'package:conectask_v2/Utils/date_utils.dart' as miFecha;
+import 'package:conectask_v2/common/utils/date_utils.dart' as miFecha;
 import 'package:conectask_v2/models/comida_model.dart';
 import 'package:conectask_v2/services/receta_service.dart';
-import 'package:conectask_v2/widgets/autocompletar.dart';
-import 'package:conectask_v2/widgets/tira_dias.dart';
+import 'package:conectask_v2/common/widgets/autocompletar.dart';
+import 'package:conectask_v2/common/widgets/tira_dias.dart';
 import 'package:flutter/material.dart';
 import '../controllers/menu_semanal_controller.dart';
 import '../models/menu_dia_model.dart';

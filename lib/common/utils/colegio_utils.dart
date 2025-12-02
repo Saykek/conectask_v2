@@ -1,4 +1,4 @@
-import 'package:conectask_v2/Utils/date_utils.dart';
+
 
 class ColegioUtils {
   /// Devuelve la fecha del próximo examen futuro (más cercano a hoy).

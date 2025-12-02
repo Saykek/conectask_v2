@@ -1,6 +1,6 @@
 import 'package:conectask_v2/models/user_model.dart';
-import 'package:conectask_v2/utils/colegio_utils.dart'; // 👈 lógica escolar global
-import 'package:conectask_v2/widgets/tarjeta_asignatura.dart';
+import 'package:conectask_v2/common/utils/colegio_utils.dart'; // 👈 lógica escolar global
+import 'package:conectask_v2/common/widgets/tarjeta_asignatura.dart';
 import 'package:flutter/material.dart';
 import '../services/asignatura_service_mock.dart';
 import 'colegio_asignatura_view.dart';

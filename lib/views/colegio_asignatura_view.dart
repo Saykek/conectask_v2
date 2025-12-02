@@ -1,4 +1,4 @@
-import 'package:conectask_v2/widgets/tarjeta_base_colegio.dart';
+import 'package:conectask_v2/common/widgets/tarjeta_base_colegio.dart';
 import 'package:flutter/material.dart';
 import '../models/asignatura_model_mock.dart';
 

@@ -1,6 +1,6 @@
-import 'package:conectask_v2/Utils/color_utils.dart';
+import 'package:conectask_v2/common/utils/color_utils.dart';
 import 'package:conectask_v2/models/user_model.dart';
-import 'package:conectask_v2/widgets/tarjeta_base_colegio.dart';
+import 'package:conectask_v2/common/widgets/tarjeta_base_colegio.dart';
 import 'package:flutter/material.dart';
 
 class TarjetaAlumno extends StatelessWidget {

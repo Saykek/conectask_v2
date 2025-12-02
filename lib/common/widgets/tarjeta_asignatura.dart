@@ -1,6 +1,6 @@
-import 'package:conectask_v2/theme/colegio_theme.dart';
+import 'package:conectask_v2/common/theme/colegio_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:conectask_v2/widgets/tarjeta_base_colegio.dart';
+import 'package:conectask_v2/common/widgets/tarjeta_base_colegio.dart';
 
 
 class TarjetaAsignatura extends StatelessWidget {

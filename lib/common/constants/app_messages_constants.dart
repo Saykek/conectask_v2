@@ -1,0 +1,42 @@
+class AppMessagesConstants {
+  // **************** VALIDACIONES ****************
+  static const String msgCampoObligatorio = 'Campo obligatorio';
+  static const String msgCompletaCampos = 'Completa todos los campos';
+  static const String msgFechaAnterior = 'No se puede asignar una fecha anterior a hoy';
+  static const String msgFechaPasada = 'No se puede asignar una tarea a una fecha pasada';
+  static const String msgDebeSerNumero = 'Debe ser un número';
+  static const String msgResponsableRequerido = 'Selecciona un responsable';
+  static const String msgPrioridadRequerida = 'Selecciona una prioridad';
+
+  // **************** ERRORES ****************
+  static const String msgErrorActualizar = 'Error al actualizar tarea';
+
+  // **************** ÉXITOS ****************
+  static const String msgTareaGuardada = 'Tarea añadida correctamente';
+  static const String msgTareaActualizada = 'Tarea actualizada correctamente';
+  static const String msgTareaEliminada = 'Tarea eliminada correctamente';
+
+  // **************** MENSAJES GENERALES ****************
+  static const String msgSinTareasHoy = 'Sin tareas hoy';
+
+  // **************** TOOLTIP Y TÍTULOS ****************
+  static const String tituloTareasFamiliares = 'Tareas Familiares';
+  static const String tituloEditarTarea = 'Editar tarea';
+  static const String tituloAddTarea = 'Añadir tarea';
+
+  static const String tooltipAddTask = 'Añadir nueva tarea';
+  static const String tooltipSeleccionarDia = 'Seleccionar día';
+  static const String tooltipVerCalendario = 'Ver en calendario';
+
+  // **************** LABELS DE FORMULARIOS ****************
+  static const String labelTitulo = 'Título';
+  static const String labelDescripcion = 'Descripción';
+  static const String labelFecha = 'Fecha';
+  static const String labelAsignarA = 'Asignar a';
+  static const String labelPrioridad = 'Prioridad';
+  static const String labelPuntos = 'Puntos de recompensa';
+
+  // **************** BOTONES ****************
+  static const String btnGuardarCambios = 'Guardar cambios';
+  static const String btnGuardarTarea = 'Guardar tarea';
+}

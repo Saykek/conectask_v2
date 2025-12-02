@@ -1,4 +1,4 @@
-import 'package:conectask_v2/widgets/receta_modulo.dart';
+import 'package:conectask_v2/common/widgets/receta_modulo.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../services/user_service.dart';

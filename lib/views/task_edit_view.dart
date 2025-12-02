@@ -1,9 +1,10 @@
-import 'package:conectask_v2/controllers/tarea_controller.dart';
-import 'package:conectask_v2/models/user_model.dart';
+import 'package:conectask_v2/common/constants/constant.dart';
+import 'package:conectask_v2/models/tarea_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../models/tarea_model.dart';
+import '../controllers/tarea_controller.dart';
+import '../models/user_model.dart';
 
 class EditTaskView extends StatefulWidget {
   final Tarea tarea;
@@ -25,24 +26,22 @@ class _EditTaskViewState extends State<EditTaskView> {
   late DateTime _fechaSeleccionada;
 
   final List<UserModel> _usuarios = [
-    UserModel(id: 'mama', nombre: 'Mamá', rol: 'adulto'),
-    UserModel(id: 'papa', nombre: 'Papá', rol: 'adulto'),
-    UserModel(id: 'alex', nombre: 'Álex', rol: 'niño'),
-    UserModel(id: 'erik', nombre: 'Erik', rol: 'niño'),
+    UserModel(id: AppConstants.idMama, nombre: AppConstants.nombreMama, rol: AppConstants.rolAdulto),
+    UserModel(id: AppConstants.idPapa, nombre: AppConstants.nombrePapa, rol: AppConstants.rolAdulto),
+    UserModel(id: AppConstants.idAlex, nombre: AppConstants.nombreAlex, rol: AppConstants.rolNino),
+    UserModel(id: AppConstants.idErik, nombre: AppConstants.nombreErik, rol: AppConstants.rolNino),
   ];
 
-  final List<String> _prioridades = ['Alta', 'Media', 'Baja'];
+  final List<String> _prioridades = AppConstants.prioridades;
 
   @override
   void initState() {
     super.initState();
     _tituloController = TextEditingController(text: widget.tarea.titulo);
-    _descripcionController = TextEditingController(
-      text: widget.tarea.descripcion,
-    );
+    _descripcionController = TextEditingController(text: widget.tarea.descripcion);
     _fechaSeleccionada = widget.tarea.fecha;
     _fechaController = TextEditingController(
-      text: DateFormat('yyyy-MM-dd').format(_fechaSeleccionada),
+      text: DateFormat(AppConstants.formatoFecha).format(_fechaSeleccionada),
     );
     _responsableSeleccionado = widget.tarea.responsable;
     _prioridadSeleccionada = widget.tarea.prioridad;
@@ -54,14 +53,12 @@ class _EditTaskViewState extends State<EditTaskView> {
       initialDate: _fechaSeleccionada,
       firstDate: DateTime(2020),
       lastDate: DateTime(2100),
-      locale: const Locale('es', 'ES'),
+      locale: AppConstants.localeEs,
     );
     if (seleccionada != null && seleccionada != _fechaSeleccionada) {
       setState(() {
         _fechaSeleccionada = seleccionada;
-        _fechaController.text = DateFormat(
-          'yyyy-MM-dd',
-        ).format(_fechaSeleccionada);
+        _fechaController.text = DateFormat(AppConstants.formatoFecha).format(_fechaSeleccionada);
       });
     }
   }
@@ -70,26 +67,26 @@ class _EditTaskViewState extends State<EditTaskView> {
     if (_formKey.currentState!.validate()) {
       if (_responsableSeleccionado == null || _prioridadSeleccionada == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Completa todos los campos')),
+          const SnackBar(content: Text(AppMessagesConstants.msgCompletaCampos)),
         );
         return;
       }
 
-      // ✅ Validación de fecha: no se puede poner anterior a hoy
-    final hoy = DateTime.now();
-    final fechaSinHora = DateTime(
-      _fechaSeleccionada.year,
-      _fechaSeleccionada.month,
-      _fechaSeleccionada.day,
-    );
-    final hoySinHora = DateTime(hoy.year, hoy.month, hoy.day);
-
-    if (fechaSinHora.isBefore(hoySinHora)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No se puede asignar una fecha anterior a hoy')),
+      // Validación de fecha: no se puede poner anterior a hoy
+      final hoy = DateTime.now();
+      final fechaSinHora = DateTime(
+        _fechaSeleccionada.year,
+        _fechaSeleccionada.month,
+        _fechaSeleccionada.day,
       );
-      return;
-    }
+      final hoySinHora = DateTime(hoy.year, hoy.month, hoy.day);
+
+      if (fechaSinHora.isBefore(hoySinHora)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text(AppMessagesConstants.msgFechaAnterior)),
+        );
+        return;
+      }
 
       final tareaActualizada = Tarea(
         id: widget.tarea.id,
@@ -105,12 +102,12 @@ class _EditTaskViewState extends State<EditTaskView> {
         final controller = Provider.of<TareaController>(context, listen: false);
         await controller.actualizarTarea(tareaActualizada);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Tarea actualizada correctamente')),
+          const SnackBar(content: Text(AppMessagesConstants.msgTareaActualizada)),
         );
         Navigator.pop(context);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al actualizar tarea: $e')),
+          SnackBar(content: Text('${AppMessagesConstants.msgErrorActualizar}: $e')),
         );
       }
     }
@@ -119,7 +116,7 @@ class _EditTaskViewState extends State<EditTaskView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Editar tarea')),
+      appBar: AppBar(title: const Text(AppMessagesConstants.tituloEditarTarea)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -128,21 +125,21 @@ class _EditTaskViewState extends State<EditTaskView> {
             children: [
               TextFormField(
                 controller: _tituloController,
-                decoration: const InputDecoration(labelText: 'Título'),
+                decoration: const InputDecoration(labelText: AppMessagesConstants.labelTitulo),
                 validator: (value) =>
-                    value == null || value.isEmpty ? 'Campo obligatorio' : null,
+                    value == null || value.isEmpty ? AppMessagesConstants.msgCampoObligatorio : null,
               ),
               const SizedBox(height: 10),
               TextFormField(
                 controller: _descripcionController,
-                decoration: const InputDecoration(labelText: 'Descripción'),
+                decoration: const InputDecoration(labelText: AppMessagesConstants.labelDescripcion),
               ),
               const SizedBox(height: 10),
               TextFormField(
                 controller: _fechaController,
                 readOnly: true,
                 decoration: InputDecoration(
-                  labelText: 'Fecha',
+                  labelText: AppMessagesConstants.labelFecha,
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.calendar_today),
                     onPressed: () => _seleccionarFecha(context),
@@ -152,36 +149,30 @@ class _EditTaskViewState extends State<EditTaskView> {
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 value: _responsableSeleccionado,
-                decoration: const InputDecoration(labelText: 'Asignar a'),
+                decoration: const InputDecoration(labelText: AppMessagesConstants.labelAsignarA),
                 items: _usuarios.map((usuario) {
                   return DropdownMenuItem<String>(
                     value: usuario.id,
                     child: Text(usuario.nombre),
                   );
                 }).toList(),
-                onChanged: (valor) =>
-                    setState(() => _responsableSeleccionado = valor),
-                validator: (value) =>
-                    value == null ? 'Selecciona un responsable' : null,
+                onChanged: (valor) => setState(() => _responsableSeleccionado = valor),
+                validator: (value) => value == null ? 'Selecciona un responsable' : null,
               ),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 value: _prioridadSeleccionada,
-                decoration: const InputDecoration(labelText: 'Prioridad'),
+                decoration: const InputDecoration(labelText: AppMessagesConstants.labelPrioridad),
                 items: _prioridades
-                    .map(
-                      (p) => DropdownMenuItem<String>(value: p, child: Text(p)),
-                    )
+                    .map((p) => DropdownMenuItem<String>(value: p, child: Text(p)))
                     .toList(),
-                onChanged: (valor) =>
-                    setState(() => _prioridadSeleccionada = valor),
-                validator: (value) =>
-                    value == null ? 'Selecciona una prioridad' : null,
+                onChanged: (valor) => setState(() => _prioridadSeleccionada = valor),
+                validator: (value) => value == null ? 'Selecciona una prioridad' : null,
               ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _guardarCambios,
-                child: const Text('Guardar cambios'),
+                child: const Text(AppMessagesConstants.btnGuardarCambios),
               ),
             ],
           ),

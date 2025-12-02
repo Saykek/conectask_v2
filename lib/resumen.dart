@@ -106,7 +106,7 @@ Resumen de la app de gestion familiar:
 - en menu semanal detalle ingredientes, receta, notas no se guardan, no tiene funcionalidad.
 - Añadir para enlace PDF 30-45 min
 - Añadir para repetir las tareas X dias 1.5-2 horas
-- Que no se puedan crear tareas en fechas anteriores 15-20 min con validacion por si lo ponen manual ✅
+- Que no se puedan crear ni editar tareas en fechas anteriores 15-20 min con validacion por si lo ponen manual ✅
 - En el registro que no cuenten acentos 20-30 min
 - Mostrar requisitos de contraseña al registrarse 30-45 min
 - Misiones especiales: tareas con recompensas extra si se completan en grupo o en tiempo récord.2-3 horas
@@ -126,6 +126,8 @@ intermedio, y los puntos siguen sumandos.
 • 	Versión completa (con roles, aparatos configurables y persistencia en Firebase): 10–15 días.
 - si añades puntos desde configuracion se borran los acumulados del usuario
 - los nombres de usuarios en tareas no se diferencian bien 
+- IMPORTANTE: Duplicidad de codigo de no poder seleccionar fecha anterior en add y edit tarea.
+- en tareas al entrar, buscas un dia y sales, al entrar se queda en el dia buscado.
 
 ** los colores de los usuarios no se pq 1-12-2025 se han modificado, ahora si no existe el color en configuracion no da error
 al entrar a editar el perfil del niño **
@@ -162,6 +164,15 @@ Recomendación de orden para implementar
 - 🧒 Modo infantil (puede ser parte del sistema de puntos)
 
 */
+   /*                                               *********************** CONSTANTES **************************
+    task_view ✅
+    task_edit_view ✅
+    task_add_view ✅
+    tarea service ✅
+    tarea_model ✅
+   
+   
+   */
 
 /*                                                   **********************  MEJORAS FUTURAS **********************
 

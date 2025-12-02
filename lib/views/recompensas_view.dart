@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import '../models/user_model.dart';
 import '../models/recompensa_model.dart';
 import '../controllers/recompensa_controller.dart';
-import '../widgets/resumen_recompensas.dart';
-import '../widgets/lista_recomepensas.dart';
+import '../common/widgets/resumen_recompensas.dart';
+import '../common/widgets/lista_recomepensas.dart';
 import '../views/recompensa_add_view.dart';
 
 class RecompensasView extends StatefulWidget {
