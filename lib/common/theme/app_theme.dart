@@ -7,8 +7,8 @@ class AppTheme {
     return base.copyWith(
       brightness: Brightness.light,
       colorScheme: base.colorScheme.copyWith(
-        primary: const Color(0xFF2E7D75), // verde azulado profundo
-        secondary: const Color(0xFF80CBC4), // teal claro
+        primary: const Color(0xFF2E7D75), 
+        secondary: const Color(0xFF80CBC4), 
         surface: Colors.white,
       ),
       scaffoldBackgroundColor: const Color(0xFFE0F7FA), // fondo menta suave
