@@ -39,4 +39,17 @@ class AppMessagesConstants {
   // **************** BOTONES ****************
   static const String btnGuardarCambios = 'Guardar cambios';
   static const String btnGuardarTarea = 'Guardar tarea';
+
+ // **************** HOME ASSISTANT ****************
+  static const String tituloCasa = 'Casa - Home Assistant';
+  static const String msgAccesoRestringido =
+      'Acceso restringido: solo administradores pueden ver el módulo de Casa';
+  static const String msgSoloMovil =
+      'La integración de Home Assistant solo está disponible en móvil.';
+  static const String msgCargando = 'Cargando...';
+  static const String msgFinalizado = 'Carga finalizada';
+  static const String msgErrorCarga = 'Error al cargar recurso';
+
+
+
 }

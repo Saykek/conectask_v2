@@ -58,4 +58,9 @@ class AppConstants {
   static const Locale localeEs = Locale('es', 'ES');
   static const String formatoFecha = 'yyyy-MM-dd';
 
+  // **************** HTTP *****************
+  static const String headerAuthorization = 'Authorization';
+  static const String bearerPrefix = 'Bearer ';
+
+
 }

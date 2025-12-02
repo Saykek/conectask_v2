@@ -170,6 +170,7 @@ Recomendación de orden para implementar
     task_add_view ✅
     tarea service ✅
     tarea_model ✅
+    home_assistant_view ✅
    
    
    */
