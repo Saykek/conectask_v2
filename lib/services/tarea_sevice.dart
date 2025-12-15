@@ -13,7 +13,7 @@ class TareaService {
   Future<void> guardarTarea(Tarea tarea) async {
     final tituloRef = FirebaseDatabase.instance
         .ref('${AppFirebaseConstants.tareasTitulos}/${tarea.titulo}');
-    await tituloRef.set({AppTareaFieldsConstants.puntos: tarea.puntos ?? AppConstants.puntosPorDefecto});
+    await tituloRef.set({AppFieldsConstants.puntos: tarea.puntos ?? AppConstants.puntosPorDefecto});
 
     try {
       final id = const Uuid().v4();
@@ -21,7 +21,7 @@ class TareaService {
       final ref = _db.child(fechaKey).child(tarea.responsable).child(id);
 
       final data = tarea.toMap();
-      data[AppTareaFieldsConstants.id] = id;
+      data[AppFieldsConstants.id] = id;
 
       await ref.set(data);
     } catch (e) {
@@ -51,7 +51,7 @@ class TareaService {
       final fechaKey = DateFormat(AppConstants.formatoFecha).format(tarea.fecha);
       final ref = _db.child(fechaKey).child(tarea.responsable).child(tarea.id);
 
-      await ref.update({AppTareaFieldsConstants.estado: nuevoEstado});
+      await ref.update({AppFieldsConstants.estado: nuevoEstado});
     } catch (e) {
       rethrow;
     }
@@ -113,8 +113,8 @@ class TareaService {
         _db.child(fechaKey).child(tarea.responsable).child(tarea.id);
 
     await tareaRef.update({
-      AppTareaFieldsConstants.estado: AppConstants.estadoValidada,
-      AppTareaFieldsConstants.validadaPor: validadorId,
+      AppFieldsConstants.estado: AppConstants.estadoValidada,
+      AppFieldsConstants.validadaPor: validadorId,
     });
 
     if (tarea.puntos != null && tarea.puntos! > 0) {
@@ -133,7 +133,7 @@ class TareaService {
         for (final userEntry in fechaEntry.children) {
           for (final tareaEntry in userEntry.children) {
             final datos = tareaEntry.value as Map;
-            final titulo = datos[AppTareaFieldsConstants.titulo]?.toString().trim();
+            final titulo = datos[AppFieldsConstants.titulo]?.toString().trim();
             if (titulo != null && titulo.isNotEmpty) {
               titulos.add(titulo);
             }
@@ -157,7 +157,7 @@ class TareaService {
         final titulo = entrada.key;
         final value = entrada.value;
         if (value is Map) {
-          final puntos = value[AppTareaFieldsConstants.puntos];
+          final puntos = value[AppFieldsConstants.puntos];
           if (titulo != null && puntos is int) {
             titulos[titulo] = puntos;
           } else if (titulo != null && puntos != null) {

@@ -50,7 +50,8 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/iconos/icono_sinfondo_app.png"
-  
+ # adaptive_icon_background: "#B2DFDB"
+  adaptive_icon_foreground: "assets/iconos/icono_sinfondo_app.png"  
  
 
   

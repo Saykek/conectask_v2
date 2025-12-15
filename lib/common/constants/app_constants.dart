@@ -53,6 +53,7 @@ class AppConstants {
 
   // **************** OTROS ****************
   static const int puntosPorDefecto = 0;
+  static const String defaultSection = "default";
 
    // **************** FECHAS *****************
   static const Locale localeEs = Locale('es', 'ES');

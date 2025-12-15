@@ -49,13 +49,32 @@ Resumen de la app de gestion familiar:
 - user service
 - receta service
 
-*************** Utils
+
+
+**************** Common
+- constant
+- theme
+- utils
+- widgets
+
+    *************** Constants
+- app_constants
+- app_fields_constants
+- app_firebase_constants
+- app_icons_constants
+- app_messages_ constants
+- app_routes_constants
+- app_theme_constants
+- app_urls_constants
+- constants
+
+    *************** Utils
 - color utils
 - date utils
 - text utils
 - usuarios local
 
-*************** widgets
+    *************** widgets
 - lista recompensa
 - navegacion
 - resumen recompensas
@@ -69,7 +88,7 @@ Resumen de la app de gestion familiar:
 - receta_modulo -> clase comun para mostrar animacion en cards y demáss
 
 
-**************** theme
+    **************** theme
 - app theme
 - colegio theme
 
@@ -88,6 +107,8 @@ Resumen de la app de gestion familiar:
 
 
                                                          *********** PENDIENTE *************
+
+** pendiente de poner el icono de la app en ios. https://yayocode.com/es/codelabs/flutter/change_the_app_launcher_icon_on_flutter_without_using_any_package/
 - Los colores de las tareas se tienen que poner aleatoriamente segun se crea usuario 30-45 min ✅
 - Recompensas salgan usuarios reales ✅
 - en recompensas perfil niño no se rellena la barra progresiva cuando tiene puntos✅
@@ -171,8 +192,11 @@ Recomendación de orden para implementar
     tarea service ✅
     tarea_model ✅
     home_assistant_view ✅
-   
-   
+    home_assistant_controller ✅
+    home_assistant_model ✅
+    home_assistant_service ✅
+    register_view 
+      
    */
 
 /*                                                   **********************  MEJORAS FUTURAS **********************

@@ -1,3 +1,5 @@
+import 'package:conectask_v2/common/constants/app_constants.dart';
+
 class HomeAssistantModel {
   final String baseUrl; // URL de tu instancia HA ( http://192.168.1.100:8123)
   final String accessToken; // Token largo para login automático
@@ -7,7 +9,7 @@ class HomeAssistantModel {
   HomeAssistantModel({
     required this.baseUrl,
     required this.accessToken,
-    this.panel = "default",
+    this.panel = AppConstants.defaultSection,
     this.soloAdmin = true,
   });
 

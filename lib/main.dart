@@ -1,3 +1,4 @@
+import 'package:conectask_v2/common/constants/app_urls_constants.dart';
 import 'package:conectask_v2/controllers/colegio_controller.dart';
 import 'package:conectask_v2/controllers/home_assistant_controller.dart';
 import 'package:conectask_v2/controllers/tarea_controller.dart';
@@ -37,7 +38,7 @@ void main() async {
         Provider(
           create: (_) {
             final model = HomeAssistantModel(
-              baseUrl: "http://192.168.1.42:8123", // tu instancia HA
+              baseUrl: AppUrlsConstants.baseUrl, // tu instancia HA
               accessToken:
                   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIwODI1OGEzN2ZlN2Y0ODgxOGNmYmI0OWU1NmJiM2RmNSIsImlhdCI6MTc2NDQ1NDM0OCwiZXhwIjoyMDc5ODE0MzQ4fQ.iItdBiON4nNhyN3uf8yJtCATGmk_U4NQaTRmXZHqsFw", // token de acceso
               panel: "default", // panel Lovelace

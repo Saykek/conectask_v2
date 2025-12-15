@@ -1,7 +1,7 @@
 class AppMessagesConstants {
   // **************** VALIDACIONES ****************
   static const String msgCampoObligatorio = 'Campo obligatorio';
-  static const String msgCompletaCampos = 'Completa todos los campos';
+  static const String msgCompletaCampos = 'Por favor, Completa todos los campos';
   static const String msgFechaAnterior = 'No se puede asignar una fecha anterior a hoy';
   static const String msgFechaPasada = 'No se puede asignar una tarea a una fecha pasada';
   static const String msgDebeSerNumero = 'Debe ser un número';
@@ -10,6 +10,8 @@ class AppMessagesConstants {
 
   // **************** ERRORES ****************
   static const String msgErrorActualizar = 'Error al actualizar tarea';
+  static const String msgErrorMail = '⚠️ El email ya está registrado o hubo un error';
+  static const String msgErrorRegistro = ' ❌ Error al registrar: ';
 
   // **************** ÉXITOS ****************
   static const String msgTareaGuardada = 'Tarea añadida correctamente';

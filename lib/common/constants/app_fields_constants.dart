@@ -1,4 +1,4 @@
-class AppTareaFieldsConstants {
+class AppFieldsConstants {
   // **************** CAMPOS PRINCIPALES ****************
   static const String id = 'id';
   static const String titulo = 'titulo';
@@ -10,6 +10,8 @@ class AppTareaFieldsConstants {
   static const String recompensa = 'recompensa';
   static const String validadaPor = 'validadaPor';
   static const String puntos = 'puntos';
+  static const String registroUsuario = 'Registro de usuario';
+  static const String nombre = 'Nombre';
 
   // **************** VALORES POR DEFECTO ****************
   // Estos se usan cuando el campo no existe en Firebase

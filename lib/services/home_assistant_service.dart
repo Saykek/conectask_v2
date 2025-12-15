@@ -1,3 +1,5 @@
+import 'package:conectask_v2/common/constants/constant.dart';
+
 import '../models/home_assistant_model.dart';
 
 class HomeAssistantService {
@@ -12,7 +14,7 @@ class HomeAssistantService {
 
   /// Comprueba si el módulo debe mostrarse solo a admin
   bool puedeMostrar(String rolUsuario) {
-    if (model.soloAdmin && rolUsuario != 'admin') {
+    if (model.soloAdmin && rolUsuario != AppConstants.rolAdmin) {
       return false;
     }
     return true;

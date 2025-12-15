@@ -1,7 +1,9 @@
+import 'package:conectask_v2/common/constants/constant.dart';
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:flutter/material.dart';
 import '../controllers/login_controller.dart';
 import 'home_view.dart';
+import 'package:conectask_v2/common/constants/app_fields_constants.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -36,7 +38,7 @@ class _RegisterViewState extends State<RegisterView> {
     if (nombre.isEmpty || email.isEmpty || password.isEmpty) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, completa todos los campos.')),
+        const SnackBar(content: Text(AppMessagesConstants.msgCompletaCampos)),
       );
       return;
     }
@@ -59,7 +61,7 @@ class _RegisterViewState extends State<RegisterView> {
           id: _controller.auth.currentUser!.uid,
           nombre: nombre,
           email: email,
-          rol: 'admin',
+          rol: AppConstants.rolAdmin,
         );
 
         Navigator.pushReplacement(
@@ -69,7 +71,7 @@ class _RegisterViewState extends State<RegisterView> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('⚠️ El email ya está registrado o hubo un error'),
+            content: Text(AppMessagesConstants.msgErrorMail),
           ),
         );
       }
@@ -77,7 +79,8 @@ class _RegisterViewState extends State<RegisterView> {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('❌ Error al registrar: $e')));
+      ).showSnackBar(SnackBar(content: Text('${AppMessagesConstants.msgErrorRegistro}${e.toString()}'),
+));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -86,14 +89,14 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Registro de usuario')),
+      appBar: AppBar(title: const Text(AppFieldsConstants.registroUsuario)),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
             TextField(
               controller: _nombreController,
-              decoration: const InputDecoration(labelText: 'Nombre'),
+              decoration: const InputDecoration(labelText: AppFieldsConstants.nombre),
             ),
             const SizedBox(height: 16),
             TextField(

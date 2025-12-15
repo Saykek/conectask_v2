@@ -28,35 +28,35 @@ class Tarea {
   // Convertir a Map para Realtime Database
   Map<String, dynamic> toMap() {
     return {
-      AppTareaFieldsConstants.id: id,
-      AppTareaFieldsConstants.titulo: titulo,
-      AppTareaFieldsConstants.descripcion: descripcion,
-      AppTareaFieldsConstants.responsable: responsable,
-      AppTareaFieldsConstants.fecha: fecha.toIso8601String(),
-      AppTareaFieldsConstants.prioridad: prioridad,
-      AppTareaFieldsConstants.estado: estado,
-      AppTareaFieldsConstants.recompensa: recompensa,
-      AppTareaFieldsConstants.validadaPor: validadaPor,
-      AppTareaFieldsConstants.puntos: puntos,
+      AppFieldsConstants.id: id,
+      AppFieldsConstants.titulo: titulo,
+      AppFieldsConstants.descripcion: descripcion,
+      AppFieldsConstants.responsable: responsable,
+      AppFieldsConstants.fecha: fecha.toIso8601String(),
+      AppFieldsConstants.prioridad: prioridad,
+      AppFieldsConstants.estado: estado,
+      AppFieldsConstants.recompensa: recompensa,
+      AppFieldsConstants.validadaPor: validadaPor,
+      AppFieldsConstants.puntos: puntos,
     };
   }
 
   // Crear objeto desde Map leído de Realtime Database
   factory Tarea.fromMap(Map<String, dynamic> map) {
     return Tarea(
-      id: map[AppTareaFieldsConstants.id] ?? '',
-      titulo: map[AppTareaFieldsConstants.titulo] ?? '',
-      descripcion: map[AppTareaFieldsConstants.descripcion] ?? '',
-      responsable: map[AppTareaFieldsConstants.responsable] ?? '',
-      fecha: _parseFecha(map[AppTareaFieldsConstants.fecha]),
-      prioridad: map[AppTareaFieldsConstants.prioridad] ??
-          AppTareaFieldsConstants.prioridadPorDefecto,
-      estado: map[AppTareaFieldsConstants.estado] ??
-          AppTareaFieldsConstants.estadoPorDefecto,
-      recompensa: map[AppTareaFieldsConstants.recompensa],
-      validadaPor: map[AppTareaFieldsConstants.validadaPor],
-      puntos: map[AppTareaFieldsConstants.puntos] != null
-          ? map[AppTareaFieldsConstants.puntos] as int
+      id: map[AppFieldsConstants.id] ?? '',
+      titulo: map[AppFieldsConstants.titulo] ?? '',
+      descripcion: map[AppFieldsConstants.descripcion] ?? '',
+      responsable: map[AppFieldsConstants.responsable] ?? '',
+      fecha: _parseFecha(map[AppFieldsConstants.fecha]),
+      prioridad: map[AppFieldsConstants.prioridad] ??
+          AppFieldsConstants.prioridadPorDefecto,
+      estado: map[AppFieldsConstants.estado] ??
+          AppFieldsConstants.estadoPorDefecto,
+      recompensa: map[AppFieldsConstants.recompensa],
+      validadaPor: map[AppFieldsConstants.validadaPor],
+      puntos: map[AppFieldsConstants.puntos] != null
+          ? map[AppFieldsConstants.puntos] as int
           : null,
     );
   }
