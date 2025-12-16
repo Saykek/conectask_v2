@@ -37,6 +37,7 @@ class AppFieldsConstants {
   static const String colegio = 'Colegio';
   static const String casa = 'Casa';
   static const String calendario = 'Calendario';
+  static const String perfilEscolar = 'Perfil escolar de ';
 
   //static const String nombre = 'Nombre';
 

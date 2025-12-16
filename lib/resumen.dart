@@ -149,6 +149,7 @@ intermedio, y los puntos siguen sumandos.
 - los nombres de usuarios en tareas no se diferencian bien 
 - IMPORTANTE: Duplicidad de codigo de no poder seleccionar fecha anterior en add y edit tarea.
 - en tareas al entrar, buscas un dia y sales, al entrar se queda en el dia buscado.
+- EDITAR MENU MUUUUY LENTOOOO
 
 ** los colores de los usuarios no se pq 1-12-2025 se han modificado, ahora si no existe el color en configuracion no da error
 al entrar a editar el perfil del niño **
@@ -205,6 +206,9 @@ Recomendación de orden para implementar
     configuracion_model ✅
     login_view ✅
     home_view ✅
+    colegio_view ✅
+    colegio_perfil_view ✅
+    usuario controller a medias
     
       
    */

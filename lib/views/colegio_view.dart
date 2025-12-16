@@ -4,6 +4,7 @@ import 'package:conectask_v2/views/colegio_perfil_view.dart';
 import 'package:conectask_v2/common/widgets/tarjeta_alumno.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../common/constants/constant.dart';
 import '../services/asignatura_service_mock.dart';
 import 'package:conectask_v2/common/utils/colegio_utils.dart';
 
@@ -15,10 +16,10 @@ class ColegioView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final usuarioController = Provider.of<UsuarioController>(context);
-    final esAdulto = user.rol == 'admin' || user.rol == 'adulto';
+    final esAdulto = user.rol == AppConstants.rolAdmin || user.rol == AppConstants.rolAdulto;
 
     final usuarios = esAdulto
-        ? usuarioController.usuarios.where((u) => u.rol == 'niño').toList()
+        ? usuarioController.usuarios.where((u) => u.rol == AppConstants.rolNino).toList()
         : [user];
 
     final screenWidth = MediaQuery.of(context).size.width;
@@ -39,7 +40,7 @@ class ColegioView extends StatelessWidget {
         (screenWidth / crossAxisCount) / alturaBase;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Colegio')),
+      appBar: AppBar(title: const Text(AppFieldsConstants.colegio)),
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: GridView.builder(

@@ -1,5 +1,6 @@
 import 'package:conectask_v2/common/widgets/receta_modulo.dart';
 import 'package:flutter/material.dart';
+import '../common/constants/constant.dart';
 import '../models/user_model.dart';
 import '../services/user_service.dart';
 
@@ -27,15 +28,15 @@ class UsuarioController extends ChangeNotifier {
 
   bool esAdulto(String id) {
     final usuario = getUsuarioPorId(id);
-    return usuario?.rol == 'adulto' || usuario?.rol == 'admin';
+    return usuario?.rol == AppConstants.rolAdulto || usuario?.rol == AppConstants.rolAdmin;
   }
 
   String getNombreUsuario(String id) {
     final usuario = getUsuarioPorId(id);
-    if (usuario == null) return 'Desconocido';
+    if (usuario == null) return AppConstants.desconocido;
     if (usuario.nombre.isNotEmpty) return usuario.nombre;
-    if (usuario.rol == 'admin') return 'Administrador';
-    return 'Desconocido';
+    if (usuario.rol == AppConstants.rolAdmin) return AppConstants.administrador;
+    return AppConstants.desconocido;
   }
 
   // GENERAR COLOR USUARIO
