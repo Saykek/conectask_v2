@@ -7,4 +7,5 @@ class AppRoutesConstants {
   static const String calendar = '/calendar';
   static const String recompensas = '/recompensas';
   static const String menuSemanal = '/menu';
+ 
 }

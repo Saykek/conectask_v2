@@ -1,3 +1,5 @@
+import 'package:conectask_v2/common/constants/constant.dart';
+
 class ConfiguracionModel {
   String tema;
   String idioma;
@@ -15,21 +17,21 @@ class ConfiguracionModel {
 
   factory ConfiguracionModel.fromMap(Map<String, dynamic> map) {
     return ConfiguracionModel(
-      tema: map['tema'] ?? 'claro',
-      idioma: map['idioma'] ?? 'es',
-      rol: map['rol'] ?? 'niño',
-      notificacionesActivas: map['notificacionesActivas'] ?? true,
-      urlServidor: map['urlServidor'] ?? '',
+      tema: map[AppConstants.tema] ?? AppConstants.claro,
+      idioma: map[AppConstants.idioma] ?? AppConstants.idiomaEs,
+      rol: map[AppConstants.rol] ?? AppConstants.rolNino,
+      notificacionesActivas: map[AppConstants.notificacionesActivas] ?? true,
+      urlServidor: map[AppConstants.urlServidor] ?? '',
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'tema': tema,
-      'idioma': idioma,
-      'rol': rol,
-      'notificacionesActivas': notificacionesActivas,
-      'urlServidor': urlServidor,
+      AppConstants.tema: tema,
+      AppConstants.idioma: idioma,
+      AppConstants.rol: rol,
+      AppConstants.notificacionesActivas: notificacionesActivas,
+      AppConstants.urlServidor: urlServidor,
     };
   }
 }

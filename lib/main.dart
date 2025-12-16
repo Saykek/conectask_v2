@@ -1,4 +1,3 @@
-import 'package:conectask_v2/common/constants/app_urls_constants.dart';
 import 'package:conectask_v2/controllers/colegio_controller.dart';
 import 'package:conectask_v2/controllers/home_assistant_controller.dart';
 import 'package:conectask_v2/controllers/tarea_controller.dart';
@@ -6,6 +5,7 @@ import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/models/home_assistant_model.dart';
 import 'package:conectask_v2/services/home_assistant_service.dart';
 import 'package:conectask_v2/common/theme/app_theme.dart';
+import 'package:conectask_v2/common/constants/constant.dart';
 import 'package:conectask_v2/views/login_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Conectask',
+      title: AppThemeConstants.titulo,
       theme: AppTheme.light, // tema claro
       darkTheme: AppTheme.dark, //tema oscuro
       themeMode: ThemeMode.system, // o ThemeMode.light / ThemeMode.dark

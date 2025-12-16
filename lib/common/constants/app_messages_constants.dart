@@ -11,15 +11,29 @@ class AppMessagesConstants {
   // **************** ERRORES ****************
   static const String msgErrorActualizar = 'Error al actualizar tarea';
   static const String msgErrorMail = '⚠️ El email ya está registrado o hubo un error';
+  static const String msgErrorMailContrasenia = 'Email o contraseña incorrectos';
+  static const String msgErrorUsuarioPin = 'Usuario o PIN incorrecto';
   static const String msgErrorRegistro = ' ❌ Error al registrar: ';
+  static const String msgSeleccionaResponsable = 'Selecciona un responsable';
+  static const String msgSeleccionaPrioridad = 'Selecciona una prioridad';
+  static const String msgErrorGuardarMenu = 'Error al guardar menú';
+  static const String msgCompletaUsuarioPin = 'Por favor, completa usuario y PIN';
 
   // **************** ÉXITOS ****************
   static const String msgTareaGuardada = 'Tarea añadida correctamente';
   static const String msgTareaActualizada = 'Tarea actualizada correctamente';
   static const String msgTareaEliminada = 'Tarea eliminada correctamente';
+  static const String msgRecompensaAnadida = 'Recompensa añadida correctamente';
+  static const String msgRecompensaActualizada = 'Recompensa actualizada correctamente';
+  static const String msgMenuGuardado = 'Menú guardado correctamente';
 
   // **************** MENSAJES GENERALES ****************
   static const String msgSinTareasHoy = 'Sin tareas hoy';
+  static const String msgConfirmarEliminar = '¿Estás seguro de que quieres eliminar esta recompensa?';
+  static const String msgPuntosInsuficientes = 'No tienes suficientes puntos';
+  static const String msgConfirmacionCerrarSesion = '¿Quieres cerrar sesión, ';
+ 
+
 
   // **************** TOOLTIP Y TÍTULOS ****************
   static const String tituloTareasFamiliares = 'Tareas Familiares';
@@ -29,14 +43,6 @@ class AppMessagesConstants {
   static const String tooltipAddTask = 'Añadir nueva tarea';
   static const String tooltipSeleccionarDia = 'Seleccionar día';
   static const String tooltipVerCalendario = 'Ver en calendario';
-
-  // **************** LABELS DE FORMULARIOS ****************
-  static const String labelTitulo = 'Título';
-  static const String labelDescripcion = 'Descripción';
-  static const String labelFecha = 'Fecha';
-  static const String labelAsignarA = 'Asignar a';
-  static const String labelPrioridad = 'Prioridad';
-  static const String labelPuntos = 'Puntos de recompensa';
 
   // **************** BOTONES ****************
   static const String btnGuardarCambios = 'Guardar cambios';

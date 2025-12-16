@@ -125,21 +125,21 @@ class _EditTaskViewState extends State<EditTaskView> {
             children: [
               TextFormField(
                 controller: _tituloController,
-                decoration: const InputDecoration(labelText: AppMessagesConstants.labelTitulo),
+                decoration: const InputDecoration(labelText: AppFieldsConstants.labelTitulo),
                 validator: (value) =>
                     value == null || value.isEmpty ? AppMessagesConstants.msgCampoObligatorio : null,
               ),
               const SizedBox(height: 10),
               TextFormField(
                 controller: _descripcionController,
-                decoration: const InputDecoration(labelText: AppMessagesConstants.labelDescripcion),
+                decoration: const InputDecoration(labelText: AppFieldsConstants.labelDescripcion),
               ),
               const SizedBox(height: 10),
               TextFormField(
                 controller: _fechaController,
                 readOnly: true,
                 decoration: InputDecoration(
-                  labelText: AppMessagesConstants.labelFecha,
+                  labelText: AppFieldsConstants.labelFecha,
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.calendar_today),
                     onPressed: () => _seleccionarFecha(context),
@@ -149,7 +149,7 @@ class _EditTaskViewState extends State<EditTaskView> {
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 value: _responsableSeleccionado,
-                decoration: const InputDecoration(labelText: AppMessagesConstants.labelAsignarA),
+                decoration: const InputDecoration(labelText: AppFieldsConstants.labelAsignarA),
                 items: _usuarios.map((usuario) {
                   return DropdownMenuItem<String>(
                     value: usuario.id,
@@ -157,17 +157,17 @@ class _EditTaskViewState extends State<EditTaskView> {
                   );
                 }).toList(),
                 onChanged: (valor) => setState(() => _responsableSeleccionado = valor),
-                validator: (value) => value == null ? 'Selecciona un responsable' : null,
+                validator: (value) => value == null ? AppMessagesConstants.msgSeleccionaResponsable : null,
               ),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 value: _prioridadSeleccionada,
-                decoration: const InputDecoration(labelText: AppMessagesConstants.labelPrioridad),
+                decoration: const InputDecoration(labelText: AppFieldsConstants.labelPrioridad),
                 items: _prioridades
                     .map((p) => DropdownMenuItem<String>(value: p, child: Text(p)))
                     .toList(),
                 onChanged: (valor) => setState(() => _prioridadSeleccionada = valor),
-                validator: (value) => value == null ? 'Selecciona una prioridad' : null,
+                validator: (value) => value == null ? AppMessagesConstants.msgSeleccionaPrioridad : null,
               ),
               const SizedBox(height: 20),
               ElevatedButton(

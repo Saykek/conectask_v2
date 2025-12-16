@@ -15,4 +15,9 @@ class AppThemeConstants {
   static const Color colorPrioridadMedia = Colors.amber;
   static const Color colorPrioridadBaja = Colors.green;
 
+  // Varios
+
+  static const String titulo = 'Conectask';
+  static const String letraTitulo =  'Hillgates';
+
 }

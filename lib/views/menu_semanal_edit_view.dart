@@ -4,6 +4,7 @@ import 'package:conectask_v2/services/receta_service.dart';
 import 'package:conectask_v2/common/widgets/autocompletar.dart';
 import 'package:conectask_v2/common/widgets/tira_dias.dart';
 import 'package:flutter/material.dart';
+import '../common/constants/constant.dart';
 import '../controllers/menu_semanal_controller.dart';
 import '../models/menu_dia_model.dart';
 
@@ -107,11 +108,11 @@ void _scrollAlDia(DateTime dia) {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Editar Menú Semanal'),
+        title: const Text(AppFieldsConstants.editarMenu),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
-            tooltip: 'Guardar menú',
+            tooltip: AppFieldsConstants.guardarMenu,
             onPressed: () async {
               try {
                 // Guardar todo el menú del mes
@@ -134,7 +135,7 @@ void _scrollAlDia(DateTime dia) {
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Menú guardado correctamente'),
+                      content: Text(AppMessagesConstants.msgMenuGuardado),
                     ),
                   );
                   Navigator.pop(context, true);
@@ -228,7 +229,8 @@ void _scrollAlDia(DateTime dia) {
                     children: [
                       Expanded(
                         child: Autocompletar(
-                          label: "🍽️ Comida ${i + 1}",
+                          label: '${AppFieldsConstants.labelComidas} ${i + 1}',
+
                           initial: dia.comidas[i].nombre,
                           recetasDisponibles: recetasDisponibles,
                           onChanged: (value) {
@@ -251,7 +253,7 @@ onSelected: (comida) {
                       ),
                       IconButton(
                         icon: const Icon(Icons.link),
-                        tooltip: "Editar enlace receta",
+                        tooltip: AppFieldsConstants.toolEditarEnlace,
                         onPressed: () async {
                           final controlador = TextEditingController(
                             text: dia.comidas[i].url ?? '',
@@ -259,25 +261,25 @@ onSelected: (comida) {
                           final nuevaUrl = await showDialog<String>(
                             context: context,
                             builder: (context) => AlertDialog(
-                              title: const Text('Editar enlace de receta'),
+                              title: const Text(AppFieldsConstants.editarEnlaceReceta),
                               content: TextField(
                                 controller: controlador,
                                 decoration: const InputDecoration(
-                                  hintText: 'https://...',
+                                  hintText: AppFieldsConstants.hintHttp,
                                 ),
                                 keyboardType: TextInputType.url,
                               ),
                               actions: [
                                 TextButton(
                                   onPressed: () => Navigator.pop(context),
-                                  child: const Text('Cancelar'),
+                                  child: const Text(AppFieldsConstants.cancelar),
                                 ),
                                 TextButton(
                                   onPressed: () => Navigator.pop(
                                     context,
                                     controlador.text.trim(),
                                   ),
-                                  child: const Text('Guardar'),
+                                  child: const Text(AppFieldsConstants.guardar),
                                 ),
                               ],
                             ),
@@ -296,7 +298,7 @@ onSelected: (comida) {
                       ),
                       IconButton(
                         icon: const Icon(Icons.photo),
-                        tooltip: "Añadir foto (URL)",
+                        tooltip: AppFieldsConstants.toolAnadirFoto,
                         onPressed: () async {
                           final controlador = TextEditingController(
                             text: dia.comidas[i].foto ?? '',
@@ -304,25 +306,25 @@ onSelected: (comida) {
                           final nuevaFoto = await showDialog<String>(
                             context: context,
                             builder: (context) => AlertDialog(
-                              title: const Text('Añadir foto de receta'),
+                              title: const Text(AppFieldsConstants.anadirFotoReceta),
                               content: TextField(
                                 controller: controlador,
                                 decoration: const InputDecoration(
-                                  hintText: 'https://...',
+                                  hintText: AppFieldsConstants.hintHttp,
                                 ),
                                 keyboardType: TextInputType.url,
                               ),
                               actions: [
                                 TextButton(
                                   onPressed: () => Navigator.pop(context),
-                                  child: const Text('Cancelar'),
+                                  child: const Text(AppFieldsConstants.cancelar),
                                 ),
                                 TextButton(
                                   onPressed: () => Navigator.pop(
                                     context,
                                     controlador.text.trim(),
                                   ),
-                                  child: const Text('Guardar'),
+                                  child: const Text(AppFieldsConstants.guardar),
                                 ),
                               ],
                             ),
@@ -350,7 +352,7 @@ onSelected: (comida) {
                     children: [
                       Expanded(
                         child: Autocompletar(
-                          label: "🌙 Cena ${i + 1}",
+                          label: '${AppFieldsConstants.labelCenas} ${i + 1}',
                           initial: dia.cenas[i].nombre,
                           recetasDisponibles: recetasDisponibles,
                           onChanged: (value) {
@@ -373,7 +375,7 @@ onSelected: (cena) {
                       ),
                       IconButton(
                         icon: const Icon(Icons.link),
-                        tooltip: "Editar enlace receta",
+                        tooltip: AppFieldsConstants.toolEditarEnlace,
                         onPressed: () async {
                           final controlador = TextEditingController(
                             text: dia.cenas[i].url ?? '',
@@ -381,25 +383,25 @@ onSelected: (cena) {
                           final nuevaUrl = await showDialog<String>(
                             context: context,
                             builder: (context) => AlertDialog(
-                              title: const Text('Editar enlace de receta'),
+                              title: const Text(AppFieldsConstants.editarEnlaceReceta),
                               content: TextField(
                                 controller: controlador,
                                 decoration: const InputDecoration(
-                                  hintText: 'https://...',
+                                  hintText:AppFieldsConstants.hintHttp,
                                 ),
                                 keyboardType: TextInputType.url,
                               ),
                               actions: [
                                 TextButton(
                                   onPressed: () => Navigator.pop(context),
-                                  child: const Text('Cancelar'),
+                                  child: const Text(AppFieldsConstants.cancelar),
                                 ),
                                 TextButton(
                                   onPressed: () => Navigator.pop(
                                     context,
                                     controlador.text.trim(),
                                   ),
-                                  child: const Text('Guardar'),
+                                  child: const Text(AppFieldsConstants.guardar),
                                 ),
                               ],
                             ),
@@ -418,7 +420,7 @@ onSelected: (cena) {
                       ),
                       IconButton(
                         icon: const Icon(Icons.photo),
-                        tooltip: "Añadir foto (URL)",
+                        tooltip: AppFieldsConstants.toolAnadirFoto,
                         onPressed: () async {
                           final controlador = TextEditingController(
                             text: dia.cenas[i].foto ?? '',
@@ -426,25 +428,25 @@ onSelected: (cena) {
                           final nuevaFoto = await showDialog<String>(
                             context: context,
                             builder: (context) => AlertDialog(
-                              title: const Text('Añadir foto de receta'),
+                              title: const Text(AppFieldsConstants.anadirFotoReceta),
                               content: TextField(
                                 controller: controlador,
                                 decoration: const InputDecoration(
-                                  hintText: 'https://...',
+                                  hintText: AppFieldsConstants.hintHttp,
                                 ),
                                 keyboardType: TextInputType.url,
                               ),
                               actions: [
                                 TextButton(
                                   onPressed: () => Navigator.pop(context),
-                                  child: const Text('Cancelar'),
+                                  child: const Text(AppFieldsConstants.cancelar),
                                 ),
                                 TextButton(
                                   onPressed: () => Navigator.pop(
                                     context,
                                     controlador.text.trim(),
                                   ),
-                                  child: const Text('Guardar'),
+                                  child: const Text(AppFieldsConstants.guardar),
                                 ),
                               ],
                             ),
@@ -486,11 +488,11 @@ onSelected: (cena) {
         dataRowMinHeight: 90,
         dataRowMaxHeight: 115,
         columns: const [
-          DataColumn(label: Text("Día")),
+          DataColumn(label: Text(AppFieldsConstants.labelDia)),
           DataColumn(
-            label: Text("Comidas"),
-          ), // Comida 1 arriba, Comida 2 debajo
-          DataColumn(label: Text("Cenas")), // Cena 1 arriba, Cena 2 debajo
+            label: Text(AppFieldsConstants.labelComidas), // Comida 1 arriba, Comida 2 debajo
+          ),
+          DataColumn(label: Text(AppFieldsConstants.labelCenas)), // Cena 1 arriba, Cena 2 debajo
         ],
         rows: visibles.asMap().entries.map((entry) {
           final index = entry.key;
@@ -516,10 +518,10 @@ onSelected: (cena) {
                     // 1er Plato (Comida 1)
                     Row(
                       children: [
-                        const SizedBox(width: 90, child: Text("1er plato")),
+                        const SizedBox(width: 90, child: Text(AppFieldsConstants.primerPlato)),
                         Expanded(
                           child: Autocompletar(
-                            label: "🍽️",
+                            label: AppFieldsConstants.labelIconoComida,
                             initial: dia.comidas[0].nombre,
                             recetasDisponibles: recetasDisponibles,
                             onChanged: (value) {
@@ -553,7 +555,7 @@ onSelected: (cena) {
                         ),
                         IconButton(
                           icon: const Icon(Icons.link),
-                          tooltip: "Editar enlace receta",
+                          tooltip: AppFieldsConstants.toolEditarEnlace,
                           onPressed: () async {
                             final controlador = TextEditingController(
                               text: dia.comidas[0].url ?? '',
@@ -561,25 +563,25 @@ onSelected: (cena) {
                             final nuevaUrl = await showDialog<String>(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: const Text('Editar enlace de receta'),
+                                title: const Text(AppFieldsConstants.editarEnlaceReceta),
                                 content: TextField(
                                   controller: controlador,
                                   decoration: const InputDecoration(
-                                    hintText: 'https://...',
+                                    hintText: AppFieldsConstants.hintHttp,
                                   ),
                                   keyboardType: TextInputType.url,
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),
-                                    child: const Text('Cancelar'),
+                                    child: const Text(AppFieldsConstants.cancelar),
                                   ),
                                   TextButton(
                                     onPressed: () => Navigator.pop(
                                       context,
                                       controlador.text.trim(),
                                     ),
-                                    child: const Text('Guardar'),
+                                    child: const Text(AppFieldsConstants.guardar),
                                   ),
                                 ],
                               ),
@@ -598,7 +600,7 @@ onSelected: (cena) {
                         ),
                         IconButton(
                           icon: const Icon(Icons.photo),
-                          tooltip: "Añadir foto (URL)",
+                          tooltip: AppFieldsConstants.toolAnadirFoto,
                           onPressed: () async {
                             final controlador = TextEditingController(
                               text: dia.comidas[0].foto ?? '',
@@ -606,25 +608,25 @@ onSelected: (cena) {
                             final nuevaFoto = await showDialog<String>(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: const Text('Añadir foto de receta'),
+                                title: const Text(AppFieldsConstants.anadirFotoReceta),
                                 content: TextField(
                                   controller: controlador,
                                   decoration: const InputDecoration(
-                                    hintText: 'https://...',
+                                    hintText: AppFieldsConstants.hintHttp,
                                   ),
                                   keyboardType: TextInputType.url,
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),
-                                    child: const Text('Cancelar'),
+                                    child: const Text(AppFieldsConstants.cancelar),
                                   ),
                                   TextButton(
                                     onPressed: () => Navigator.pop(
                                       context,
                                       controlador.text.trim(),
                                     ),
-                                    child: const Text('Guardar'),
+                                    child: const Text(AppFieldsConstants.guardar),
                                   ),
                                 ],
                               ),
@@ -647,7 +649,7 @@ onSelected: (cena) {
                     // 2º Plato (Comida 2)
                     Row(
                       children: [
-                        const SizedBox(width: 90, child: Text("2º plato")),
+                        const SizedBox(width: 90, child: Text(AppFieldsConstants.segundoPlato)),
                         Expanded(
                           child: Autocompletar(
                             label: "🍽️",
@@ -675,7 +677,7 @@ onSelected: (cena) {
                         ),
                         IconButton(
                           icon: const Icon(Icons.link),
-                          tooltip: "Editar enlace receta",
+                          tooltip: AppFieldsConstants.toolEditarEnlace,
                           onPressed: () async {
                             final controlador = TextEditingController(
                               text: dia.comidas[1].url ?? '',
@@ -683,25 +685,25 @@ onSelected: (cena) {
                             final nuevaUrl = await showDialog<String>(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: const Text('Editar enlace de receta'),
+                                title: const Text(AppFieldsConstants.editarEnlaceReceta),
                                 content: TextField(
                                   controller: controlador,
                                   decoration: const InputDecoration(
-                                    hintText: 'https://...',
+                                    hintText: AppFieldsConstants.hintHttp,
                                   ),
                                   keyboardType: TextInputType.url,
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),
-                                    child: const Text('Cancelar'),
+                                    child: const Text(AppFieldsConstants.cancelar),
                                   ),
                                   TextButton(
                                     onPressed: () => Navigator.pop(
                                       context,
                                       controlador.text.trim(),
                                     ),
-                                    child: const Text('Guardar'),
+                                    child: const Text(AppFieldsConstants.guardar),
                                   ),
                                 ],
                               ),
@@ -720,7 +722,7 @@ onSelected: (cena) {
                         ),
                         IconButton(
                           icon: const Icon(Icons.photo),
-                          tooltip: "Añadir foto (URL)",
+                          tooltip: AppFieldsConstants.toolAnadirFoto,
                           onPressed: () async {
                             final controlador = TextEditingController(
                               text: dia.comidas[1].foto ?? '',
@@ -728,25 +730,25 @@ onSelected: (cena) {
                             final nuevaFoto = await showDialog<String>(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: const Text('Añadir foto de receta'),
+                                title: const Text(AppFieldsConstants.anadirFotoReceta),
                                 content: TextField(
                                   controller: controlador,
                                   decoration: const InputDecoration(
-                                    hintText: 'https://...',
+                                    hintText: AppFieldsConstants.hintHttp,
                                   ),
                                   keyboardType: TextInputType.url,
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),
-                                    child: const Text('Cancelar'),
+                                    child: const Text(AppFieldsConstants.cancelar),
                                   ),
                                   TextButton(
                                     onPressed: () => Navigator.pop(
                                       context,
                                       controlador.text.trim(),
                                     ),
-                                    child: const Text('Guardar'),
+                                    child: const Text(AppFieldsConstants.guardar),
                                   ),
                                 ],
                               ),
@@ -777,10 +779,10 @@ onSelected: (cena) {
                     // Cena 1
                     Row(
                       children: [
-                        const SizedBox(width: 90, child: Text("1er plato")),
+                        const SizedBox(width: 90, child: Text(AppFieldsConstants.primerPlato)),
                         Expanded(
                           child: Autocompletar(
-                            label: "🌙",
+                            label: AppFieldsConstants.labelIconoNoche,
                             initial: dia.cenas[0].nombre,
                             recetasDisponibles: recetasDisponibles,
                             onChanged: (value) {
@@ -805,7 +807,7 @@ onSelected: (cena) {
                         ),
                         IconButton(
                           icon: const Icon(Icons.link),
-                          tooltip: "Editar enlace receta",
+                          tooltip: AppFieldsConstants.toolEditarEnlace,
                           onPressed: () async {
                             final controlador = TextEditingController(
                               text: dia.cenas[0].url ?? '',
@@ -813,25 +815,25 @@ onSelected: (cena) {
                             final nuevaUrl = await showDialog<String>(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: const Text('Editar enlace de receta'),
+                                title: const Text(AppFieldsConstants.editarEnlaceReceta),
                                 content: TextField(
                                   controller: controlador,
                                   decoration: const InputDecoration(
-                                    hintText: 'https://...',
+                                    hintText: AppFieldsConstants.hintHttp,
                                   ),
                                   keyboardType: TextInputType.url,
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),
-                                    child: const Text('Cancelar'),
+                                    child: const Text(AppFieldsConstants.cancelar),
                                   ),
                                   TextButton(
                                     onPressed: () => Navigator.pop(
                                       context,
                                       controlador.text.trim(),
                                     ),
-                                    child: const Text('Guardar'),
+                                    child: const Text(AppFieldsConstants.guardar),
                                   ),
                                 ],
                               ),
@@ -850,7 +852,7 @@ onSelected: (cena) {
                         ),
                         IconButton(
                           icon: const Icon(Icons.photo),
-                          tooltip: "Añadir foto (URL)",
+                          tooltip: AppFieldsConstants.toolAnadirFoto,
                           onPressed: () async {
                             final controlador = TextEditingController(
                               text: dia.cenas[0].foto ?? '',
@@ -858,25 +860,25 @@ onSelected: (cena) {
                             final nuevaFoto = await showDialog<String>(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: const Text('Añadir foto de receta'),
+                                title: const Text(AppFieldsConstants.anadirFotoReceta),
                                 content: TextField(
                                   controller: controlador,
                                   decoration: const InputDecoration(
-                                    hintText: 'https://...',
+                                    hintText: AppFieldsConstants.hintHttp,
                                   ),
                                   keyboardType: TextInputType.url,
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),
-                                    child: const Text('Cancelar'),
+                                    child: const Text(AppFieldsConstants.cancelar),
                                   ),
                                   TextButton(
                                     onPressed: () => Navigator.pop(
                                       context,
                                       controlador.text.trim(),
                                     ),
-                                    child: const Text('Guardar'),
+                                    child: const Text(AppFieldsConstants.guardar),
                                   ),
                                 ],
                               ),
@@ -899,10 +901,10 @@ onSelected: (cena) {
                     // Cena 2
                     Row(
                       children: [
-                        const SizedBox(width: 90, child: Text("2º plato")),
+                        const SizedBox(width: 90, child: Text(AppFieldsConstants.segundoPlato)),
                         Expanded(
                           child: Autocompletar(
-                            label: "🌙",
+                            label: AppFieldsConstants.labelIconoNoche,
                             initial: dia.cenas[1].nombre,
                             recetasDisponibles: recetasDisponibles,
                             onChanged: (value) {
@@ -927,7 +929,7 @@ onSelected: (cena) {
                         ),
                         IconButton(
                           icon: const Icon(Icons.link),
-                          tooltip: "Editar enlace receta",
+                          tooltip: AppFieldsConstants.toolEditarEnlace,
                           onPressed: () async {
                             final controlador = TextEditingController(
                               text: dia.cenas[1].url ?? '',
@@ -935,25 +937,25 @@ onSelected: (cena) {
                             final nuevaUrl = await showDialog<String>(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: const Text('Editar enlace de receta'),
+                                title: const Text(AppFieldsConstants.editarEnlaceReceta),
                                 content: TextField(
                                   controller: controlador,
                                   decoration: const InputDecoration(
-                                    hintText: 'https://...',
+                                    hintText: AppFieldsConstants.hintHttp,
                                   ),
                                   keyboardType: TextInputType.url,
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),
-                                    child: const Text('Cancelar'),
+                                    child: const Text(AppFieldsConstants.cancelar),
                                   ),
                                   TextButton(
                                     onPressed: () => Navigator.pop(
                                       context,
                                       controlador.text.trim(),
                                     ),
-                                    child: const Text('Guardar'),
+                                    child: const Text(AppFieldsConstants.guardar),
                                   ),
                                 ],
                               ),
@@ -972,7 +974,7 @@ onSelected: (cena) {
                         ),
                         IconButton(
                           icon: const Icon(Icons.photo),
-                          tooltip: "Añadir foto (URL)",
+                          tooltip: AppFieldsConstants.toolAnadirFoto,
                           onPressed: () async {
                             final controlador = TextEditingController(
                               text: dia.cenas[1].foto ?? '',
@@ -980,25 +982,25 @@ onSelected: (cena) {
                             final nuevaFoto = await showDialog<String>(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: const Text('Añadir foto de receta'),
+                                title: const Text(AppFieldsConstants.anadirFotoReceta),
                                 content: TextField(
                                   controller: controlador,
                                   decoration: const InputDecoration(
-                                    hintText: 'https://...',
+                                    hintText: AppFieldsConstants.hintHttp,
                                   ),
                                   keyboardType: TextInputType.url,
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),
-                                    child: const Text('Cancelar'),
+                                    child: const Text(AppFieldsConstants.cancelar),
                                   ),
                                   TextButton(
                                     onPressed: () => Navigator.pop(
                                       context,
                                       controlador.text.trim(),
                                     ),
-                                    child: const Text('Guardar'),
+                                    child: const Text(AppFieldsConstants.guardar),
                                   ),
                                 ],
                               ),

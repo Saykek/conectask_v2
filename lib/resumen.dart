@@ -195,7 +195,17 @@ Recomendación de orden para implementar
     home_assistant_controller ✅
     home_assistant_model ✅
     home_assistant_service ✅
-    register_view 
+    register_view ✅
+    recompensas_view ✅
+    recompensas_detail_view ✅
+    recompensas_add_view ✅
+    menu_semanal_view ✅
+    menu_semanal_edit_view ✅
+    menu_semanal_detalle_view ✅
+    configuracion_model ✅
+    login_view ✅
+    home_view ✅
+    
       
    */
 

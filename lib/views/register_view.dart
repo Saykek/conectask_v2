@@ -3,7 +3,6 @@ import 'package:conectask_v2/models/user_model.dart';
 import 'package:flutter/material.dart';
 import '../controllers/login_controller.dart';
 import 'home_view.dart';
-import 'package:conectask_v2/common/constants/app_fields_constants.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -96,12 +95,12 @@ class _RegisterViewState extends State<RegisterView> {
           children: [
             TextField(
               controller: _nombreController,
-              decoration: const InputDecoration(labelText: AppFieldsConstants.nombre),
+              decoration: const InputDecoration(labelText: AppFieldsConstants.labelNombre),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: AppFieldsConstants.mail),
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
@@ -109,7 +108,7 @@ class _RegisterViewState extends State<RegisterView> {
               controller: _passwordController,
               obscureText: _obscurePassword,
               decoration: InputDecoration(
-                labelText: 'Contraseña',
+                labelText: AppFieldsConstants.contrasenia,
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscurePassword ? Icons.visibility_off : Icons.visibility,
@@ -133,7 +132,7 @@ class _RegisterViewState extends State<RegisterView> {
                           color: Colors.white,
                         ),
                       )
-                    : const Text('Registrar'),
+                    : const Text(AppFieldsConstants.registrar),
               ),
             ),
           ],

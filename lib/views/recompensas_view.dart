@@ -2,6 +2,7 @@ import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/views/recompensa_detail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../common/constants/constant.dart';
 import '../models/user_model.dart';
 import '../models/recompensa_model.dart';
 import '../controllers/recompensa_controller.dart';
@@ -25,7 +26,7 @@ class _RecompensasViewState extends State<RecompensasView> {
   List<RecompensaModel> listaGeneral = [];
   bool cargando = true;
   bool mostrarListaGeneral = false;
-  String seleccion = 'Todos';
+  String seleccion = AppFieldsConstants.todos;
 
   @override
   void initState() {
@@ -44,7 +45,7 @@ class _RecompensasViewState extends State<RecompensasView> {
       listen: false,
     );
     final ninos = usuarioController.usuarios
-        .where((u) => u.rol == 'niño')
+        .where((u) => u.rol == AppConstants.rolNino)
         .toList();
 
     final Map<String, List<RecompensaModel>> mapa = {};
@@ -56,7 +57,7 @@ class _RecompensasViewState extends State<RecompensasView> {
     }
 
     // Para el propio usuario
-    if (widget.user.rol == 'admin') {
+    if (widget.user.rol == AppConstants.rolAdmin) {
       mapa[widget.user.id] = await _controller.getTodasLasRecompensas();
     } else {
       mapa[widget.user.id] = await _controller.getRecompensasPara(widget.user);
@@ -73,7 +74,7 @@ class _RecompensasViewState extends State<RecompensasView> {
   }
 
   Future<void> _cargarListaGeneral() async {
-    if (widget.user.rol == 'admin') {
+    if (widget.user.rol == AppConstants.rolAdmin) {
       listaGeneral = await _controller.getTodasLasRecompensas();
     } else {
       listaGeneral = recompensasPorNino[widget.user.id] ?? [];
@@ -88,16 +89,16 @@ class _RecompensasViewState extends State<RecompensasView> {
   Widget build(BuildContext context) {
     final usuarioController = Provider.of<UsuarioController>(context);
     final List<UserModel> listaNinos =
-        usuarioController.usuarios.where((u) => u.rol == 'niño').toList();
+        usuarioController.usuarios.where((u) => u.rol == AppConstants.rolNino).toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Recompensas'),
+        title: const Text(AppFieldsConstants.recompensas),
         actions: [
-          if (widget.user.rol == 'admin')
+          if (widget.user.rol == AppConstants.rolAdmin)
             IconButton(
               icon: const Icon(Icons.add),
-              tooltip: 'Añadir nueva recompensa',
+              tooltip: AppFieldsConstants.anadirNuevaRecompensa,
               onPressed: () async {
                 await Navigator.push(
                   context,
@@ -110,7 +111,7 @@ class _RecompensasViewState extends State<RecompensasView> {
       ),
       body: cargando
           ? const Center(child: CircularProgressIndicator())
-          : widget.user.rol == 'admin'
+          : widget.user.rol == AppConstants.rolAdmin
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -119,7 +120,7 @@ class _RecompensasViewState extends State<RecompensasView> {
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
-                          _botonSelector('Todos'),
+                          _botonSelector(AppFieldsConstants.todos),
                           ...listaNinos.map((nino) => _botonSelector(nino.nombre)),
                           const SizedBox(width: 8),
                           _botonRecompensas(),
@@ -161,7 +162,7 @@ class _RecompensasViewState extends State<RecompensasView> {
                       )
                     else
                       Expanded(
-                        child: seleccion == 'Todos'
+                        child: seleccion == AppFieldsConstants.todos
                             ? ListView(
                                 children: listaNinos.map((nino) {
                                   return Padding(
@@ -201,7 +202,7 @@ class _RecompensasViewState extends State<RecompensasView> {
                           const Padding(
                             padding: EdgeInsets.all(16),
                             child: Text(
-                              '🎁 Recompensas disponibles:',
+                              AppFieldsConstants.recompensasDisponibles,
                               style: TextStyle(fontSize: 16),
                             ),
                           ),
@@ -268,7 +269,7 @@ class _RecompensasViewState extends State<RecompensasView> {
         }
       },
       icon: const Icon(Icons.card_giftcard),
-      label: const Text('Recompensas'),
+      label: const Text(AppFieldsConstants.recompensas),
     );
   }
 }

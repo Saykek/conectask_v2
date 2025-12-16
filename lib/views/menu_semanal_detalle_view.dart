@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:conectask_v2/models/comida_model.dart';
+import '../common/constants/constant.dart';
 
 class MenuSemanalDetalleView extends StatelessWidget {
   final String fecha; // clave yyyy-MM-dd
@@ -16,25 +17,26 @@ class MenuSemanalDetalleView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('Añadir $titulo'),
+        title: Text('${AppFieldsConstants.anadir} $titulo'),
+
         content: TextField(
           controller: controller,
-          decoration: InputDecoration(hintText: 'Escribe aquí tu $titulo'),
+          decoration: InputDecoration(hintText: '${AppFieldsConstants.hintEscribeAqui} $titulo',),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
+            child: const Text(AppFieldsConstants.cancelar),
           ),
           ElevatedButton(
             onPressed: () {
               final nuevoTexto = controller.text;
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('$titulo añadido: $nuevoTexto')),
+                SnackBar(content: Text('$titulo ${AppFieldsConstants.anadido}: $nuevoTexto')),
               );
               Navigator.pop(context);
             },
-            child: const Text('Guardar'),
+            child: const Text(AppFieldsConstants.guardar),
           ),
         ],
       ),
@@ -46,7 +48,7 @@ class MenuSemanalDetalleView extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Detalle del menú')),
+      appBar: AppBar(title: Text(AppFieldsConstants.detalleMenu)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -83,7 +85,7 @@ class MenuSemanalDetalleView extends StatelessWidget {
 
               // Nombre del plato
               Text(
-                comida?.nombre ?? 'Sin asignar',
+                comida?.nombre ?? AppFieldsConstants.sinAsignar,
                 style: textTheme.titleMedium?.copyWith(fontSize: 22),
               ),
 
@@ -93,17 +95,17 @@ class MenuSemanalDetalleView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Ingredientes", style: textTheme.titleMedium),
+                  Text(AppFieldsConstants.ingredientes, style: textTheme.titleMedium),
                   IconButton(
                     icon: const Icon(Icons.add_circle_outline),
-                    tooltip: "Añadir ingredientes",
+                    tooltip: AppFieldsConstants.toolanadirIngredientes,
                     onPressed: () =>
-                        _abrirDialogo(context, "ingredientes", "ingredientes"),
+                        _abrirDialogo(context, AppFieldsConstants.ingredientesMin, AppFieldsConstants.ingredientesMin),
                   ),
                 ],
               ),
               Text(
-                comida?.ingredientes ?? 'No especificados',
+                comida?.ingredientes ?? AppFieldsConstants.noEspecificados,
                 style: textTheme.bodyMedium,
               ),
 
@@ -113,16 +115,16 @@ class MenuSemanalDetalleView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Receta", style: textTheme.titleMedium),
+                  Text(AppFieldsConstants.receta, style: textTheme.titleMedium),
                   IconButton(
                     icon: const Icon(Icons.add_circle_outline),
-                    tooltip: "Añadir receta",
-                    onPressed: () => _abrirDialogo(context, "receta", "receta"),
+                    tooltip: AppFieldsConstants.anadirReceta,
+                    onPressed: () => _abrirDialogo(context, AppFieldsConstants.recetaMin, AppFieldsConstants.recetaMin),
                   ),
                 ],
               ),
               Text(
-                comida?.receta ?? 'No disponible',
+                comida?.receta ?? AppFieldsConstants.noDisponible,
                 style: textTheme.bodyMedium,
               ),
 
@@ -132,15 +134,15 @@ class MenuSemanalDetalleView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Notas", style: textTheme.titleMedium),
+                  Text(AppFieldsConstants.notas, style: textTheme.titleMedium),
                   IconButton(
                     icon: const Icon(Icons.add_circle_outline),
-                    tooltip: "Añadir notas",
-                    onPressed: () => _abrirDialogo(context, "notas", "notas"),
+                    tooltip: AppFieldsConstants.toolAnadirNotas,
+                    onPressed: () => _abrirDialogo(context, AppFieldsConstants.notasMin, AppFieldsConstants.notasMin),
                   ),
                 ],
               ),
-              Text(comida?.notas ?? 'Sin notas', style: textTheme.bodyMedium),
+              Text(comida?.notas ?? AppFieldsConstants.sinNotas, style: textTheme.bodyMedium),
 
               const SizedBox(height: 24),
 

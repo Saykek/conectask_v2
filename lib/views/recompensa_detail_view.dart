@@ -1,6 +1,7 @@
 import 'package:conectask_v2/controllers/recompensa_controller.dart';
 import 'package:conectask_v2/views/recompensa_add_view.dart';
 import 'package:flutter/material.dart';
+import '../common/constants/constant.dart';
 import '../models/recompensa_model.dart';
 import '../models/user_model.dart';
 
@@ -47,16 +48,16 @@ class _RecompensaDetailViewState extends State<RecompensaDetailView> {
   final confirm = await showDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: const Text('Eliminar recompensa'),
-      content: const Text('¿Estás seguro de que quieres eliminar esta recompensa?'),
+      title: const Text(AppFieldsConstants.eliminarRecompensa),
+      content: const Text(AppMessagesConstants.msgConfirmarEliminar),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(ctx, false),
-          child: const Text('Cancelar'),
+          child: const Text(AppFieldsConstants.cancelar),
         ),
         TextButton(
           onPressed: () => Navigator.pop(ctx, true),
-          child: const Text('Eliminar'),
+          child: const Text(AppFieldsConstants.eliminar),
         ),
       ],
     ),
@@ -96,14 +97,14 @@ class _RecompensaDetailViewState extends State<RecompensaDetailView> {
       print('DEBUG: Error al canjear -> $e');
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No tienes suficientes puntos')),
+        const SnackBar(content: Text(AppMessagesConstants.msgPuntosInsuficientes)),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final esAdmin = widget.user.rol == 'admin';
+    final esAdmin = widget.user.rol == AppConstants.rolAdmin;
 
     return Scaffold(
       appBar: AppBar(
@@ -146,7 +147,7 @@ class _RecompensaDetailViewState extends State<RecompensaDetailView> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '📝 Descripción:',
+                  AppFieldsConstants.descripcionIcono,
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.grey.shade700,
@@ -155,7 +156,7 @@ class _RecompensaDetailViewState extends State<RecompensaDetailView> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  recompensa.descripcion ?? 'Sin descripción',
+                  recompensa.descripcion ?? AppFieldsConstants.sinDescripcion,
                   style: const TextStyle(fontSize: 16),
                 ),
                 const SizedBox(height: 16),
@@ -164,7 +165,7 @@ class _RecompensaDetailViewState extends State<RecompensaDetailView> {
                     onPressed: (recompensa.visible && !recompensa.usada)
                         ? _canjearRecompensa
                         : null,
-                    child: const Text('Canjear recompensa'),
+                    child: const Text(AppFieldsConstants.canjearRecompensa),
                   ),
               ],
             ),

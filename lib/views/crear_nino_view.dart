@@ -5,6 +5,8 @@ import 'package:conectask_v2/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../common/constants/constant.dart';
+
 class CrearNinoView extends StatefulWidget {
   final UserModel? nino; // null si es nuevo
 
@@ -54,7 +56,7 @@ class _CrearNinoViewState extends State<CrearNinoView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          esEdicion ? 'Editar perfil de niño' : 'Crear perfil de niño',
+          esEdicion ? AppFieldsConstants.editarNino : AppFieldsConstants.crearNino,
         ),
       ),
       body: Padding(
@@ -66,14 +68,14 @@ class _CrearNinoViewState extends State<CrearNinoView> {
               // Nombre
               TextFormField(
                 controller: _nombreController,
-                decoration: const InputDecoration(labelText: 'Nombre'),
+                decoration: const InputDecoration(labelText: AppFieldsConstants.labelNombre),
                 validator: (value) =>
-                    value == null || value.isEmpty ? 'Escribe un nombre' : null,
+                    value == null || value.isEmpty ? AppFieldsConstants.escribeNombre : null,
               ),
               // PIN
               TextFormField(
                 controller: _pinController,
-                decoration: const InputDecoration(labelText: 'PIN'),
+                decoration: const InputDecoration(labelText: AppFieldsConstants.labelPin),
                 keyboardType: TextInputType.number,
                 validator: (value) => value == null || value.length != 4
                     ? 'PIN de 4 cifras'

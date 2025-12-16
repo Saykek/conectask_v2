@@ -194,7 +194,7 @@ class _TaskAddViewState extends State<TaskAddView> {
                     controller: textEditingController,
                     focusNode: focusNode,
                     decoration: const InputDecoration(
-                      labelText: AppMessagesConstants.labelTitulo,
+                      labelText: AppFieldsConstants.labelTitulo,
                     ),
                     validator: (value) => value == null || value.isEmpty
                         ? AppMessagesConstants.msgCampoObligatorio
@@ -209,14 +209,14 @@ class _TaskAddViewState extends State<TaskAddView> {
               TextFormField(
                 controller: _descripcionController,
                 decoration: const InputDecoration(
-                  labelText: AppMessagesConstants.labelDescripcion,
+                  labelText: AppFieldsConstants.labelDescripcion,
                 ),
               ),
               TextFormField(
                 controller: _puntosController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
-                  labelText: AppMessagesConstants.labelPuntos,
+                  labelText: AppFieldsConstants.labelPuntosRcomepensa,
                   suffixIcon: Icon(Icons.star),
                 ),
                 validator: (value) {
@@ -233,7 +233,7 @@ class _TaskAddViewState extends State<TaskAddView> {
                 controller: _fechaController,
                 readOnly: true,
                 decoration: InputDecoration(
-                  labelText: AppMessagesConstants.labelFecha,
+                  labelText: AppFieldsConstants.labelFecha,
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.calendar_today),
                     onPressed: () => _seleccionarFecha(context),
@@ -244,7 +244,7 @@ class _TaskAddViewState extends State<TaskAddView> {
               DropdownButtonFormField<String>(
                 value: _responsableSeleccionado,
                 decoration: const InputDecoration(
-                  labelText: AppMessagesConstants.labelAsignarA,
+                  labelText: AppFieldsConstants.labelAsignarA,
                 ),
                 items: usuariosDisponibles.map((usuario) {
                   return DropdownMenuItem<String>(
@@ -263,7 +263,7 @@ class _TaskAddViewState extends State<TaskAddView> {
               DropdownButtonFormField<String>(
                 value: _prioridadSeleccionada,
                 decoration: const InputDecoration(
-                  labelText: AppMessagesConstants.labelPrioridad,
+                  labelText: AppFieldsConstants.labelPrioridad,
                 ),
                 items: _prioridades
                     .map((p) =>

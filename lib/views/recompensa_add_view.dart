@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../common/constants/constant.dart';
 import '../models/recompensa_model.dart';
 import '../services/recompensa_service.dart';
 
@@ -46,12 +47,12 @@ class _AddRecompensaViewState extends State<RecompensaAddView> {
         if (widget.recompensa == null) {
           await _recompensaService.guardarRecompensa(nueva);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Recompensa añadida correctamente')),
+            const SnackBar(content: Text(AppMessagesConstants.msgRecompensaAnadida)),
           );
         } else {
           await _recompensaService.actualizarRecompensa(nueva);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Recompensa actualizada correctamente')),
+            const SnackBar(content: Text(AppMessagesConstants.msgRecompensaActualizada)),
           );
         }
         Navigator.pop(context);
@@ -67,7 +68,7 @@ class _AddRecompensaViewState extends State<RecompensaAddView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.recompensa == null ? 'Añadir recompensa' : 'Editar recompensa'),
+        title: Text(widget.recompensa == null ? AppFieldsConstants.anadirRecompensa : AppFieldsConstants.editarRecompensa),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -77,26 +78,26 @@ class _AddRecompensaViewState extends State<RecompensaAddView> {
             children: [
               TextFormField(
                 controller: _nombreController,
-                decoration: const InputDecoration(labelText: 'Nombre'),
+                decoration: const InputDecoration(labelText: AppFieldsConstants.labelNombre),
                 validator: (value) =>
-                    value == null || value.isEmpty ? 'Campo obligatorio' : null,
+                    value == null || value.isEmpty ? AppFieldsConstants.campoObligatorio : null,
               ),
               const SizedBox(height: 10),
               TextFormField(
                 controller: _descripcionController,
-                decoration: const InputDecoration(labelText: 'Descripción'),
+                decoration: const InputDecoration(labelText: AppFieldsConstants.labelDescripcion),
               ),
               const SizedBox(height: 10),
               TextFormField(
                 controller: _costeController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Coste en puntos'),
+                decoration: const InputDecoration(labelText: AppFieldsConstants.labelCoste),
                 validator: (value) =>
-                    value == null || value.isEmpty ? 'Campo obligatorio' : null,
+                    value == null || value.isEmpty ? AppFieldsConstants.campoObligatorio : null,
               ),
               const SizedBox(height: 10),
               SwitchListTile(
-                title: const Text('Visible para los niños'),
+                title: const Text(AppFieldsConstants.visibleNinos),
                 value: _visible,
                 onChanged: (valor) {
                   setState(() {
@@ -107,7 +108,7 @@ class _AddRecompensaViewState extends State<RecompensaAddView> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _guardarRecompensa,
-                child: Text(widget.recompensa == null ? 'Guardar recompensa' : 'Guardar cambios'),
+                child: Text(widget.recompensa == null ? AppFieldsConstants.guardarRecompensa : AppFieldsConstants.guardarCambios),
               ),
             ],
           ),

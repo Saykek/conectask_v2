@@ -6,6 +6,7 @@ import 'package:conectask_v2/common/widgets/menu_card.dart';
 import 'package:conectask_v2/common/widgets/tira_dias.dart';
 import 'package:flutter/material.dart';
 import 'package:conectask_v2/common/utils/date_utils.dart' as miFecha;
+import '../common/constants/constant.dart';
 
 class MenuSemanalView extends StatefulWidget {
   final Map<String, dynamic> menu;
@@ -66,12 +67,12 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Menú Semanal'),
+        title: const Text(AppFieldsConstants.menuSemanal),
         actions: [
-          if (widget.user.rol == 'admin')
+          if (widget.user.rol == AppConstants.rolAdmin)
             IconButton(
               icon: const Icon(Icons.add),
-              tooltip: 'Editar menú semanal',
+              tooltip: AppFieldsConstants.toolEditarMenu,
               onPressed: () async {
                 final actualizado = await Navigator.push(
                   context,
@@ -90,7 +91,7 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
       ),
       body: Column(
         children: [
-          // ✅ Scroll horizontal de días (NO se toca)
+          //  Scroll horizontal de días 
           TiraDiasWidget(
             fechas: fechasMes,
             diaSeleccionado: diaSeleccionado,
@@ -121,7 +122,7 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     child: Text(
-                      "Comida",
+                      AppFieldsConstants.comida,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -146,7 +147,7 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     child: Text(
-                      "Cena",
+                      AppFieldsConstants.cena,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),

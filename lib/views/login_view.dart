@@ -2,6 +2,7 @@ import 'package:conectask_v2/views/register_view.dart';
 import 'package:conectask_v2/common/widgets/animacion_brillo_texto.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import '../common/constants/constant.dart';
 import '../controllers/login_controller.dart';
 import 'home_view.dart';
 import '../models/user_model.dart';
@@ -52,7 +53,7 @@ class _LoginViewState extends State<LoginView> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Email o contraseña incorrectos')),
+        const SnackBar(content: Text(AppMessagesConstants.msgErrorMailContrasenia)),
       );
     }
   }
@@ -72,7 +73,7 @@ class _LoginViewState extends State<LoginView> {
                   width: 200,
                   height: 200,
                   child: Lottie.asset(
-                    'assets/animaciones/connecting.json',
+                    AppIconsConstants.loginConnection,
                     fit: BoxFit.contain,
                     repeat: true, // se repite indefinidamente
                   ),
@@ -81,9 +82,9 @@ class _LoginViewState extends State<LoginView> {
 
                 // 🔑 Tu texto con animación de brillo debajo
                 AnimacionBrilloTexto(
-                  text: "Conectask",
+                  text: AppThemeConstants.titulo,
                   style: const TextStyle(
-                    fontFamily: 'Hillgates',
+                    fontFamily: AppThemeConstants.letraTitulo,
                     //color: ,
                     fontSize: 100,
                     //fontWeight: FontWeight.bold,
@@ -95,7 +96,7 @@ class _LoginViewState extends State<LoginView> {
 
                 const SizedBox(height: 20),
                 Text(
-                  _modoNino ? 'Acceso para niños' : 'Iniciar sesión',
+                  _modoNino ? AppFieldsConstants.accesoNinos : AppFieldsConstants.inicioSesion,
                   style: const TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
@@ -106,14 +107,14 @@ class _LoginViewState extends State<LoginView> {
                 if (_modoNino) ...[
                   TextField(
                     controller: _usuarioController,
-                    decoration: const InputDecoration(labelText: 'Usuario'),
+                    decoration: const InputDecoration(labelText: AppFieldsConstants.labelusuario),
                   ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: _pinController,
                     obscureText: true,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: 'PIN'),
+                    decoration: const InputDecoration(labelText: AppFieldsConstants.labelPin),
                   ),
                   const SizedBox(height: 12),
                   ElevatedButton(
@@ -126,7 +127,7 @@ class _LoginViewState extends State<LoginView> {
                       if (usuario.isEmpty || pin.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Por favor, completa usuario y PIN'),
+                            content: Text(AppMessagesConstants.msgCompletaUsuarioPin),
                           ),
                         );
                         return;
@@ -143,7 +144,7 @@ class _LoginViewState extends State<LoginView> {
 
                       if (!mounted) return;
 
-                      if (user != null && user.rol == 'niño') {
+                      if (user != null && user.rol == AppConstants.rolNino) {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -153,7 +154,7 @@ class _LoginViewState extends State<LoginView> {
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Usuario o PIN incorrecto'),
+                            content: Text(AppMessagesConstants.msgErrorUsuarioPin),
                           ),
                         );
                       }
@@ -162,27 +163,27 @@ class _LoginViewState extends State<LoginView> {
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 48),
                     ),
-                    child: const Text('Entrar'),
+                    child: const Text(AppFieldsConstants.entrar),
                   ),
                   const SizedBox(height: 16),
                   TextButton.icon(
                     onPressed: () => setState(() => _modoNino = false),
-                    icon: Image.asset('assets/iconos/volver_flecha.png',
+                    icon: Image.asset(AppIconsConstants.flechaVolver,
                     width: 40,
                     height: 40,),
                     label: const Text(
-                    ' Volver a sesión de adulto'),
+                    AppFieldsConstants.labelVolverAdulto),
                   ),
                 ] else ...[
                   TextField(
                     controller: _emailController,
-                    decoration: const InputDecoration(labelText: 'Email'),
+                    decoration: const InputDecoration(labelText: AppFieldsConstants.labelEmail),
                   ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: const InputDecoration(labelText: 'Contraseña'),
+                    decoration: const InputDecoration(labelText: AppFieldsConstants.labelContrasenia),
                   ),
                   const SizedBox(height: 24),
                   _loading
@@ -192,7 +193,7 @@ class _LoginViewState extends State<LoginView> {
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(double.infinity, 48),
                           ),
-                          child: const Text('Entrar'),
+                          child: const Text(AppFieldsConstants.entrar),
                         ),
                   const SizedBox(height: 16),
                   TextButton(
@@ -202,7 +203,7 @@ class _LoginViewState extends State<LoginView> {
                         builder: (context) => const RegisterView(),
                       ),
                     ),
-                    child: const Text('¿No tienes cuenta? Regístrate'),
+                    child: const Text(AppFieldsConstants.sinCuenta),
                   ),
                   const SizedBox(height: 16),
                   // 🔑 Botón de acceso para niños (modificado)
@@ -213,12 +214,12 @@ TextButton.icon(
   ),
   onPressed: () => setState(() => _modoNino = true),
   icon: Image.asset(
-    'assets/iconos/monstruo.png', 
+    AppIconsConstants.monstruo, 
     width: 60,
     height: 60,
   ),
   label: const Text(
-    'Acceso para niños',
+    AppFieldsConstants.lableAccesoNinos,
     textAlign: TextAlign.left,
     style: TextStyle(fontSize: 16),
   ),

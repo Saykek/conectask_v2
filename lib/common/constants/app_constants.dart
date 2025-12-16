@@ -3,7 +3,19 @@ import 'dart:ui';
 
 
 class AppConstants {
+ // **************** SISTEMA ****************
+  static const String tema = 'tema';
+  static const String idioma ='idioma';
+  static const String notificacionesActivas = 'notificacionesActivas';
+  static const String defaultSection = "default";
+  static const String claro = 'claro';
+  static const String idiomaEs = 'es';
+  static const String configuracion = 'Configuración';
+  static const String icono = 'icono';
+  
+
   // **************** ROLES ****************
+  static const String rol = 'rol';
   static const String rolAdmin = 'admin';
   static const String rolPadre = 'padre';
   static const String rolAdulto = 'adulto';
@@ -53,7 +65,7 @@ class AppConstants {
 
   // **************** OTROS ****************
   static const int puntosPorDefecto = 0;
-  static const String defaultSection = "default";
+ 
 
    // **************** FECHAS *****************
   static const Locale localeEs = Locale('es', 'ES');
@@ -62,6 +74,7 @@ class AppConstants {
   // **************** HTTP *****************
   static const String headerAuthorization = 'Authorization';
   static const String bearerPrefix = 'Bearer ';
+  static const String urlServidor = 'urlServidor';
 
 
 }
