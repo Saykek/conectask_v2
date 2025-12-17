@@ -1,9 +1,10 @@
 import 'package:firebase_database/firebase_database.dart';
+import '../common/constants/constant.dart';
 import '../models/user_model.dart';
 
 class UserService {
   final DatabaseReference usersRef = FirebaseDatabase.instance.ref().child(
-    'usuarios',
+    AppFirebaseConstants.usuarios,
   );
 
   Future<void> guardarUsuario(UserModel user) async {
@@ -69,11 +70,11 @@ class UserService {
           final data = child.value as Map<dynamic, dynamic>;
           final id = child.key ?? '';
           final map = Map<String, dynamic>.from(data);
-          print('Leyendo: nombre=${map['nombre']}, rol=${map['rol']}');
+          print('Leyendo: nombre=${map['nombre']}, rol=${map[AppConstants.rol]}');
 
           if (map['nombre'].toString().toLowerCase().trim() ==
                   nombre.toLowerCase().trim() &&
-              map['rol'].toString().toLowerCase().trim() == 'niño') {
+              map[AppConstants.rol].toString().toLowerCase().trim() == AppConstants.rolNino) {
             print(
               'Usuario encontrado: ${map['nombre']}, pin: ${map['pin']}, Rol: ${map['rol']}',
             );
@@ -91,8 +92,8 @@ class UserService {
 
    // SUMAR PUNTOS (activos + acumulados)
 Future<void> sumarPuntos(String userId, int puntos) async {
-  final refPuntos = usersRef.child(userId).child('puntos');              // disponibles
-  final refAcumulados = usersRef.child(userId).child('puntos_acumulados'); // histórico
+  final refPuntos = usersRef.child(userId).child(AppFieldsConstants.puntos);              // disponibles
+  final refAcumulados = usersRef.child(userId).child(AppFirebaseConstants.puntos_acumulados); // histórico
 
   final snapshotPuntos = await refPuntos.get();
   final snapshotAcumulados = await refAcumulados.get();
