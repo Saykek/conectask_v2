@@ -79,7 +79,11 @@ class _HomeAssistantViewState extends State<HomeAssistantView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(AppIconsConstants.iconCasa, size: 64, color: Colors.grey),
+              Image.asset(
+ AppIconsConstants.logo,
+  width: 240,
+  height: 240, 
+),
               SizedBox(height: 16),
               Text(
                 AppMessagesConstants.msgSoloMovil,

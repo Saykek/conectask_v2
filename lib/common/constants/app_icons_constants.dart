@@ -14,4 +14,5 @@ class AppIconsConstants {
   static const String examen = 'assets/iconos/examen.png';
   static const String nota = 'assets/iconos/nota.png';
   static const String fondo_aula = 'assets/images/fondo_aula.png';
+  static const String logo = 'assets/iconos/icono_sinfondo_app.png';
 }
