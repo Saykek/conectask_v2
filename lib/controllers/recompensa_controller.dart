@@ -2,6 +2,7 @@ import 'package:conectask_v2/models/recompensa_model.dart';
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/services/recompensa_service.dart';
 import 'package:conectask_v2/services/user_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class RecompensaController {
@@ -42,7 +43,7 @@ Future<UserModel> canjear(UserModel user, RecompensaModel recompensa) async {
     await _userService.restarPuntos(user.id, recompensa.coste);
 
     // Registra el canjeo
-    await _service.registrarCanjeo(user.id, recompensa);
+    await _service.registrarCanjeo(FirebaseAuth.instance.currentUser!.uid,user.nombre, recompensa);
 
     // marcar recompensa como usada
     await _service.marcarComoUsada(recompensa.id);
@@ -70,18 +71,44 @@ Future<UserModel> canjear(UserModel user, RecompensaModel recompensa) async {
     return 0;
   }
 
-  /// Obtiene todos los canjeos de un usuario
-  Future<List<Map<String, dynamic>>> obtenerCanjeos(String userId) async {
+  /// Obtiene todos los canjeos de un usuario por UID
+  Future<List<Map<String, dynamic>>> obtenerCanjeos(String nombre) async {
     final ref = FirebaseDatabase.instance.ref('canjeos');
-    final snapshot = await ref.orderByChild('usuario').equalTo(userId).get();
+    final snapshot = await ref.orderByChild('usuarioNombre').equalTo(nombre.toLowerCase()).get();
 
     if (snapshot.exists) {
-      final data = snapshot.value as Map<dynamic, dynamic>;
-      return data.entries
-          .map((e) => Map<String, dynamic>.from(e.value))
-          .toList();
+    final data = snapshot.value as Map<dynamic, dynamic>;
+    return data.entries.map((e) {
+      final map = Map<String, dynamic>.from(e.value);
+      map['key'] = e.key; //  guardo la key del nodo
+      return map;
+    }).toList();
+
     } else {
       return [];
     }
   }
+  
+/// Obtiene todos los canjeos de un usuario por nombre normalizado
+Future<List<Map<String, dynamic>>> obtenerCanjeosPorNombre(String nombre) async {
+  final ref = FirebaseDatabase.instance.ref('canjeos');
+  final snapshot = await ref
+      .orderByChild('usuarioNombre')
+      .equalTo(nombre.toLowerCase())
+      .get();
+
+  if (snapshot.exists) {
+    final data = snapshot.value as Map<dynamic, dynamic>;
+    return data.entries
+        .map((e) => Map<String, dynamic>.from(e.value))
+        .toList();
+  } else {
+    return [];
+  }
+}
+
+Future<void> marcarEntregado(String canjeoKey, bool entregado) async {
+  await _service.marcarEntregado(canjeoKey, entregado);
+}
+
 }

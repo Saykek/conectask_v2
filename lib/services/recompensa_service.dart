@@ -50,19 +50,27 @@ class RecompensaService {
 
   Future<void> registrarCanjeo(
     String userId,
+    String usuarioNombre,
     RecompensaModel recompensa,
   ) async {
     final canjeoRef = FirebaseDatabase.instance.ref('canjeos').push();
     await canjeoRef.set({
-      'usuario': userId,
+      'usuarioId': userId,
+      'usuarioNombre': usuarioNombre.toLowerCase(),
       'recompensaId': recompensa.id,
       'recompensaNombre': recompensa.nombre,
       'coste': recompensa.coste,
       'fecha': DateTime.now().toIso8601String(),
+      'entregado': false,
     });
   }
 
   Future<void> marcarComoUsada(String recompensaId) async {
     await _dbRef.child(recompensaId).update({'usada': true});
   }
+
+  Future<void> marcarEntregado(String canjeoId, bool entregado) async {
+  final ref = FirebaseDatabase.instance.ref('canjeos/$canjeoId');
+  await ref.update({'entregado': entregado});
+}
 }

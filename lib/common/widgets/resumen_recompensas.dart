@@ -1,5 +1,6 @@
 import 'package:conectask_v2/models/recompensa_model.dart';
 import 'package:conectask_v2/views/recompensa_detail_view.dart';
+import 'package:conectask_v2/views/recompensas_historial_canjeos_view.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import '../../models/user_model.dart';
@@ -40,8 +41,22 @@ class ResumenRecompensas extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              ],
-            ),
+               const Spacer(), // empuja el botón a la derecha
+    IconButton(
+      icon: const Icon(Icons.history),
+      tooltip: 'Ver historial de canjeos',
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => RecompensasHistorialCanjeosView(user: user),
+          ),
+        );
+      },
+    ),
+  ],
+),
+
 
             // Datos en tiempo real desde Firebase
            StreamBuilder<DatabaseEvent>(

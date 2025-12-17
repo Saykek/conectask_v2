@@ -150,6 +150,8 @@ intermedio, y los puntos siguen sumandos.
 - IMPORTANTE: Duplicidad de codigo de no poder seleccionar fecha anterior en add y edit tarea.
 - en tareas al entrar, buscas un dia y sales, al entrar se queda en el dia buscado.
 - EDITAR MENU MUUUUY LENTOOOO
+- en aula no tiene sentido que no salgan las cosas del colegio
+- en canjeos en el rol de adulto que tenga un tik de hecho o no
 
 ** los colores de los usuarios no se pq 1-12-2025 se han modificado, ahora si no existe el color en configuracion no da error
 al entrar a editar el perfil del niño **

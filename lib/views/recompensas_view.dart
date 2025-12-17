@@ -7,7 +7,7 @@ import '../models/user_model.dart';
 import '../models/recompensa_model.dart';
 import '../controllers/recompensa_controller.dart';
 import '../common/widgets/resumen_recompensas.dart';
-import '../common/widgets/lista_recomepensas.dart';
+import '../common/widgets/lista_recompensas.dart';
 import '../views/recompensa_add_view.dart';
 
 class RecompensasView extends StatefulWidget {
@@ -25,7 +25,7 @@ class _RecompensasViewState extends State<RecompensasView> {
   Map<String, List<RecompensaModel>> recompensasPorNino = {};
   List<RecompensaModel> listaGeneral = [];
   bool cargando = true;
-  bool mostrarListaGeneral = false;
+  bool mostrarListaGeneral = false; // para mostrar la lista de recompensas al entrar
   String seleccion = AppFieldsConstants.todos;
 
   @override
@@ -34,10 +34,10 @@ class _RecompensasViewState extends State<RecompensasView> {
     _cargarRecompensas().then((_) {
       setState(() {
         listaGeneral = recompensasPorNino[widget.user.id] ?? [];
-        mostrarListaGeneral = true;
+        mostrarListaGeneral = false;
       });
     });
-  } // 👈 a
+  } 
 
   Future<void> _cargarRecompensas() async {
     final usuarioController = Provider.of<UsuarioController>(
