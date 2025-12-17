@@ -7,6 +7,7 @@ class AppMessagesConstants {
   static const String msgDebeSerNumero = 'Debe ser un número';
   static const String msgResponsableRequerido = 'Selecciona un responsable';
   static const String msgPrioridadRequerida = 'Selecciona una prioridad';
+  static const String msgNoHayTareas = 'No hay tareas para este día';
 
   // **************** ERRORES ****************
   static const String msgErrorActualizar = 'Error al actualizar tarea';

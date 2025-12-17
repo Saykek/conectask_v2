@@ -14,6 +14,7 @@ class AppConstants {
   static const String administrador = 'Administrador';
   static const String desconocido = 'Desconocido';
   static const String icono = 'icono';
+
   
 
   // **************** ROLES ****************
@@ -71,7 +72,9 @@ class AppConstants {
 
    // **************** FECHAS *****************
   static const Locale localeEs = Locale('es', 'ES');
+  static const String es_ES = 'es_ES';
   static const String formatoFecha = 'yyyy-MM-dd';
+  static const String formatoFecha1 = 'EEEE, d MMMM';
 
   // **************** HTTP *****************
   static const String headerAuthorization = 'Authorization';

@@ -208,6 +208,7 @@ Recomendación de orden para implementar
     home_view ✅
     colegio_view ✅
     colegio_perfil_view ✅
+    colegio_asignatura_view ✅
     usuario controller a medias
     
       

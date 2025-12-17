@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../common/constants/constant.dart';
 
 class CalendarView extends StatefulWidget {
   final DateTime fechaInicial;
@@ -34,7 +35,7 @@ class _CalendarViewState extends State<CalendarView> {
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<TareaController>(context);
-    final formato = DateFormat('yyyy-MM-dd');
+    final formato = DateFormat(AppConstants.formatoFecha);
     final tareasDelDia = controller.tareas
         .where(
           (t) => formato.format(t.fecha) == formato.format(fechaSeleccionada),
@@ -42,7 +43,7 @@ class _CalendarViewState extends State<CalendarView> {
         .toList();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Calendario Familiar")),
+      appBar: AppBar(title: const Text(AppFieldsConstants.calendarioFamiliar)),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
@@ -50,7 +51,7 @@ class _CalendarViewState extends State<CalendarView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TableCalendar(
-                locale: 'es_ES',
+                locale: AppConstants.es_ES,
                 firstDay: DateTime.utc(2020, 1, 1),
                 lastDay: DateTime.utc(2030, 12, 31),
                 focusedDay: fechaSeleccionada,
@@ -77,7 +78,7 @@ class _CalendarViewState extends State<CalendarView> {
               ElevatedButton.icon(
                 icon: const Icon(Icons.calendar_today),
                 label: Text(
-                  DateFormat('EEEE, d MMMM', 'es_ES').format(fechaSeleccionada),
+                  DateFormat(AppConstants.formatoFecha1, AppConstants.es_ES).format(fechaSeleccionada),
                 ),
                 onPressed: () async {
                   final nuevaFecha = await showDatePicker(
@@ -95,7 +96,7 @@ class _CalendarViewState extends State<CalendarView> {
               ),
               const SizedBox(height: 24),
               Text(
-                "Tareas para ${DateFormat('EEEE, d MMMM', 'es_ES').format(fechaSeleccionada)}",
+                "Tareas para ${DateFormat(AppConstants.formatoFecha1, AppConstants.es_ES).format(fechaSeleccionada)}",
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -103,7 +104,7 @@ class _CalendarViewState extends State<CalendarView> {
               ),
               const SizedBox(height: 12),
               tareasDelDia.isEmpty
-                  ? const Center(child: Text("No hay tareas para este día"))
+                  ? const Center(child: Text(AppMessagesConstants.msgNoHayTareas))
                   : ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -144,7 +145,7 @@ class _CalendarViewState extends State<CalendarView> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  "Responsable: ${usuario?.nombre ?? 'Desconocido'}",
+                                  "Responsable: ${usuario?.nombre ?? AppConstants.desconocido}",
                                   style: const TextStyle(
                                     fontStyle: FontStyle.italic,
                                     fontSize: 13,
@@ -153,8 +154,8 @@ class _CalendarViewState extends State<CalendarView> {
                               ],
                             ),
                             trailing: Icon(
-                              (tarea.estado == 'hecha' ||
-                                      tarea.estado == 'validada')
+                              (tarea.estado == AppConstants.estadoHecha ||
+                                      tarea.estado == AppConstants.estadoValidada)
                                   ? Icons.check_circle
                                   : Icons.radio_button_unchecked,
                               color: obtenerColorTarea(tarea),

@@ -1,6 +1,7 @@
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:conectask_v2/common/widgets/temporizador_lectura.dart';
 import 'package:flutter/material.dart';
+import '../common/constants/constant.dart';
 
 class AulaView extends StatelessWidget {
   final UserModel user;
@@ -16,7 +17,7 @@ class AulaView extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/fondo_aula.png'),
+            image: AssetImage(AppIconsConstants.fondo_aula),
             fit: BoxFit.cover,
           ),
         ),
@@ -33,15 +34,15 @@ class AulaView extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildBoton(context, Icons.calendar_today, 'Pizarra', () {
+        _buildBoton(context, Icons.calendar_today, AppFieldsConstants.pizarra, () {
           // abrir calendario
         }),
         const SizedBox(height: 16),
-        _buildBoton(context, Icons.timer, 'Temporizador', () {
+        _buildBoton(context, Icons.timer, AppFieldsConstants.temporizador, () {
           // abrir temporizador
         }),
         const SizedBox(height: 16),
-        _buildBoton(context, Icons.star, 'Recompensas', () {
+        _buildBoton(context, Icons.star, AppFieldsConstants.recompensas, () {
           // abrir recompensas
         }),
       ],
@@ -54,10 +55,10 @@ class AulaView extends StatelessWidget {
       runSpacing: 40,
       alignment: WrapAlignment.center,
       children: [
-        _buildBoton(context, Icons.calendar_today, 'Pizarra', () {
+        _buildBoton(context, Icons.calendar_today, AppFieldsConstants.pizarra, () {
           // abrir calendario
         }),
-        _buildBoton(context, Icons.timer, 'Temporizador', () {
+        _buildBoton(context, Icons.timer, AppFieldsConstants.temporizador, () {
   Navigator.push(
     context,
     MaterialPageRoute(
@@ -65,10 +66,10 @@ class AulaView extends StatelessWidget {
     ),
   );
 }),
-        _buildBoton(context, Icons.star, 'Recompensas', () {
+        _buildBoton(context, Icons.star, AppFieldsConstants.recompensas, () {
           // abrir recompensas
         }),
-        _buildBoton(context, Icons.task, 'Tareas', () {
+        _buildBoton(context, Icons.task, AppFieldsConstants.tareas, () {
           // abrir tareas
         }),
       ],

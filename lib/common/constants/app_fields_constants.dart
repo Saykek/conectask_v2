@@ -38,6 +38,11 @@ class AppFieldsConstants {
   static const String casa = 'Casa';
   static const String calendario = 'Calendario';
   static const String perfilEscolar = 'Perfil escolar de ';
+  static const String examenes = 'Exámenes';
+  static const String notaMin = 'nota';
+  static const String nota = 'Nota';
+  static const String calendarioFamiliar = 'Calendario Familiar';
+ 
 
   //static const String nombre = 'Nombre';
 
@@ -72,9 +77,13 @@ class AppFieldsConstants {
   static const String ingredientesMin = 'ingredientes';
   static const String receta = 'Receta';
   static const String recetaMin = 'receta';
+  
   static const String notas = 'Notas';
   static const String notasMin = 'notas';
   static const String sinNotas  = 'Sin notas';
+  static const String pizarra = 'Pizarra';
+  static const String temporizador = 'Temporizador';
+
   
 
   // **************** TOOLTIPS Y HINT TEXT****************

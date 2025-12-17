@@ -1,5 +1,6 @@
 import 'package:conectask_v2/common/widgets/tarjeta_base_colegio.dart';
 import 'package:flutter/material.dart';
+import '../common/constants/constant.dart';
 import '../models/asignatura_model_mock.dart';
 
 
@@ -16,16 +17,16 @@ class ColegioAsignaturaView extends StatelessWidget {
     // Ordenar exámenes por fecha ascendente (null al final)
     final examenesOrdenados = List.from(asignatura.examenes)
       ..sort((a, b) {
-        final fechaA = a['fecha'] ?? '';
-        final fechaB = b['fecha'] ?? '';
+        final fechaA = a[AppFieldsConstants.fecha] ?? '';
+        final fechaB = b[AppFieldsConstants.fecha] ?? '';
         return fechaA.compareTo(fechaB);
       });
 
     // Ordenar notas por fecha descendente (null al final)
     final notasOrdenadas = List.from(asignatura.notas)
       ..sort((a, b) {
-        final fechaA = a['fecha'] ?? '';
-        final fechaB = b['fecha'] ?? '';
+        final fechaA = a[AppFieldsConstants.fecha] ?? '';
+        final fechaB = b[AppFieldsConstants.fecha] ?? '';
         return fechaB.compareTo(fechaA);
       });
 
@@ -52,18 +53,18 @@ class ColegioAsignaturaView extends StatelessWidget {
               children: [
                 ListTile(
                   leading: Image.asset(
-                    'assets/iconos/examen.png',
+                    AppIconsConstants.examen,
                     width: 32,
                     height: 32,
                   ),
                   title: const Text(
-                    'Exámenes',
+                    AppFieldsConstants.examenes,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                 ),
                 ...examenesOrdenados.map((ex) => Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      child: Text('${ex['titulo'] ?? ''} • Fecha: ${ex['fecha'] ?? '—'}'),
+                      child: Text('${ex[AppFieldsConstants.titulo] ?? ''} • Fecha: ${ex[AppFieldsConstants.fecha] ?? '—'}'),
                     )),
               ],
             ),
@@ -81,20 +82,20 @@ TarjetaBaseColegio(
       // Encabezado de la card con icono
       ListTile(
         leading: Image.asset(
-          'assets/iconos/nota.png', // icono solo aquí
+          AppIconsConstants.nota, 
           width: 32,
           height: 32,
         ),
         title: const Text(
-          'Notas',
+          AppFieldsConstants.notas,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
       ),
       // Lista de notas
       ...notasOrdenadas.map((n) {
-        final titulo = n['titulo'] ?? '';
-        final fecha = n['fecha'] ?? ''; // fecha real
-        final nota = n['nota'] ?? '—';
+        final titulo = n[AppFieldsConstants.titulo] ?? '';
+        final fecha = n[AppFieldsConstants.fecha] ?? ''; // fecha real
+        final nota = n[AppFieldsConstants.notaMin] ?? '—';
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           child: Column(
