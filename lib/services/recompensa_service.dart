@@ -1,9 +1,10 @@
 import 'package:firebase_database/firebase_database.dart';
+import '../common/constants/constant.dart';
 import '../models/recompensa_model.dart';
 
 class RecompensaService {
   final DatabaseReference _dbRef = FirebaseDatabase.instance.ref().child(
-    'recompensas',
+    AppFieldsConstants.recompensasMin,
   );
 
   Future<void> guardarRecompensa(RecompensaModel recompensa) async {

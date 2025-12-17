@@ -14,6 +14,8 @@ class AppConstants {
   static const String administrador = 'Administrador';
   static const String desconocido = 'Desconocido';
   static const String icono = 'icono';
+ 
+
 
   
 

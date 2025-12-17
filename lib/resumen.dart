@@ -209,6 +209,10 @@ Recomendación de orden para implementar
     colegio_view ✅
     colegio_perfil_view ✅
     colegio_asignatura_view ✅
+    calendario_view ✅
+    aula_view ✅
+
+    tarea_service ✅
     usuario controller a medias
     
       

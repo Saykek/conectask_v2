@@ -48,6 +48,7 @@ class AppFieldsConstants {
 
   static const String recompensa = 'recompensa';
   static const String recompensas = 'Recompensas';
+  static const String recompensasMin = 'recompensas';
   static const String validadaPor = 'validadaPor';
   static const String puntos = 'puntos';
   static const String anadirNuevaRecompensa = 'Añadir nueva recompensa';
@@ -77,7 +78,7 @@ class AppFieldsConstants {
   static const String ingredientesMin = 'ingredientes';
   static const String receta = 'Receta';
   static const String recetaMin = 'receta';
-  
+
   static const String notas = 'Notas';
   static const String notasMin = 'notas';
   static const String sinNotas  = 'Sin notas';
