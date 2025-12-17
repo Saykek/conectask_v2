@@ -30,6 +30,7 @@ class AppMessagesConstants {
 
   // **************** MENSAJES GENERALES ****************
   static const String msgSinTareasHoy = 'Sin tareas hoy';
+  static const String msgSinCanjeos = 'Sin canjeos registrados';
   static const String msgConfirmarEliminar = '¿Estás seguro de que quieres eliminar esta recompensa?';
   static const String msgPuntosInsuficientes = 'No tienes suficientes puntos';
   static const String msgConfirmacionCerrarSesion = '¿Quieres cerrar sesión, ';

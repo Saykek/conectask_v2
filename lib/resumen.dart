@@ -23,6 +23,7 @@ Resumen de la app de gestion familiar:
 - menu semanal view 
 - menu semanal detalle
 - prueba imagen view
+- recompensa historial canjeos view
 - recompensa add view
 - recompensa detail view
 - recompensas view
@@ -124,10 +125,11 @@ Resumen de la app de gestion familiar:
 - Desbordamiento en todas las vistas de colegio ✅
 - en menu semanal guardo receta pero no se actualiza en la pantalla edit, sino que tengo que salir y volver a entrar. ✅
 - quitar modulo de configuracion y casa del home del niño ✅
+- Que no se puedan crear ni editar tareas en fechas anteriores 15-20 min con validacion por si lo ponen manual ✅
+- en canjeos en el rol de adulto que tenga un tik de hecho o no ✅
 - en menu semanal detalle ingredientes, receta, notas no se guardan, no tiene funcionalidad.
 - Añadir para enlace PDF 30-45 min
 - Añadir para repetir las tareas X dias 1.5-2 horas
-- Que no se puedan crear ni editar tareas en fechas anteriores 15-20 min con validacion por si lo ponen manual ✅
 - En el registro que no cuenten acentos 20-30 min
 - Mostrar requisitos de contraseña al registrarse 30-45 min
 - Misiones especiales: tareas con recompensas extra si se completan en grupo o en tiempo récord.2-3 horas
@@ -151,7 +153,7 @@ intermedio, y los puntos siguen sumandos.
 - en tareas al entrar, buscas un dia y sales, al entrar se queda en el dia buscado.
 - EDITAR MENU MUUUUY LENTOOOO
 - en aula no tiene sentido que no salgan las cosas del colegio
-- en canjeos en el rol de adulto que tenga un tik de hecho o no
+
 
 ** los colores de los usuarios no se pq 1-12-2025 se han modificado, ahora si no existe el color en configuracion no da error
 al entrar a editar el perfil del niño **

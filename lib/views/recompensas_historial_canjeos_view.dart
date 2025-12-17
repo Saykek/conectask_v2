@@ -2,6 +2,8 @@ import 'package:conectask_v2/controllers/recompensa_controller.dart';
 import 'package:conectask_v2/models/user_model.dart';
 import 'package:flutter/material.dart';
 
+import '../common/constants/constant.dart';
+
 class RecompensasHistorialCanjeosView extends StatefulWidget {
   final UserModel user;
   final RecompensaController controller = RecompensaController();
@@ -27,7 +29,7 @@ class _RecompensasHistorialCanjeosViewState
           }
           final canjeos = snapshot.data!;
           if (canjeos.isEmpty) {
-            return const Center(child: Text('Sin canjeos registrados'));
+            return const Center(child: Text(AppMessagesConstants.msgSinCanjeos));
           }
           return ListView.builder(
             itemCount: canjeos.length,
@@ -51,7 +53,7 @@ class _RecompensasHistorialCanjeosViewState
                     Checkbox(
                       value: entregado,
                       onChanged: (val) async {
-                        final key = c['key']; // 👈 la key del nodo en Firebase
+                        final key = c['key']; //  key del nodo en Firebase
                         await widget.controller.marcarEntregado(
                             key, val ?? false);
                         setState(() {
