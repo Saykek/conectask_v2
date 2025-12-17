@@ -49,13 +49,19 @@ class _TasksViewState extends State<TasksView> {
 
     final esAdulto = widget.user.rol == AppConstants.rolAdmin ||
         widget.user.rol == AppConstants.rolPadre;
+    final usuariosFiltrados = esAdulto
+      ? usuariosLocales
+      : usuariosLocales.where((u) => u.id == widget.user.id).toList();
+
+
 
     final tareasHoy = controller.tareas.where((t) {
       final formato = DateFormat(AppConstants.formatoFecha);
       final mismaFecha =
           formato.format(t.fecha) == formato.format(controller.fechaSeleccionada);
       final esDelUsuario = esAdulto || t.responsable == widget.user.id;
-      return mismaFecha && esDelUsuario;
+
+      return mismaFecha && esDelUsuario;  
     }).toList();
 
     return Scaffold(
@@ -129,9 +135,9 @@ class _TasksViewState extends State<TasksView> {
       scrollDirection: Axis.horizontal,
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      itemCount: usuariosLocales.length,
+      itemCount: usuariosFiltrados.length,
       itemBuilder: (context, i) {
-        final usuario = usuariosLocales[i];
+        final usuario = usuariosFiltrados[i];
         final color = obtenerColorUsuario(usuario);
         final tareasUsuario = tareasHoy
             .where((t) => t.responsable == usuario.id)
@@ -168,6 +174,7 @@ class _TasksViewState extends State<TasksView> {
                           ),
                         )
                       : ListView.builder(
+                        
                           key: PageStorageKey('tareas_${usuario.id}'),
                           primary: false,
                           physics: const ClampingScrollPhysics(),
