@@ -127,57 +127,26 @@ Resumen de la app de gestion familiar:
 - quitar modulo de configuracion y casa del home del niño ✅
 - Que no se puedan crear ni editar tareas en fechas anteriores 15-20 min con validacion por si lo ponen manual ✅
 - en canjeos en el rol de adulto que tenga un tik de hecho o no ✅
-- en menu semanal detalle ingredientes, receta, notas no se guardan, no tiene funcionalidad.
+
 - Añadir para enlace PDF 30-45 min
-- Añadir para repetir las tareas X dias 1.5-2 horas
 - En el registro que no cuenten acentos 20-30 min
 - Mostrar requisitos de contraseña al registrarse 30-45 min
-- Misiones especiales: tareas con recompensas extra si se completan en grupo o en tiempo récord.2-3 horas
 - Calendario visual de tareas: con colores por usuario y prioridad.2-3 horas
-- Recordatorios automáticos: para tareas pendientes o próximas.2-3 horas
-- Historial de tareas completadas: con filtros por fecha, tipo o responsable.1.5-2 horas
-- horario en tareas? 30-45 min
-- quitar insignias fijas de recompensas y que se puedan añadir nuevas desde firebase 2-4 horas
 - al validar una tarea los puntos se suman en un sitio pero en otro no
 - Una vez que validas la tarea si luego la dejas como no hecha al volver a darla ya sale validad, no pasa por el paso
 intermedio, y los puntos siguen sumandos.
-- Boton de claro oscurso se vuelve, hace animacion.
 - acceso niños muy abajo IMPORTANTE!!!
 - editar y eliminar recompensas no se puede
 - navegacion.dart poner colores de theme
-- HOME ASSISTANT : Versión mínima (solo formulario + carga de panel Lovelace): 4–6 días.
-• 	Versión completa (con roles, aparatos configurables y persistencia en Firebase): 10–15 días.
 - si añades puntos desde configuracion se borran los acumulados del usuario
 - los nombres de usuarios en tareas no se diferencian bien 
 - IMPORTANTE: Duplicidad de codigo de no poder seleccionar fecha anterior en add y edit tarea.
 - en tareas al entrar, buscas un dia y sales, al entrar se queda en el dia buscado.
 - EDITAR MENU MUUUUY LENTOOOO
 - en aula no tiene sentido que no salgan las cosas del colegio
-
-
 ** los colores de los usuarios no se pq 1-12-2025 se han modificado, ahora si no existe el color en configuracion no da error
 al entrar a editar el perfil del niño **
 
-
-🧠 Inteligencia y personalización
-- Recomendaciones de tareas según hábitos: por ejemplo, si Alex siempre hace tareas por la tarde. 3-4 horas
-- Estadísticas por usuario: tiempo medio de entrega, tareas favoritas, evolución de puntos. 2.-3 horas
-- Temas visuales personalizados: cada niño elige su color, avatar o fondo. 1.5-2 horas
-
-🔒 Seguridad y control
-- Control parental: para validar tareas, limitar recompensas o ver actividad. 2-3 horas
-- Bloqueo por PIN para recompensas sensibles: como ver TV o usar tablet.1-1.5 horas
-- Historial de canjeos: para que los padres vean qué se ha usado y cuándo. 1-1.5 horas
-
-🌐 Conectividad y multimedia
-- Adjuntar fotos o vídeos a tareas: como prueba de que se hizo. 2-3 horas
-- Enlaces a recursos educativos: PDFs, vídeos, juegos didácticos. 1.5-2 horas
-- Modo offline: para que funcione sin conexión y sincronice después. 4 - 6 horas
-
-🧩 Extras divertidos
-- Mini juegos desbloqueables: al alcanzar ciertos niveles. 3-4 horas
-- Sistema de “tienda” con recompensas virtuales: como cambiar el avatar, fondo, etc. 2.5-3 horas
-- Mensajes motivadores automáticos: “¡Buen trabajo, Erik! Has subido de nivel 🎉” 1-1.5 horas
 
 
 Recomendación de orden para implementar
@@ -225,7 +194,16 @@ Recomendación de orden para implementar
 /*                                                   **********************  MEJORAS FUTURAS **********************
 
  - Opción para asignar tareas a varias personas. - Que se pueda seleccionar mas de un usuario en asignar.
- -
+ - en menu semanal detalle ingredientes, receta, notas no se guardan, no tiene funcionalidad.
+ - Añadir para repetir las tareas X dias 1.5-2 horas
+ - Misiones especiales: tareas con recompensas extra si se completan en grupo o en tiempo récord.2-3 horas
+ - Recordatorios automáticos: para tareas pendientes o próximas.2-3 horas
+ - Historial de tareas completadas: con filtros por fecha, tipo o responsable.1.5-2 horas
+ - horario en tareas? 30-45 min
+ - quitar insignias fijas de recompensas y que se puedan añadir nuevas desde firebase 2-4 horas
+ - Boton de claro oscurso se vuelve, hace animacion.
+ - HOME ASSISTANT : Versión mínima (solo formulario + carga de panel Lovelace): 4–6 días.
+• 	Versión completa (con roles, aparatos configurables y persistencia en Firebase): 10–15 días.
 */
 
  /*                            ******************* PROMPT **************************
@@ -255,9 +233,32 @@ Recomendación de orden para implementar
         - Modulo menu bastante avanzado ya tengo la comida y cena en card (widget) con dos platos., muestra foto si la hay, puedo acceder a receta online..
         pantalla de edit con dos platos y sus iconos, falta que la tira de calendario al pulsar el dia se vaya a ese exactamente.
         - En pantalla recompensas se pueden canjear recomenpensas reales, ya resta puntos, pero no desaparecen al momento de la lista, tienes que salir y entrar. 
+        - Implementado un resumen de canjeos
+        - 
 
         Muy Importante ** Fijate en los ✅ y asi sabras lo que llevo hecho.
     Necesito que me digas en que clase y lugar va cada parte de codigo que me proporciones. Paso por
     paso, y hasta que no te de el ok no me pongas nada.
    
-   */
+***********************************             **********************
+
+  🧠 Inteligencia y personalización
+- Recomendaciones de tareas según hábitos: por ejemplo, si Alex siempre hace tareas por la tarde. 3-4 horas
+- Estadísticas por usuario: tiempo medio de entrega, tareas favoritas, evolución de puntos. 2.-3 horas
+- Temas visuales personalizados: cada niño elige su color, avatar o fondo. 1.5-2 horas
+
+🔒 Seguridad y control
+- Control parental: para validar tareas, limitar recompensas o ver actividad. 2-3 horas
+- Bloqueo por PIN para recompensas sensibles: como ver TV o usar tablet.1-1.5 horas
+- Historial de canjeos: para que los padres vean qué se ha usado y cuándo. 1-1.5 horas
+
+🌐 Conectividad y multimedia
+- Adjuntar fotos o vídeos a tareas: como prueba de que se hizo. 2-3 horas
+- Enlaces a recursos educativos: PDFs, vídeos, juegos didácticos. 1.5-2 horas
+- Modo offline: para que funcione sin conexión y sincronice después. 4 - 6 horas
+
+🧩 Extras divertidos
+- Mini juegos desbloqueables: al alcanzar ciertos niveles. 3-4 horas
+- Sistema de “tienda” con recompensas virtuales: como cambiar el avatar, fondo, etc. 2.5-3 horas
+- Mensajes motivadores automáticos: “¡Buen trabajo, Erik! Has subido de nivel 🎉” 1-1.5 horas
+*/
