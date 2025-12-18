@@ -5,6 +5,8 @@ import 'package:conectask_v2/services/user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import '../common/constants/constant.dart';
+
 class RecompensaController {
   final RecompensaService _service = RecompensaService();
   final UserService _userService = UserService();
@@ -110,5 +112,23 @@ Future<List<Map<String, dynamic>>> obtenerCanjeosPorNombre(String nombre) async 
 Future<void> marcarEntregado(String canjeoKey, bool entregado) async {
   await _service.marcarEntregado(canjeoKey, entregado);
 }
+
+Stream<List<RecompensaModel>> streamTodasLasRecompensas() {
+  final ref = FirebaseDatabase.instance.ref(AppFieldsConstants.recompensasMin);
+  return ref.onValue.map((event) {
+    final raw = event.snapshot.value as Map<dynamic, dynamic>? ?? {};
+    return raw.entries.map((e) {
+      final id = e.key.toString();
+      final data = Map<String, dynamic>.from(e.value as Map);
+      return RecompensaModel.fromMap(id, data);
+    }).toList();
+  });
+}
+
+Stream<List<RecompensaModel>> streamRecompensasPara(UserModel user) {
+  return streamTodasLasRecompensas().map((lista) =>
+      lista.where((r) => r.usada != true).toList());
+}
+
 
 }

@@ -73,4 +73,24 @@ class RecompensaService {
   final ref = FirebaseDatabase.instance.ref('canjeos/$canjeoId');
   await ref.update({'entregado': entregado});
 }
+
+// Método para escuchar cualquier cambio
+Stream<List<RecompensaModel>> streamRecompensas() {
+  return _dbRef.onValue.map((event) {
+    final snapshot = event.snapshot;
+
+    if (!snapshot.exists) {
+      return <RecompensaModel>[];
+    }
+
+    final raw = snapshot.value as Map<dynamic, dynamic>;
+
+    return raw.entries.map((e) {
+      final id = e.key.toString();
+      final data = Map<String, dynamic>.from(e.value as Map);
+      return RecompensaModel.fromMap(id, data);
+    }).toList();
+  });
+}
+
 }

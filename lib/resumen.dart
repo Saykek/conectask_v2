@@ -144,6 +144,7 @@ intermedio, y los puntos siguen sumandos.
 - en tareas al entrar, buscas un dia y sales, al entrar se queda en el dia buscado.
 - EDITAR MENU MUUUUY LENTOOOO
 - en aula no tiene sentido que no salgan las cosas del colegio
+- en recompensas salen las disponibles de las card igual que de las de abajo y en card solodeberian salir las que puedan canjear por puntos.
 ** los colores de los usuarios no se pq 1-12-2025 se han modificado, ahora si no existe el color en configuracion no da error
 al entrar a editar el perfil del niño **
 
@@ -204,6 +205,7 @@ Recomendación de orden para implementar
  - Boton de claro oscurso se vuelve, hace animacion.
  - HOME ASSISTANT : Versión mínima (solo formulario + carga de panel Lovelace): 4–6 días.
 • 	Versión completa (con roles, aparatos configurables y persistencia en Firebase): 10–15 días.
+ - En movil mientras carga sale mi logo pero estatico, seria mejor que se moviera.
 */
 
  /*                            ******************* PROMPT **************************
