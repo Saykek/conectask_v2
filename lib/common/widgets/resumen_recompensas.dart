@@ -61,103 +61,165 @@ class ResumenRecompensas extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Datos en tiempo real desde Firebase
-            StreamBuilder<DatabaseEvent>(
-              stream: FirebaseDatabase.instance.ref('usuarios/${user.id}').onValue,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData || snapshot.data!.snapshot.value == null) {
-                  return const Text('Cargando puntos...');
-                }
+StreamBuilder<DatabaseEvent>(
+  stream: FirebaseDatabase.instance.ref('usuarios/${user.id}').onValue,
+  builder: (context, snapshot) {
+    if (!snapshot.hasData || snapshot.data!.snapshot.value == null) {
+      return const Text('Cargando puntos...');
+    }
 
-                final data = Map<String, dynamic>.from(
-                  snapshot.data!.snapshot.value as Map,
-                );
+    final data = Map<String, dynamic>.from(
+      snapshot.data!.snapshot.value as Map,
+    );
 
-                final puntos = data['puntos'] ?? 0;                // activos
-                final totales = data['puntos_acumulados'] ?? 0;    // históricos
+    final puntos = data['puntos'] ?? 0;                // activos
+    final totales = data['puntos_acumulados'] ?? 0;    // históricos
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            '⭐ Puntos: $puntos',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: Text(
-                              '🎯 puntos Totales: $totales',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              'Nivel ${totales ~/ 100}',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.savings, size: 40, color: Theme.of(context).colorScheme.primary),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Puntos\ndisponibles', // 🔹 dos líneas
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
                     ),
-                    const SizedBox(height: 10),
-                    LinearProgressIndicator(
-                      value: ((totales % 100) / 100).clamp(0.0, 0.999),
-                      minHeight: 12,
-                      color: Theme.of(context).colorScheme.primary,
-                      backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '$puntos',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                );
-              },
+                  ),
+                ],
+              ),
             ),
-
-            const SizedBox(height: 16),
-
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.star, size: 40, color: Theme.of(context).colorScheme.primary),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Puntos\ntotales', // 🔹 dos líneas
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '$totales',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.emoji_events, size: 40, color: Theme.of(context).colorScheme.primary),
+                  const SizedBox(height: 4),
+                  const Text(
+                    '\nNivel', // 🔹 título arriba
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${totales ~/ 100}',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        LinearProgressIndicator(
+          value: ((totales % 100) / 100).clamp(0.0, 0.999),
+          minHeight: 12,
+          color: Theme.of(context).colorScheme.primary,
+          backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+        ),
+      ],
+    );
+  },
+),
+const SizedBox(height: 16), 
             // Insignias (simuladas)
-            const Text(
-              '🏅 Insignias:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: const [
-                Chip(
-                  label: Text('Responsable'),
-                  backgroundColor: Color.fromARGB(255, 215, 238, 231),
-                  labelStyle: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                ),
-                Chip(
-                  label: Text('Ayudante'),
-                  backgroundColor: Color.fromARGB(255, 215, 238, 231),
-                  labelStyle: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                ),
-              ],
-            ),
+Row(
+  children: [
+    Icon(
+      Icons.military_tech, // 🔹 icono de medalla
+      color: Theme.of(context).colorScheme.primary,
+    ),
+    const SizedBox(width: 6),
+    const Text(
+      'Insignias:',
+      style: TextStyle(fontWeight: FontWeight.bold),
+    ),
+  ],
+),
+const SizedBox(height: 8),
+Wrap(
+  spacing: 8,
+  children: const [
+    Chip(
+      label: Text('Responsable'),
+      backgroundColor: Color.fromARGB(255, 215, 238, 231),
+      labelStyle: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+    ),
+    Chip(
+      label: Text('Ayudante'),
+      backgroundColor: Color.fromARGB(255, 215, 238, 231),
+      labelStyle: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+    ),
+  ],
+),
 
-            const SizedBox(height: 16),
+const SizedBox(height: 16),
 
-            // Recompensas disponibles
-            const Text(
-              '🎁 Recompensas disponibles:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
+// Recompensas disponibles
+Row(
+  children: [
+    Icon(
+      Icons.card_giftcard, // 🔹 icono de regalo
+      color: Theme.of(context).colorScheme.primary,
+    ),
+    const SizedBox(width: 6),
+    const Text(
+      'Recompensas disponibles:',
+      style: TextStyle(fontWeight: FontWeight.bold),
+    ),
+  ],
+),
+const SizedBox(height: 8),
 
             // StreamBuilder para que se actualice automáticamente
 StreamBuilder<List<RecompensaModel>>(
