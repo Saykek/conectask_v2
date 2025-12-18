@@ -160,74 +160,176 @@ class ResumenRecompensas extends StatelessWidget {
             const SizedBox(height: 8),
 
             // StreamBuilder para que se actualice automáticamente
-            StreamBuilder<List<RecompensaModel>>(
-              stream: _controller.streamRecompensasPara(user), //STREAM
-              builder: (context, snapshot) {
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Text('No hay recompensas disponibles');
-                }
+StreamBuilder<List<RecompensaModel>>(
+  stream: _controller.streamRecompensasPara(user),
+  builder: (context, snapshot) {
+    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+      return const Text('No hay recompensas disponibles');
+    }
 
-                final recompensas = snapshot.data!;
+    final recompensas = snapshot.data!;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    final isWeb = screenWidth >= 1024;
 
-               final screenWidth = MediaQuery.of(context).size.width;
-final isMobile = screenWidth < 600;
-
-return GridView.count(
-  shrinkWrap: true,
-  physics: const NeverScrollableScrollPhysics(),
-  crossAxisCount: isMobile ? 2 : 3,
-  crossAxisSpacing: 8,
-  mainAxisSpacing: 8,
-  childAspectRatio: 1.8,
-  children: recompensas.map((r) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        padding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 8 : 20,
-          vertical: isMobile ? 6 : 12,
-        ),
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        foregroundColor: const Color.fromARGB(255, 7, 73, 51),
-      ),
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => RecompensaDetailView(
-              recompensa: r,
-              user: user,
+    if (isMobile) {
+      // 🔹 Versión móvil
+      return GridView.count(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: 2,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 2,
+        childAspectRatio: 1.2,
+        children: recompensas.map((r) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8), // separación vertical
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                foregroundColor: const Color.fromARGB(255, 7, 73, 51),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => RecompensaDetailView(
+                      recompensa: r,
+                      user: user,
+                    ),
+                  ),
+                );
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.card_giftcard, size: 18),
+                  const SizedBox(height: 6),
+                  Text(
+                    r.nombre,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  Text(
+                    '${r.coste} puntos',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.card_giftcard, size: isMobile ? 12 : 20),
-          const SizedBox(height: 4),
-          Text(
-            r.nombre,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-          ),
-          Text(
-            '${r.coste} pts',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: isMobile ? 11 : 14,
-            ),
-          ),
-        ],
-      ),
-    );
-  }).toList(),
-);
+          );
+        }).toList(),
+      );
+    } else if (isWeb) {
+      // 🔹 Versión web (fila: icono + nombre + puntos)
+      final webColumns = (screenWidth ~/ 220).clamp(1, 4);
+      return GridView.count(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: webColumns,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 2,
+        childAspectRatio: 4.5, // recompensas mas finas
+        children: recompensas.map((r) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: ElevatedButton.icon(
+              icon: const Icon(Icons.card_giftcard, size: 18),
+              label: Text(
+                '${r.nombre} - ${r.coste} puntos',
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 14),
+              ),
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                foregroundColor: const Color.fromARGB(255, 7, 73, 51),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => RecompensaDetailView(
+                      recompensa: r,
+                      user: user,
+                    ),
+                  ),
+                );
               },
             ),
+          );
+        }).toList(),
+      );
+
+    } else {
+      // 🔹 Versión tablet
+      return GridView.count(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: 3,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 20,
+        childAspectRatio: 1.2,
+        children: recompensas.map((r) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8), // separación vertical
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                foregroundColor: const Color.fromARGB(255, 7, 73, 51),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => RecompensaDetailView(
+                      recompensa: r,
+                      user: user,
+                    ),
+                  ),
+                );
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.card_giftcard, size: 20),
+                  const SizedBox(height: 6),
+                  Text(
+                    r.nombre,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                  Text(
+                    '${r.coste} puntos',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      );
+    }
+  },
+)
           ],
         ),
       ),
