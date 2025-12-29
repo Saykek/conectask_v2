@@ -191,6 +191,8 @@ Recomendación de orden para implementar
     
       
    */
+  /* FALLOS EN MOVIL ANDROID A CORREGIR
+  - EL NOMBRE DE LA APP NO QUIERO QUE SEA CONECTASK_V2 SINO CONECTASK
 
 /*                                                   **********************  MEJORAS FUTURAS **********************
 
@@ -264,3 +266,4 @@ Recomendación de orden para implementar
 - Sistema de “tienda” con recompensas virtuales: como cambiar el avatar, fondo, etc. 2.5-3 horas
 - Mensajes motivadores automáticos: “¡Buen trabajo, Erik! Has subido de nivel 🎉” 1-1.5 horas
 */
+ */

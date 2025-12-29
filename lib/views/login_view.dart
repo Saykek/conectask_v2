@@ -2,6 +2,7 @@ import 'package:conectask_v2/views/register_view.dart';
 import 'package:conectask_v2/common/widgets/animacion_brillo_texto.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'dart:math';
 import '../common/constants/constant.dart';
 import '../controllers/login_controller.dart';
 import 'home_view.dart';
@@ -48,18 +49,21 @@ class _LoginViewState extends State<LoginView> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => HomeView(user: user), // Pasamos el usuario
+          builder: (_) => HomeView(user: user), // Paso el usuario
         ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AppMessagesConstants.msgErrorMailContrasenia)),
+        const SnackBar(
+          content: Text(AppMessagesConstants.msgErrorMailContrasenia),
+        ),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -83,20 +87,22 @@ class _LoginViewState extends State<LoginView> {
                 // 🔑 Tu texto con animación de brillo debajo
                 AnimacionBrilloTexto(
                   text: AppThemeConstants.titulo,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: AppThemeConstants.letraTitulo,
                     //color: ,
-                    fontSize: 100,
+                    fontSize: min(height * 0.10, 60),
                     //fontWeight: FontWeight.bold,
                     letterSpacing: 2,
                   ),
                   duration: const Duration(seconds: 3),
-                  shineColor: const Color.fromARGB(255, 10, 206, 196), 
+                  shineColor: const Color.fromARGB(255, 10, 206, 196),
                 ),
 
                 const SizedBox(height: 20),
                 Text(
-                  _modoNino ? AppFieldsConstants.accesoNinos : AppFieldsConstants.inicioSesion,
+                  _modoNino
+                      ? AppFieldsConstants.accesoNinos
+                      : AppFieldsConstants.inicioSesion,
                   style: const TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
@@ -107,14 +113,18 @@ class _LoginViewState extends State<LoginView> {
                 if (_modoNino) ...[
                   TextField(
                     controller: _usuarioController,
-                    decoration: const InputDecoration(labelText: AppFieldsConstants.labelusuario),
+                    decoration: const InputDecoration(
+                      labelText: AppFieldsConstants.labelusuario,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: _pinController,
                     obscureText: true,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: AppFieldsConstants.labelPin),
+                    decoration: const InputDecoration(
+                      labelText: AppFieldsConstants.labelPin,
+                    ),
                   ),
                   const SizedBox(height: 12),
                   ElevatedButton(
@@ -127,7 +137,9 @@ class _LoginViewState extends State<LoginView> {
                       if (usuario.isEmpty || pin.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text(AppMessagesConstants.msgCompletaUsuarioPin),
+                            content: Text(
+                              AppMessagesConstants.msgCompletaUsuarioPin,
+                            ),
                           ),
                         );
                         return;
@@ -154,7 +166,9 @@ class _LoginViewState extends State<LoginView> {
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text(AppMessagesConstants.msgErrorUsuarioPin),
+                            content: Text(
+                              AppMessagesConstants.msgErrorUsuarioPin,
+                            ),
                           ),
                         );
                       }
@@ -168,22 +182,27 @@ class _LoginViewState extends State<LoginView> {
                   const SizedBox(height: 16),
                   TextButton.icon(
                     onPressed: () => setState(() => _modoNino = false),
-                    icon: Image.asset(AppIconsConstants.flechaVolver,
-                    width: 40,
-                    height: 40,),
-                    label: const Text(
-                    AppFieldsConstants.labelVolverAdulto),
+                    icon: Image.asset(
+                      AppIconsConstants.flechaVolver,
+                      width: 40,
+                      height: 40,
+                    ),
+                    label: const Text(AppFieldsConstants.labelVolverAdulto),
                   ),
                 ] else ...[
                   TextField(
                     controller: _emailController,
-                    decoration: const InputDecoration(labelText: AppFieldsConstants.labelEmail),
+                    decoration: const InputDecoration(
+                      labelText: AppFieldsConstants.labelEmail,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: const InputDecoration(labelText: AppFieldsConstants.labelContrasenia),
+                    decoration: const InputDecoration(
+                      labelText: AppFieldsConstants.labelContrasenia,
+                    ),
                   ),
                   const SizedBox(height: 24),
                   _loading
@@ -207,23 +226,26 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   const SizedBox(height: 16),
                   // 🔑 Botón de acceso para niños (modificado)
-TextButton.icon(
-  style: TextButton.styleFrom(
-    minimumSize: const Size(240, 60), // botón más compacto
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-  ),
-  onPressed: () => setState(() => _modoNino = true),
-  icon: Image.asset(
-    AppIconsConstants.monstruo, 
-    width: 60,
-    height: 60,
-  ),
-  label: const Text(
-    AppFieldsConstants.lableAccesoNinos,
-    textAlign: TextAlign.left,
-    style: TextStyle(fontSize: 16),
-  ),
-)
+                  TextButton.icon(
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size(240, 60), // botón más compacto
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                    ),
+                    onPressed: () => setState(() => _modoNino = true),
+                    icon: Image.asset(
+                      AppIconsConstants.monstruo,
+                      width: 60,
+                      height: 60,
+                    ),
+                    label: const Text(
+                      AppFieldsConstants.lableAccesoNinos,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
                 ],
               ],
             ),
