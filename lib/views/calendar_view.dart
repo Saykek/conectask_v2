@@ -65,20 +65,28 @@ class _CalendarViewState extends State<CalendarView> {
                 startingDayOfWeek: StartingDayOfWeek.monday,
                 calendarStyle: CalendarStyle(
                   todayDecoration: BoxDecoration(
-                    color: Colors.orange,
+                    color: Theme.of(context).colorScheme.secondary,
                     shape: BoxShape.circle,
                   ),
                   selectedDecoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: Theme.of(context).colorScheme.primary,
                     shape: BoxShape.circle,
                   ),
+                ),
+                //  oculta el botón "2 weeks"
+                headerStyle: HeaderStyle(
+                  formatButtonVisible: false,
+                  titleCentered: true,
                 ),
               ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 icon: const Icon(Icons.calendar_today),
                 label: Text(
-                  DateFormat(AppConstants.formatoFecha1, AppConstants.es_ES).format(fechaSeleccionada),
+                  DateFormat(
+                    AppConstants.formatoFecha1,
+                    AppConstants.es_ES,
+                  ).format(fechaSeleccionada),
                 ),
                 onPressed: () async {
                   final nuevaFecha = await showDatePicker(
@@ -104,7 +112,9 @@ class _CalendarViewState extends State<CalendarView> {
               ),
               const SizedBox(height: 12),
               tareasDelDia.isEmpty
-                  ? const Center(child: Text(AppMessagesConstants.msgNoHayTareas))
+                  ? const Center(
+                      child: Text(AppMessagesConstants.msgNoHayTareas),
+                    )
                   : ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -122,7 +132,6 @@ class _CalendarViewState extends State<CalendarView> {
                         final color = usuario != null
                             ? obtenerColorUsuario(usuario)
                             : Colors.grey;
-
 
                         return Card(
                           margin: const EdgeInsets.symmetric(vertical: 8),
@@ -155,7 +164,8 @@ class _CalendarViewState extends State<CalendarView> {
                             ),
                             trailing: Icon(
                               (tarea.estado == AppConstants.estadoHecha ||
-                                      tarea.estado == AppConstants.estadoValidada)
+                                      tarea.estado ==
+                                          AppConstants.estadoValidada)
                                   ? Icons.check_circle
                                   : Icons.radio_button_unchecked,
                               color: obtenerColorTarea(tarea),

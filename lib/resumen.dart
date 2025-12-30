@@ -148,6 +148,10 @@ intermedio, y los puntos siguen sumandos.
 ** los colores de los usuarios no se pq 1-12-2025 se han modificado, ahora si no existe el color en configuracion no da error
 al entrar a editar el perfil del niño **
 
+Muy importante, en eliminar niño no hay confirmacion, se borra directamente.
+
+                                                   *********************** PLANIFICACION FUTURA ************************
+
 
 
 Recomendación de orden para implementar

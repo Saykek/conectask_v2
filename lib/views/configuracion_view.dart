@@ -21,7 +21,7 @@ class _ConfiguracionViewState extends State<ConfiguracionView> {
   final ConfiguracionController _controller = ConfiguracionController();
   bool cargando = true;
   late TextEditingController _urlController;
-  
+
   List<UserModel> _ninos = [];
 
   @override
@@ -61,7 +61,10 @@ class _ConfiguracionViewState extends State<ConfiguracionView> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const Text('⚙️ General', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text(
+            '⚙️ General',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           ListTile(
             title: const Text("Tema"),
             trailing: AnimacionToggle(
@@ -74,9 +77,10 @@ class _ConfiguracionViewState extends State<ConfiguracionView> {
             title: const Text('Idioma'),
             trailing: DropdownButton<String>(
               value: config.idioma,
-              items: ['es', 'en']
-                  .map((i) => DropdownMenuItem(value: i, child: Text(i)))
-                  .toList(),
+              items: [
+                'es',
+                'en',
+              ].map((i) => DropdownMenuItem(value: i, child: Text(i))).toList(),
               onChanged: (value) {
                 setState(() => _controller.actualizarCampo('idioma', value));
                 _controller.guardarConfiguracion(widget.user.id);
@@ -87,9 +91,10 @@ class _ConfiguracionViewState extends State<ConfiguracionView> {
             title: const Text('Rol'),
             trailing: DropdownButton<String>(
               value: config.rol,
-              items: ['admin', 'niño']
-                  .map((r) => DropdownMenuItem(value: r, child: Text(r)))
-                  .toList(),
+              items: [
+                'admin',
+                'niño',
+              ].map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
               onChanged: (value) {
                 setState(() => _controller.actualizarCampo('rol', value));
                 _controller.guardarConfiguracion(widget.user.id);
@@ -97,17 +102,26 @@ class _ConfiguracionViewState extends State<ConfiguracionView> {
             ),
           ),
           const SizedBox(height: 16),
-          const Text('🔔 Notificaciones', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text(
+            '🔔 Notificaciones',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           SwitchListTile(
             title: const Text('Activar notificaciones'),
             value: config.notificacionesActivas,
             onChanged: (value) {
-              setState(() => _controller.actualizarCampo('notificacionesActivas', value));
+              setState(
+                () =>
+                    _controller.actualizarCampo('notificacionesActivas', value),
+              );
               _controller.guardarConfiguracion(widget.user.id);
             },
           ),
           const SizedBox(height: 16),
-          const Text('🌐 Conexión', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text(
+            '🌐 Conexión',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           TextField(
             decoration: const InputDecoration(labelText: 'URL del servidor'),
             controller: _urlController,
@@ -117,7 +131,10 @@ class _ConfiguracionViewState extends State<ConfiguracionView> {
             },
           ),
           const SizedBox(height: 16),
-          const Text('👤 Gestión de usuarios', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text(
+            '👤 Gestión de usuarios',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           ElevatedButton.icon(
             icon: const Icon(Icons.person_add),
             label: const Text('Crear niño'),
@@ -132,60 +149,82 @@ class _ConfiguracionViewState extends State<ConfiguracionView> {
               });
 
               // 🔄 Recargar usuarios globales para que Lola aparezca en tareas
-              final usuarioController = Provider.of<UsuarioController>(context, listen: false);
+              final usuarioController = Provider.of<UsuarioController>(
+                context,
+                listen: false,
+              );
               await usuarioController.cargarUsuarios();
             },
           ),
           const SizedBox(height: 16),
-          const Text('👶 Perfiles de niños', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ..._ninos.map((nino) => Card(
-            child: ListTile(
-              leading: const Icon(Icons.child_care),
-              title: Text(nino.nombre),
-              subtitle: Text('Nivel ${nino.nivel ?? 1} • Puntos ${nino.puntos ?? 0}'),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () async {
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CrearNinoView(nino: nino),
-                        ),
-                      );
-                      final nuevos = await _controller.cargarNinos();
-                      setState(() {
-                        _ninos = nuevos;
-                      });
+          const Text(
+            '👶 Perfiles de niños',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          ..._ninos.map(
+            (nino) => Card(
+              child: ListTile(
+                leading: const Icon(Icons.child_care),
+                title: Text(nino.nombre),
+                subtitle: Text(
+                  'Nivel ${nino.nivel ?? 1} • Puntos ${nino.puntos ?? 0}',
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => CrearNinoView(nino: nino),
+                          ),
+                        );
+                        final nuevos = await _controller.cargarNinos();
+                        setState(() {
+                          _ninos = nuevos;
+                        });
 
-                      // 🔄 Recargar usuarios globales para que cambios se reflejen en tareas
-                      final usuarioController = Provider.of<UsuarioController>(context, listen: false);
-                      await usuarioController.cargarUsuarios();
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () async {
-                      final ref = FirebaseDatabase.instance.ref('usuarios/${nino.id}');
-                      await ref.remove();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Niño ${nino.nombre} eliminado')),
-                      );
-                      setState(() {
-                        _ninos.removeWhere((u) => u.id == nino.id);
-                      });
+                        // 🔄 Recargar usuarios globales para que cambios se reflejen en tareas
+                        final usuarioController =
+                            Provider.of<UsuarioController>(
+                              context,
+                              listen: false,
+                            );
+                        await usuarioController.cargarUsuarios();
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () async {
+                        final ref = FirebaseDatabase.instance.ref(
+                          'usuarios/${nino.id}',
+                        );
+                        await ref.remove();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Niño ${nino.nombre} eliminado'),
+                          ),
+                        );
+                        setState(() {
+                          _ninos.removeWhere((u) => u.id == nino.id);
+                        });
 
-                      // 🔄 Recargar usuarios globales tras eliminar
-                      final usuarioController = Provider.of<UsuarioController>(context, listen: false);
-                      await usuarioController.cargarUsuarios();
-                    },
-                  ),
-                ],
+                        // 🔄 Recargar usuarios globales tras eliminar
+                        final usuarioController =
+                            Provider.of<UsuarioController>(
+                              context,
+                              listen: false,
+                            );
+                        await usuarioController.cargarUsuarios();
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
-          )),
+          ),
         ],
       ),
     );

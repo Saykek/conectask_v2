@@ -17,7 +17,8 @@ class AnimacionToggle extends StatefulWidget {
   State<AnimacionToggle> createState() => _AnimacionToggleState();
 }
 
-class _AnimacionToggleState extends State<AnimacionToggle> with SingleTickerProviderStateMixin {
+class _AnimacionToggleState extends State<AnimacionToggle>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animController;
   bool oscuro = false;
 
@@ -61,7 +62,9 @@ class _AnimacionToggleState extends State<AnimacionToggle> with SingleTickerProv
         controller: _animController,
         onLoaded: (composition) {
           _animController.duration = composition.duration;
-          _animController.value = oscuro ? 1.0 : 0.0; // sincronizar estado inicial
+          _animController.value = oscuro
+              ? 1.0
+              : 0.0; // sincronizar estado inicial
         },
       ),
     );
