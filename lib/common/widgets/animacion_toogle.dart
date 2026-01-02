@@ -57,15 +57,20 @@ class _AnimacionToggleState extends State<AnimacionToggle>
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _toggleTema,
-      child: Lottie.asset(
-        'assets/animaciones/toogle.json',
-        controller: _animController,
-        onLoaded: (composition) {
-          _animController.duration = composition.duration;
-          _animController.value = oscuro
-              ? 1.0
-              : 0.0; // sincronizar estado inicial
-        },
+      child: SizedBox(
+        width: 60, // 👈 ancho fijo para que no se expanda
+        height: 40, // 👈 alto fijo
+        child: Lottie.asset(
+          'assets/animaciones/toogle.json',
+          controller: _animController,
+          fit: BoxFit.contain, // 👈 se ajusta al tamaño del SizedBox
+          onLoaded: (composition) {
+            _animController.duration = composition.duration;
+            _animController.value = oscuro
+                ? 1.0
+                : 0.0; // sincronizar estado inicial
+          },
+        ),
       ),
     );
   }
