@@ -22,7 +22,7 @@ class TasksView extends StatefulWidget {
 }
 
 class _TasksViewState extends State<TasksView> {
-  Color getColor(Tarea tarea) {
+  /* Color getColor(Tarea tarea) {
     final esHecha = tarea.estado == AppConstants.estadoHecha ||
         tarea.estado == AppConstants.estadoValidada;
     final esValidada = tarea.validadaPor != null;
@@ -31,6 +31,26 @@ class _TasksViewState extends State<TasksView> {
     if (!esHecha) return AppThemeConstants.colorPendiente;
     if (esValidada || esAdulto) return AppThemeConstants.colorValidada;
     return AppThemeConstants.colorHecha;
+  }*/
+  Color getColor(Tarea tarea) {
+    final usuarioController = Provider.of<UsuarioController>(
+      context,
+      listen: false,
+    );
+    final usuario = usuarioController.getUsuarioPorId(tarea.responsable);
+
+    final esNino = usuario != null && usuario.rol == AppConstants.rolNino;
+    final esValidada = tarea.validadaPor != null;
+
+    if (tarea.estado == AppConstants.estadoPendiente) {
+      return AppThemeConstants.colorPendiente; // gris
+    } else if (tarea.estado == AppConstants.estadoHecha && esNino) {
+      return AppThemeConstants.colorHecha; // amarillo
+    } else if (tarea.estado == AppConstants.estadoValidada || !esNino) {
+      return AppThemeConstants.colorValidada; // verde
+    } else {
+      return AppThemeConstants.colorPendiente; // fallback
+    }
   }
 
   final ScrollController usuariosScrollController = ScrollController();
@@ -47,21 +67,21 @@ class _TasksViewState extends State<TasksView> {
     final usuarioController = Provider.of<UsuarioController>(context);
     final usuariosLocales = usuarioController.usuarios;
 
-    final esAdulto = widget.user.rol == AppConstants.rolAdmin ||
+    final esAdulto =
+        widget.user.rol == AppConstants.rolAdmin ||
         widget.user.rol == AppConstants.rolPadre;
     final usuariosFiltrados = esAdulto
-      ? usuariosLocales
-      : usuariosLocales.where((u) => u.id == widget.user.id).toList();
-
-
+        ? usuariosLocales
+        : usuariosLocales.where((u) => u.id == widget.user.id).toList();
 
     final tareasHoy = controller.tareas.where((t) {
       final formato = DateFormat(AppConstants.formatoFecha);
       final mismaFecha =
-          formato.format(t.fecha) == formato.format(controller.fechaSeleccionada);
+          formato.format(t.fecha) ==
+          formato.format(controller.fechaSeleccionada);
       final esDelUsuario = esAdulto || t.responsable == widget.user.id;
 
-      return mismaFecha && esDelUsuario;  
+      return mismaFecha && esDelUsuario;
     }).toList();
 
     return Scaffold(
@@ -112,7 +132,6 @@ class _TasksViewState extends State<TasksView> {
         ],
       ),
 
-
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -127,181 +146,200 @@ class _TasksViewState extends State<TasksView> {
             ),
           ),
           Expanded(
-  child: Scrollbar(
-    controller: usuariosScrollController,
-    thumbVisibility: true,
-    child: ListView.builder(
-      controller: usuariosScrollController,
-      scrollDirection: Axis.horizontal,
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      itemCount: usuariosFiltrados.length,
-      itemBuilder: (context, i) {
-        final usuario = usuariosFiltrados[i];
-        final color = obtenerColorUsuario(usuario);
-        final tareasUsuario = tareasHoy
-            .where((t) => t.responsable == usuario.id)
-            .toList();
+            child: Scrollbar(
+              controller: usuariosScrollController,
+              thumbVisibility: true,
+              child: ListView.builder(
+                controller: usuariosScrollController,
+                scrollDirection: Axis.horizontal,
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                itemCount: usuariosFiltrados.length,
+                itemBuilder: (context, i) {
+                  final usuario = usuariosFiltrados[i];
+                  final color = obtenerColorUsuario(usuario);
+                  final tareasUsuario = tareasHoy
+                      .where((t) => t.responsable == usuario.id)
+                      .toList();
 
-        return SizedBox(
-          width: 180,
-          child: Container(
-            margin: const EdgeInsets.all(8),
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: color),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  usuario.nombre,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: color,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Expanded(
-                  child: tareasUsuario.isEmpty
-                      ? const Text(
-                          AppMessagesConstants.msgSinTareasHoy,
-                          style: TextStyle(
-                            fontStyle: FontStyle.italic,
+                  return SizedBox(
+                    width: 180,
+                    child: Container(
+                      margin: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: color.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: color),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            usuario.nombre,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: color,
+                            ),
                           ),
-                        )
-                      : ListView.builder(
-                        
-                          key: PageStorageKey('tareas_${usuario.id}'),
-                          primary: false,
-                          physics: const ClampingScrollPhysics(),
-                          itemCount: tareasUsuario.length,
-                          itemBuilder: (context, index) {
-                            final tarea = tareasUsuario[index];
-                            return Card(
-                              margin: const EdgeInsets.symmetric(vertical: 4),
-                              elevation: 2,
-                              child: ListTile(
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 16,
-                                ),
-                                title: Text(
-                                  tarea.titulo,
-                                  style: TextStyle(
-                                    decoration: (tarea.estado ==
-                                                AppConstants.estadoHecha ||
-                                            tarea.estado ==
-                                                AppConstants.estadoValidada)
-                                        ? TextDecoration.lineThrough
-                                        : TextDecoration.none,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  tarea.descripcion,
-                                  style: TextStyle(
-                                    decoration: tarea.estado ==
-                                            AppConstants.estadoHecha
-                                        ? TextDecoration.lineThrough
-                                        : TextDecoration.none,
-                                    fontStyle: tarea.estado ==
-                                            AppConstants.estadoHecha
-                                        ? FontStyle.italic
-                                        : FontStyle.normal,
-                                  ),
-                                ),
-                                trailing: SizedBox(
-                                  width: 48,
-                                  height: 56,
-                                  child: Stack(
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      Positioned(
-                                        top: -18,
-                                        right: 2,
-                                        child: Icon(
-                                          tarea.prioridad ==
-                                                  AppConstants.prioridadAlta
-                                              ? Icons.flash_on
-                                              : tarea.prioridad ==
-                                                      AppConstants.prioridadMedia
-                                                  ? Icons.access_time
-                                                  : Icons.hourglass_bottom,
-                                          color: tarea.prioridad ==
-                                                  AppConstants.prioridadAlta
-                                              ? AppThemeConstants
-                                                  .colorPrioridadAlta
-                                              : tarea.prioridad ==
-                                                      AppConstants.prioridadMedia
-                                                  ? AppThemeConstants
-                                                      .colorPrioridadMedia
-                                                  : AppThemeConstants
-                                                      .colorPrioridadBaja,
-                                          size: 22,
+                          const SizedBox(height: 8),
+                          Expanded(
+                            child: tareasUsuario.isEmpty
+                                ? const Text(
+                                    AppMessagesConstants.msgSinTareasHoy,
+                                    style: TextStyle(
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  )
+                                : ListView.builder(
+                                    key: PageStorageKey('tareas_${usuario.id}'),
+                                    primary: false,
+                                    physics: const ClampingScrollPhysics(),
+                                    itemCount: tareasUsuario.length,
+                                    itemBuilder: (context, index) {
+                                      final tarea = tareasUsuario[index];
+                                      return Card(
+                                        margin: const EdgeInsets.symmetric(
+                                          vertical: 4,
                                         ),
-                                      ),
-                                      Positioned(
-                                        bottom: -15,
-                                        right: -2,
-                                        child: IconButton(
-                                          iconSize: 26,
-                                          padding: EdgeInsets.zero,
-                                          splashRadius: 20,
-                                          icon: Icon(
-                                            (tarea.estado ==
-                                                        AppConstants.estadoHecha ||
-                                                    tarea.estado ==
-                                                        AppConstants.estadoValidada)
-                                                ? Icons.check_circle
-                                                : Icons.radio_button_unchecked,
-                                            color: getColor(tarea),
+                                        elevation: 2,
+                                        child: ListTile(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                horizontal: 8,
+                                                vertical: 16,
+                                              ),
+                                          title: Text(
+                                            tarea.titulo,
+                                            style: TextStyle(
+                                              decoration:
+                                                  (tarea.estado ==
+                                                          AppConstants
+                                                              .estadoHecha ||
+                                                      tarea.estado ==
+                                                          AppConstants
+                                                              .estadoValidada)
+                                                  ? TextDecoration.lineThrough
+                                                  : TextDecoration.none,
+                                            ),
                                           ),
-                                          onPressed: () async {
-                                            final nuevoEstado =
-                                                tarea.estado ==
-                                                        AppConstants.estadoHecha
-                                                    ? AppConstants
-                                                        .estadoPendiente
-                                                    : AppConstants.estadoHecha;
-                                            await controller.cambiarEstado(
-                                              tarea,
-                                              nuevoEstado,
+                                          subtitle: Text(
+                                            tarea.descripcion,
+                                            style: TextStyle(
+                                              decoration:
+                                                  tarea.estado ==
+                                                      AppConstants.estadoHecha
+                                                  ? TextDecoration.lineThrough
+                                                  : TextDecoration.none,
+                                              fontStyle:
+                                                  tarea.estado ==
+                                                      AppConstants.estadoHecha
+                                                  ? FontStyle.italic
+                                                  : FontStyle.normal,
+                                            ),
+                                          ),
+                                          trailing: SizedBox(
+                                            width: 48,
+                                            height: 56,
+                                            child: Stack(
+                                              clipBehavior: Clip.none,
+                                              children: [
+                                                Positioned(
+                                                  top: -18,
+                                                  right: 2,
+                                                  child: Icon(
+                                                    tarea.prioridad ==
+                                                            AppConstants
+                                                                .prioridadAlta
+                                                        ? Icons.flash_on
+                                                        : tarea.prioridad ==
+                                                              AppConstants
+                                                                  .prioridadMedia
+                                                        ? Icons.access_time
+                                                        : Icons
+                                                              .hourglass_bottom,
+                                                    color:
+                                                        tarea.prioridad ==
+                                                            AppConstants
+                                                                .prioridadAlta
+                                                        ? AppThemeConstants
+                                                              .colorPrioridadAlta
+                                                        : tarea.prioridad ==
+                                                              AppConstants
+                                                                  .prioridadMedia
+                                                        ? AppThemeConstants
+                                                              .colorPrioridadMedia
+                                                        : AppThemeConstants
+                                                              .colorPrioridadBaja,
+                                                    size: 22,
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  bottom: -15,
+                                                  right: -2,
+                                                  child: IconButton(
+                                                    iconSize: 26,
+                                                    padding: EdgeInsets.zero,
+                                                    splashRadius: 20,
+                                                    icon: Icon(
+                                                      (tarea.estado ==
+                                                                  AppConstants
+                                                                      .estadoHecha ||
+                                                              tarea.estado ==
+                                                                  AppConstants
+                                                                      .estadoValidada)
+                                                          ? Icons.check_circle
+                                                          : Icons
+                                                                .radio_button_unchecked,
+                                                      color: getColor(tarea),
+                                                    ),
+                                                    onPressed: () async {
+                                                      final nuevoEstado =
+                                                          tarea.estado ==
+                                                              AppConstants
+                                                                  .estadoHecha
+                                                          ? AppConstants
+                                                                .estadoPendiente
+                                                          : AppConstants
+                                                                .estadoHecha;
+                                                      await controller
+                                                          .cambiarEstado(
+                                                            tarea,
+                                                            nuevoEstado,
+                                                          );
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) => TaskDetailView(
+                                                  tarea: tarea,
+                                                  user: widget.user,
+                                                ),
+                                              ),
                                             );
                                           },
                                         ),
-                                      ),
-                                    ],
+                                      );
+                                    },
                                   ),
-                                ),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => TaskDetailView(
-                                        tarea: tarea,
-                                        user: widget.user,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                ),
-              ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
-        );
-      },
-    ),
-  ),
-),
         ],
-      )
-      );
+      ),
+    );
   }
 }

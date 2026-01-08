@@ -4,6 +4,7 @@ import 'package:conectask_v2/services/tarea_sevice.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../common/constants/constant.dart';
 import '../models/tarea_model.dart';
 import 'task_edit_view.dart';
 
@@ -23,10 +24,19 @@ class _TaskDetailViewState extends State<TaskDetailView> {
 
   late Tarea tarea;
 
-  bool puedeValidarse(Tarea tarea) {
+  /*bool puedeValidarse(Tarea tarea) {
     const ninos = ['alex', 'erik'];
     return ninos.contains(tarea.responsable);
+  }*/
+  bool puedeValidarse(Tarea tarea) {
+    final usuarioResponsable = Provider.of<UsuarioController>(
+      context,
+      listen: false,
+    ).getUsuarioPorId(tarea.responsable);
+    if (usuarioResponsable == null) return false;
+    return usuarioResponsable.rol == AppConstants.rolNino;
   }
+  //*************************************************** */
 
   @override
   void initState() {
@@ -148,13 +158,18 @@ class _TaskDetailViewState extends State<TaskDetailView> {
     final nombreValidador = tarea.validadaPor != null
         ? usuarioController.getNombreUsuario(tarea.validadaPor!)
         : '';
+    final esAdulto =
+        widget.user.rol == AppConstants.rolAdmin ||
+        widget.user.rol == AppConstants.rolPadre;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(tarea.titulo),
+
         actions: [
-          IconButton(icon: const Icon(Icons.edit), onPressed: _editarTarea),
-          if (tarea.estado != 'hecha')
+          if (esAdulto)
+            IconButton(icon: const Icon(Icons.edit), onPressed: _editarTarea),
+          if (esAdulto && tarea.estado != 'hecha')
             IconButton(
               icon: const Icon(Icons.delete, color: Colors.red),
               onPressed: () async {
