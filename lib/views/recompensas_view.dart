@@ -34,7 +34,10 @@ class _RecompensasViewState extends State<RecompensasView> {
   }
 
   Future<void> _cargarRecompensas() async {
-    final usuarioController = Provider.of<UsuarioController>(context, listen: false);
+    final usuarioController = Provider.of<UsuarioController>(
+      context,
+      listen: false,
+    );
     final ninos = usuarioController.usuarios
         .where((u) => u.rol == AppConstants.rolNino)
         .toList();
@@ -58,102 +61,105 @@ class _RecompensasViewState extends State<RecompensasView> {
 
   Future<void> _cargarListaGeneral() async {
     if (widget.user.rol == AppConstants.rolAdmin) {
-      recompensasPorNino[widget.user.id] = await _controller.getTodasLasRecompensas();
+      recompensasPorNino[widget.user.id] = await _controller
+          .getTodasLasRecompensas();
     }
     setState(() {
       mostrarListaGeneral = true;
     });
   }
 
- @override
-Widget build(BuildContext context) {
-  final usuarioController = Provider.of<UsuarioController>(context);
-  final listaNinos = usuarioController.usuarios
-      .where((u) => u.rol == AppConstants.rolNino)
-      .toList();
+  @override
+  Widget build(BuildContext context) {
+    final usuarioController = Provider.of<UsuarioController>(context);
+    final listaNinos = usuarioController.usuarios
+        .where((u) => u.rol == AppConstants.rolNino)
+        .toList();
 
-  return Scaffold(
-    appBar: AppBar(
-      title: const Text(AppFieldsConstants.recompensas),
-      actions: [
-        if (widget.user.rol == AppConstants.rolAdmin)
-          IconButton(
-            icon: const Icon(Icons.add),
-            tooltip: AppFieldsConstants.anadirNuevaRecompensa,
-            onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const RecompensaAddView()),
-              );
-              await _cargarRecompensas();
-            },
-          ),
-      ],
-    ),
-    body: cargando
-        ? const Center(child: CircularProgressIndicator())
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (widget.user.rol == AppConstants.rolAdmin)
-                SizedBox(
-                  height: 50,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      _botonSelector(AppFieldsConstants.todos),
-                      ...listaNinos.map((n) => _botonSelector(n.nombre)),
-                      const SizedBox(width: 8),
-                      _botonRecompensas(),
-                    ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(AppFieldsConstants.recompensas),
+        actions: [
+          if (widget.user.rol == AppConstants.rolAdmin)
+            IconButton(
+              icon: const Icon(Icons.add),
+              tooltip: AppFieldsConstants.anadirNuevaRecompensa,
+              onPressed: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const RecompensaAddView()),
+                );
+                await _cargarRecompensas();
+              },
+            ),
+        ],
+      ),
+      body: cargando
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (widget.user.rol == AppConstants.rolAdmin)
+                  SizedBox(
+                    height: 50,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        _botonSelector(AppFieldsConstants.todos),
+                        ...listaNinos.map((n) => _botonSelector(n.nombre)),
+                        const SizedBox(width: 8),
+                        _botonRecompensas(),
+                      ],
+                    ),
                   ),
-                ),
-              const SizedBox(height: 8),
-              Expanded(
-                child: widget.user.rol == AppConstants.rolAdmin
-                    ? (mostrarListaGeneral
-                        ? ListView(
-                            padding: const EdgeInsets.all(16),
-                            children: recompensasPorNino[widget.user.id]!
-                                .map((r) => ListaRecompensas(
-                                      recompensas: [r],
-                                      modoAdmin: true,
-                                      onTap: (recompensa) async {
-                                        await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                RecompensaDetailView(
-                                              recompensa: recompensa,
-                                              user: widget.user,
+                const SizedBox(height: 8),
+                Expanded(
+                  child: widget.user.rol == AppConstants.rolAdmin
+                      ? (mostrarListaGeneral
+                            ? ListView(
+                                padding: const EdgeInsets.all(16),
+                                children: recompensasPorNino[widget.user.id]!
+                                    .map(
+                                      (r) => ListaRecompensas(
+                                        recompensas: [r],
+                                        modoAdmin: true,
+                                        onTap: (recompensa) async {
+                                          await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  RecompensaDetailView(
+                                                    recompensa: recompensa,
+                                                    user: widget.user,
+                                                  ),
                                             ),
-                                          ),
-                                        );
-                                        await _cargarRecompensas();
-                                      },
-                                    ))
-                                .toList(),
-                          )
-                        : ListView(
-                            children: listaNinos.map((nino) {
-                              if (seleccion == AppFieldsConstants.todos ||
-                                  seleccion == nino.nombre) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 16),
-                                  child: ResumenRecompensas(
-                                    user: nino ),
-                                );
-                              }
-                              return const SizedBox.shrink();
-                            }).toList(),
-                          ))
-                    : ListView(
-                        padding: const EdgeInsets.all(16),
-                        children: [
-                          // TARJETA DEL NIÑO (ResumenRecompensas)
-                          ResumenRecompensas(
-                            user: widget.user),
-                          const SizedBox(height: 16),
+                                          );
+                                          await _cargarRecompensas();
+                                        },
+                                      ),
+                                    )
+                                    .toList(),
+                              )
+                            : ListView(
+                                children: listaNinos.map((nino) {
+                                  if (seleccion == AppFieldsConstants.todos ||
+                                      seleccion == nino.nombre) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                        bottom: 16,
+                                      ),
+                                      child: ResumenRecompensas(user: nino),
+                                    );
+                                  }
+                                  return const SizedBox.shrink();
+                                }).toList(),
+                              ))
+                      : ListView(
+                          padding: const EdgeInsets.all(16),
+                          children: [
+                            // TARJETA DEL NIÑO (ResumenRecompensas)
+                            ResumenRecompensas(user: widget.user),
+                            /*  const SizedBox(height: 16),
                           const Text(
                             AppFieldsConstants.recompensasDisponibles,
                             style: TextStyle(fontSize: 16),
@@ -181,15 +187,14 @@ Widget build(BuildContext context) {
                                 }
                               },
                             ),
-                          ),
-                        ],
-                      ),
-              ),
-            ],
-          ),
-  );
-}
-
+                          ),*/
+                          ],
+                        ),
+                ),
+              ],
+            ),
+    );
+  }
 
   Widget _botonSelector(String nombre) {
     final bool activo = seleccion == nombre;

@@ -23,14 +23,14 @@ class RecompensaController {
     return todas;
   }
 
-  // Eliminar recompensas 
+  // Eliminar recompensas
 
   Future<void> eliminarRecompensa(String id) async {
-  await _service.eliminarRecompensa(id);
-}
+    await _service.eliminarRecompensa(id);
+  }
 
   ///// Canjea una recompensa: resta puntos activos y registra el canjeo
-Future<UserModel> canjear(UserModel user, RecompensaModel recompensa) async {
+  /*Future<UserModel> canjear(UserModel user, RecompensaModel recompensa) async {
   print('DEBUG CONTROLLER: usuario=${user.nombre}, puntos=${user.puntos}, coste=${recompensa.coste}');
 
   // leer usuario actualizado desde Firebase
@@ -57,8 +57,38 @@ Future<UserModel> canjear(UserModel user, RecompensaModel recompensa) async {
   } else {
     throw Exception('No tienes suficientes puntos');
   }
-}
+}*/
+  //METODO NUEVO DE CANJEAR RECOMPENSA
+  Future<void> canjear(UserModel user, RecompensaModel recompensa) async {
+    final ref = FirebaseDatabase.instance.ref('usuarios/${user.id}');
+    final snapshot = await ref.get();
 
+    if (!snapshot.exists) {
+      throw Exception('Usuario no encontrado');
+    }
+
+    final data = Map<String, dynamic>.from(snapshot.value as Map);
+    final int puntosDisponibles = data['puntos'] ?? 0;
+
+    if (puntosDisponibles < recompensa.coste) {
+      throw Exception('No tienes suficientes puntos');
+    }
+
+    // 🔹 restar puntos disponibles
+    await ref.child('puntos').set(puntosDisponibles - recompensa.coste);
+
+    // 🔹 registrar canjeo usando directamente el id del UserModel
+    await _service.registrarCanjeo(
+      user.id, // << aquí usamos user.id, no FirebaseAuth
+      user.nombre,
+      recompensa,
+    );
+
+    // 🔹 marcar recompensa como usada
+    await _service.marcarComoUsada(recompensa.id);
+  }
+
+  // *******************************************
   /// Suma puntos (activos + acumulados)
   Future<void> sumarPuntos(UserModel user, int puntos) async {
     await _userService.sumarPuntos(user.id, puntos);
@@ -76,59 +106,64 @@ Future<UserModel> canjear(UserModel user, RecompensaModel recompensa) async {
   /// Obtiene todos los canjeos de un usuario por UID
   Future<List<Map<String, dynamic>>> obtenerCanjeos(String nombre) async {
     final ref = FirebaseDatabase.instance.ref('canjeos');
-    final snapshot = await ref.orderByChild('usuarioNombre').equalTo(nombre.toLowerCase()).get();
+    final snapshot = await ref
+        .orderByChild('usuarioNombre')
+        .equalTo(nombre.toLowerCase())
+        .get();
 
     if (snapshot.exists) {
-    final data = snapshot.value as Map<dynamic, dynamic>;
-    return data.entries.map((e) {
-      final map = Map<String, dynamic>.from(e.value);
-      map['key'] = e.key; //  guardo la key del nodo
-      return map;
-    }).toList();
-
+      final data = snapshot.value as Map<dynamic, dynamic>;
+      return data.entries.map((e) {
+        final map = Map<String, dynamic>.from(e.value);
+        map['key'] = e.key; //  guardo la key del nodo
+        return map;
+      }).toList();
     } else {
       return [];
     }
   }
-  
-/// Obtiene todos los canjeos de un usuario por nombre normalizado
-Future<List<Map<String, dynamic>>> obtenerCanjeosPorNombre(String nombre) async {
-  final ref = FirebaseDatabase.instance.ref('canjeos');
-  final snapshot = await ref
-      .orderByChild('usuarioNombre')
-      .equalTo(nombre.toLowerCase())
-      .get();
 
-  if (snapshot.exists) {
-    final data = snapshot.value as Map<dynamic, dynamic>;
-    return data.entries
-        .map((e) => Map<String, dynamic>.from(e.value))
-        .toList();
-  } else {
-    return [];
+  /// Obtiene todos los canjeos de un usuario por nombre normalizado
+  Future<List<Map<String, dynamic>>> obtenerCanjeosPorNombre(
+    String nombre,
+  ) async {
+    final ref = FirebaseDatabase.instance.ref('canjeos');
+    final snapshot = await ref
+        .orderByChild('usuarioNombre')
+        .equalTo(nombre.toLowerCase())
+        .get();
+
+    if (snapshot.exists) {
+      final data = snapshot.value as Map<dynamic, dynamic>;
+      return data.entries
+          .map((e) => Map<String, dynamic>.from(e.value))
+          .toList();
+    } else {
+      return [];
+    }
   }
-}
 
-Future<void> marcarEntregado(String canjeoKey, bool entregado) async {
-  await _service.marcarEntregado(canjeoKey, entregado);
-}
+  Future<void> marcarEntregado(String canjeoKey, bool entregado) async {
+    await _service.marcarEntregado(canjeoKey, entregado);
+  }
 
-Stream<List<RecompensaModel>> streamTodasLasRecompensas() {
-  final ref = FirebaseDatabase.instance.ref(AppFieldsConstants.recompensasMin);
-  return ref.onValue.map((event) {
-    final raw = event.snapshot.value as Map<dynamic, dynamic>? ?? {};
-    return raw.entries.map((e) {
-      final id = e.key.toString();
-      final data = Map<String, dynamic>.from(e.value as Map);
-      return RecompensaModel.fromMap(id, data);
-    }).toList();
-  });
-}
+  Stream<List<RecompensaModel>> streamTodasLasRecompensas() {
+    final ref = FirebaseDatabase.instance.ref(
+      AppFieldsConstants.recompensasMin,
+    );
+    return ref.onValue.map((event) {
+      final raw = event.snapshot.value as Map<dynamic, dynamic>? ?? {};
+      return raw.entries.map((e) {
+        final id = e.key.toString();
+        final data = Map<String, dynamic>.from(e.value as Map);
+        return RecompensaModel.fromMap(id, data);
+      }).toList();
+    });
+  }
 
-Stream<List<RecompensaModel>> streamRecompensasPara(UserModel user) {
-  return streamTodasLasRecompensas().map((lista) =>
-      lista.where((r) => r.usada != true).toList());
-}
-
-
+  Stream<List<RecompensaModel>> streamRecompensasPara(UserModel user) {
+    return streamTodasLasRecompensas().map(
+      (lista) => lista.where((r) => r.usada != true).toList(),
+    );
+  }
 }
