@@ -41,11 +41,16 @@ class _HomeAssistantViewState extends State<HomeAssistantView> {
         ..setBackgroundColor(const Color(0x00000000))
         ..setNavigationDelegate(
           NavigationDelegate(
-            onPageStarted: (url) => debugPrint(AppMessagesConstants.msgCargando),
+            onPageStarted: (url) =>
+                debugPrint(AppMessagesConstants.msgCargando),
             onPageFinished: (url) =>
                 debugPrint(AppMessagesConstants.msgFinalizado),
-            onWebResourceError: (error) =>
-                debugPrint("${AppMessagesConstants.msgErrorCarga}: ${error.description}"),
+            onWebResourceError: (error) {
+              setState(() {
+                _webViewController =
+                    null; // fuerza a mostrar pantalla alternativa
+              });
+            },
           ),
         )
         ..loadRequest(
@@ -53,7 +58,6 @@ class _HomeAssistantViewState extends State<HomeAssistantView> {
           headers: {
             AppConstants.headerAuthorization:
                 "${AppConstants.bearerPrefix}${widget.controller.service.model.accessToken}",
-
           },
         );
     }
@@ -73,17 +77,13 @@ class _HomeAssistantViewState extends State<HomeAssistantView> {
     }
 
     if (kIsWeb) {
-      return  Scaffold(
+      return Scaffold(
         appBar: AppBar(title: Text(AppMessagesConstants.tituloCasa)),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
- AppIconsConstants.logo,
-  width: 240,
-  height: 240, 
-),
+              Image.asset(AppIconsConstants.logo, width: 240, height: 240),
               SizedBox(height: 16),
               Text(
                 AppMessagesConstants.msgSoloMovil,
@@ -97,7 +97,23 @@ class _HomeAssistantViewState extends State<HomeAssistantView> {
     }
 
     if (_webViewController == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return Scaffold(
+        appBar: AppBar(title: const Text(AppMessagesConstants.tituloCasa)),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(AppIconsConstants.logo, width: 200),
+              const SizedBox(height: 16),
+              const Text(
+                "No ha sido posible conectar con Home Assistant.\nAsegúrate de estar en la misma red WiFi.",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      );
     }
 
     return Scaffold(
