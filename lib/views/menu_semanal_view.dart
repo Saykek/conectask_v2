@@ -82,7 +82,7 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
                 );
 
                 if (actualizado == true) {
-                  // 👇 recarga los datos al volver
+                  //  recarga los datos al volver
                   await cargarDatos();
                 }
               },
@@ -91,7 +91,7 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
       ),
       body: Column(
         children: [
-          //  Scroll horizontal de días 
+          //  Scroll horizontal de días
           TiraDiasWidget(
             fechas: fechasMes,
             diaSeleccionado: diaSeleccionado,
@@ -105,14 +105,51 @@ class _MenuSemanalViewState extends State<MenuSemanalView> {
           // Día seleccionado en grande
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
-            child: Text(
-              "${miFecha.DateUtils.ponerMayuscula(nombreDia)} ${diaSeleccionado.day}/${diaSeleccionado.month}",
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_left, size: 30),
+                  onPressed: () {
+                    setState(() {
+                      diaSeleccionado = diaSeleccionado.subtract(
+                        const Duration(days: 1),
+                      );
+                    });
+                  },
+                ),
+
+                Text(
+                  "${miFecha.DateUtils.ponerMayuscula(nombreDia)} ${diaSeleccionado.day}/${diaSeleccionado.month}",
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                IconButton(
+                  icon: const Icon(Icons.arrow_right, size: 30),
+                  onPressed: () {
+                    setState(() {
+                      diaSeleccionado = diaSeleccionado.add(
+                        const Duration(days: 1),
+                      );
+                    });
+                  },
+                ),
+              ],
             ),
           ),
+          //Padding(
+          //padding: const EdgeInsets.symmetric(vertical: 12),
+          //child: Text(
+          // "${miFecha.DateUtils.ponerMayuscula(nombreDia)} ${diaSeleccionado.day}/${diaSeleccionado.month}",
+          // style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          // ),
+          // ),
           const SizedBox(height: 16),
 
-          // ✅ Aquí añadimos lo nuevo: dos platos en comida y dos en cena
+          //  dos platos en comida y dos en cena
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.only(bottom: 16),

@@ -64,7 +64,7 @@ class AulaView extends StatelessWidget {
               ),
             ),
             Positioned(
-              bottom: 330,
+              bottom: 310,
               left: 40,
               child: _buildBoton(
                 context,
@@ -82,7 +82,7 @@ class AulaView extends StatelessWidget {
               ),
             ),
             Positioned(
-              bottom: 330,
+              bottom: 310,
               right: 40,
               child: _buildBoton(
                 context,

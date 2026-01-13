@@ -23,10 +23,12 @@ class _TiraDiasWidgetState extends State<TiraDiasWidget> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final indexHoy = widget.fechas.indexWhere((f) =>
-          f.day == DateTime.now().day &&
-          f.month == DateTime.now().month &&
-          f.year == DateTime.now().year);
+      final indexHoy = widget.fechas.indexWhere(
+        (f) =>
+            f.day == DateTime.now().day &&
+            f.month == DateTime.now().month &&
+            f.year == DateTime.now().year,
+      );
 
       if (indexHoy != -1) {
         _scrollController.jumpTo(indexHoy * 70.0);
@@ -60,8 +62,17 @@ class _TiraDiasWidgetState extends State<TiraDiasWidget> {
           itemCount: widget.fechas.length,
           itemBuilder: (context, index) {
             final fecha = widget.fechas[index];
-            final letra = ['L','M','X','J','V','S','D'][fecha.weekday - 1];
-            final isSelected = fecha.day == widget.diaSeleccionado.day &&
+            final letra = [
+              'L',
+              'M',
+              'X',
+              'J',
+              'V',
+              'S',
+              'D',
+            ][fecha.weekday - 1];
+            final isSelected =
+                fecha.day == widget.diaSeleccionado.day &&
                 fecha.month == widget.diaSeleccionado.month &&
                 fecha.year == widget.diaSeleccionado.year;
 
@@ -77,8 +88,10 @@ class _TiraDiasWidgetState extends State<TiraDiasWidget> {
                     CircleAvatar(
                       radius: 22,
                       backgroundColor: esHoy(fecha)
-                          ? Colors.redAccent
-                          : (isSelected ? Colors.blueAccent : Colors.grey.shade300),
+                          ? Theme.of(context).colorScheme.secondary
+                          : (isSelected
+                                ? Theme.of(context).colorScheme.primary
+                                : Colors.grey.shade300),
                       child: Text(
                         fecha.day.toString(),
                         style: TextStyle(
