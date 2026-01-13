@@ -1,10 +1,10 @@
 import 'package:conectask_v2/common/constants/constant.dart';
+import 'package:conectask_v2/controllers/usuario_controller.dart';
 import 'package:conectask_v2/models/tarea_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../controllers/tarea_controller.dart';
-import '../models/user_model.dart';
 
 class EditTaskView extends StatefulWidget {
   final Tarea tarea;
@@ -25,20 +25,15 @@ class _EditTaskViewState extends State<EditTaskView> {
   String? _prioridadSeleccionada;
   late DateTime _fechaSeleccionada;
 
-  final List<UserModel> _usuarios = [
-    UserModel(id: AppConstants.idMama, nombre: AppConstants.nombreMama, rol: AppConstants.rolAdulto),
-    UserModel(id: AppConstants.idPapa, nombre: AppConstants.nombrePapa, rol: AppConstants.rolAdulto),
-    UserModel(id: AppConstants.idAlex, nombre: AppConstants.nombreAlex, rol: AppConstants.rolNino),
-    UserModel(id: AppConstants.idErik, nombre: AppConstants.nombreErik, rol: AppConstants.rolNino),
-  ];
-
   final List<String> _prioridades = AppConstants.prioridades;
 
   @override
   void initState() {
     super.initState();
     _tituloController = TextEditingController(text: widget.tarea.titulo);
-    _descripcionController = TextEditingController(text: widget.tarea.descripcion);
+    _descripcionController = TextEditingController(
+      text: widget.tarea.descripcion,
+    );
     _fechaSeleccionada = widget.tarea.fecha;
     _fechaController = TextEditingController(
       text: DateFormat(AppConstants.formatoFecha).format(_fechaSeleccionada),
@@ -58,7 +53,9 @@ class _EditTaskViewState extends State<EditTaskView> {
     if (seleccionada != null && seleccionada != _fechaSeleccionada) {
       setState(() {
         _fechaSeleccionada = seleccionada;
-        _fechaController.text = DateFormat(AppConstants.formatoFecha).format(_fechaSeleccionada);
+        _fechaController.text = DateFormat(
+          AppConstants.formatoFecha,
+        ).format(_fechaSeleccionada);
       });
     }
   }
@@ -102,12 +99,16 @@ class _EditTaskViewState extends State<EditTaskView> {
         final controller = Provider.of<TareaController>(context, listen: false);
         await controller.actualizarTarea(tareaActualizada);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(AppMessagesConstants.msgTareaActualizada)),
+          const SnackBar(
+            content: Text(AppMessagesConstants.msgTareaActualizada),
+          ),
         );
         Navigator.pop(context);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${AppMessagesConstants.msgErrorActualizar}: $e')),
+          SnackBar(
+            content: Text('${AppMessagesConstants.msgErrorActualizar}: $e'),
+          ),
         );
       }
     }
@@ -115,6 +116,8 @@ class _EditTaskViewState extends State<EditTaskView> {
 
   @override
   Widget build(BuildContext context) {
+    final usuarioController = Provider.of<UsuarioController>(context);
+    final usuariosDisponibles = usuarioController.usuarios;
     return Scaffold(
       appBar: AppBar(title: const Text(AppMessagesConstants.tituloEditarTarea)),
       body: Padding(
@@ -125,14 +128,19 @@ class _EditTaskViewState extends State<EditTaskView> {
             children: [
               TextFormField(
                 controller: _tituloController,
-                decoration: const InputDecoration(labelText: AppFieldsConstants.labelTitulo),
-                validator: (value) =>
-                    value == null || value.isEmpty ? AppMessagesConstants.msgCampoObligatorio : null,
+                decoration: const InputDecoration(
+                  labelText: AppFieldsConstants.labelTitulo,
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? AppMessagesConstants.msgCampoObligatorio
+                    : null,
               ),
               const SizedBox(height: 10),
               TextFormField(
                 controller: _descripcionController,
-                decoration: const InputDecoration(labelText: AppFieldsConstants.labelDescripcion),
+                decoration: const InputDecoration(
+                  labelText: AppFieldsConstants.labelDescripcion,
+                ),
               ),
               const SizedBox(height: 10),
               TextFormField(
@@ -149,25 +157,37 @@ class _EditTaskViewState extends State<EditTaskView> {
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 value: _responsableSeleccionado,
-                decoration: const InputDecoration(labelText: AppFieldsConstants.labelAsignarA),
-                items: _usuarios.map((usuario) {
+                decoration: const InputDecoration(
+                  labelText: AppFieldsConstants.labelAsignarA,
+                ),
+                items: usuariosDisponibles.map((usuario) {
                   return DropdownMenuItem<String>(
                     value: usuario.id,
                     child: Text(usuario.nombre),
                   );
                 }).toList(),
-                onChanged: (valor) => setState(() => _responsableSeleccionado = valor),
-                validator: (value) => value == null ? AppMessagesConstants.msgSeleccionaResponsable : null,
+                onChanged: (valor) =>
+                    setState(() => _responsableSeleccionado = valor),
+                validator: (value) => value == null
+                    ? AppMessagesConstants.msgSeleccionaResponsable
+                    : null,
               ),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 value: _prioridadSeleccionada,
-                decoration: const InputDecoration(labelText: AppFieldsConstants.labelPrioridad),
+                decoration: const InputDecoration(
+                  labelText: AppFieldsConstants.labelPrioridad,
+                ),
                 items: _prioridades
-                    .map((p) => DropdownMenuItem<String>(value: p, child: Text(p)))
+                    .map(
+                      (p) => DropdownMenuItem<String>(value: p, child: Text(p)),
+                    )
                     .toList(),
-                onChanged: (valor) => setState(() => _prioridadSeleccionada = valor),
-                validator: (value) => value == null ? AppMessagesConstants.msgSeleccionaPrioridad : null,
+                onChanged: (valor) =>
+                    setState(() => _prioridadSeleccionada = valor),
+                validator: (value) => value == null
+                    ? AppMessagesConstants.msgSeleccionaPrioridad
+                    : null,
               ),
               const SizedBox(height: 20),
               ElevatedButton(
