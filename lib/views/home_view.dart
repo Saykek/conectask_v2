@@ -145,8 +145,10 @@ class _HomeViewState extends State<HomeView> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    RecompensasView(user: widget.user),
+                                builder: (context) => RecompensasView(
+                                  user: widget.user,
+                                  usuarioLogueado: widget.user,
+                                ),
                               ),
                             );
                             break;

@@ -21,10 +21,7 @@ class AulaView extends StatelessWidget {
         children: [
           // Fondo del aula
           Positioned.fill(
-            child: Image.asset(
-              AppIconsConstants.fondo_aula,
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset(AppIconsConstants.fondo_aula, fit: BoxFit.cover),
           ),
 
           // Layout móvil: dos arriba y dos abajo
@@ -77,7 +74,8 @@ class AulaView extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => RecompensasView(user: user),
+                      builder: (_) =>
+                          RecompensasView(user: user, usuarioLogueado: user),
                     ),
                   );
                 },
@@ -93,9 +91,7 @@ class AulaView extends StatelessWidget {
                 () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => TasksView(user: user),
-                    ),
+                    MaterialPageRoute(builder: (_) => TasksView(user: user)),
                   );
                 },
               ),
@@ -152,7 +148,8 @@ class AulaView extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => RecompensasView(user: user),
+                      builder: (_) =>
+                          RecompensasView(user: user, usuarioLogueado: user),
                     ),
                   );
                 },
@@ -168,9 +165,7 @@ class AulaView extends StatelessWidget {
                 () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => TasksView(user: user),
-                    ),
+                    MaterialPageRoute(builder: (_) => TasksView(user: user)),
                   );
                 },
               ),

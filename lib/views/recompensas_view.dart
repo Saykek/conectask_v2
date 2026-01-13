@@ -12,8 +12,13 @@ import '../views/recompensa_add_view.dart';
 
 class RecompensasView extends StatefulWidget {
   final UserModel user;
+  final UserModel usuarioLogueado;
 
-  const RecompensasView({super.key, required this.user});
+  const RecompensasView({
+    super.key,
+    required this.user,
+    required this.usuarioLogueado,
+  });
 
   @override
   State<RecompensasView> createState() => _RecompensasViewState();
@@ -148,7 +153,10 @@ class _RecompensasViewState extends State<RecompensasView> {
                                       padding: const EdgeInsets.only(
                                         bottom: 16,
                                       ),
-                                      child: ResumenRecompensas(user: nino),
+                                      child: ResumenRecompensas(
+                                        user: nino,
+                                        usuarioLogueado: widget.user,
+                                      ),
                                     );
                                   }
                                   return const SizedBox.shrink();
@@ -158,7 +166,10 @@ class _RecompensasViewState extends State<RecompensasView> {
                           padding: const EdgeInsets.all(16),
                           children: [
                             // TARJETA DEL NIÑO (ResumenRecompensas)
-                            ResumenRecompensas(user: widget.user),
+                            ResumenRecompensas(
+                              user: widget.user,
+                              usuarioLogueado: widget.user,
+                            ),
                             /*  const SizedBox(height: 16),
                           const Text(
                             AppFieldsConstants.recompensasDisponibles,
